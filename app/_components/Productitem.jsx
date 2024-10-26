@@ -14,7 +14,7 @@ import ProductItemDetails from "./ProductItemDetails";
 function Productitem({ product }) {
   return (
     <div
-    className="relative p-1 md:p-2 flex flex-col items-center justify-center gap-3 border
+    className="relative p-2 md:p-4 flex flex-col items-center justify-center gap-3 border
       rounded-lg hover:shadow-md hover:scale-105 cursor-pointer transition-all ease-in-out"
   >
     {/* Calculate the discount percentage */}
