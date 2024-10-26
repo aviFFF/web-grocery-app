@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button'
 import { Trash2Icon } from 'lucide-react'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
@@ -13,7 +12,7 @@ function CartItemList({ cartItemList,onDeleteItem }) {
             {cartItemList.map((cart, index) => (
                 <div className=' flex justify-between items-center' key={index}>
                     <div className='flex gap-6 items-center'>
-                    <Image src={process.env.NEXT_PUBLIC_BACKEND_BASE_URL + cart.image} width={80} height={80} alt={cart.name} 
+                    <Image src={ cart.image} width={80} height={80} alt={cart.name} 
                     className='border p-2 mt-4'
                     />
                     <div className=' text-start'> 

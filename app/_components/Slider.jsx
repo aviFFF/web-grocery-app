@@ -1,42 +1,51 @@
-import React from 'react'
-import Image from 'next/image'
+"use client";
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-  } from "@/components/ui/carousel"
-  
-function Sliders({sliderList}) {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
+function Sliders({ sliderList }) {
+  const [currentIndex, setCurrentIndex] = useState(0); // State to track the active slide
+
+  // Effect to handle automatic sliding every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === sliderList.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 5000); // 2-second interval
+
+    return () => clearInterval(interval); // Clean up on component unmount
+  }, [sliderList.length]);
+
   return (
-    <Carousel>
-  <CarouselContent>
-    {sliderList.map((slider, index) => (
-        <CarouselItem key={index}>
-          <div className='flex gap-5 justify-between'>
+    <Carousel className="relative overflow-hidden">
+      <CarouselContent
+        className="relative flex transition-transform duration-700 ease-in-out"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
+        {sliderList.map((slider, index) => (
+          <CarouselItem
+            key={index}
+            className="w-full flex-shrink-0"
+          >
             <Image
-              src={process.env.NEXT_PUBLIC_BACKEND_BASE_URL + 
-                slider?.attributes?.image?.data?.attributes?.url}
+              src={slider?.attributes?.image?.data?.attributes?.url}
               width={1000}
               height={400}
               alt="image"
-              className="w-1/2 pt-10 md:pt-2 md:h-[300px] h-[200px] object-fill rounded-2xl"
+              className="w-full md:h-[200px] md:pt-0 pt-10 h-[100px] object-fill md:rounded-2xl"
             />
-            <Image
-              src={process.env.NEXT_PUBLIC_BACKEND_BASE_URL + 
-                slider?.attributes?.image?.data?.attributes?.url}
-              width={1000}
-              height={400}
-              alt="image"
-              className="w-1/2 pt-10 md:pt-2 md:h-[300px] h-[200px] object-fill rounded-2xl"
-            />
-            </div>
-        </CarouselItem>
-    ))}
-    
-  </CarouselContent>
-</Carousel>
-  )
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      </Carousel>
+  );
 }
-export default Sliders
+
+export default Sliders;

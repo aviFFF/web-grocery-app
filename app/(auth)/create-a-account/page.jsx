@@ -14,6 +14,7 @@ function CreateAccount() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [Loder, setLoder] = useState();
+  const [name, setName] = useState();
 
   const router = useRouter();
 
@@ -26,16 +27,16 @@ function CreateAccount() {
 
   const onCreateAccount = () => {
     setLoder(true);
-    GlobalApi.registeruser(username, email, password).then(
+    GlobalApi.registeruser(username, email, password, name).then(
       (resp) => {
         sessionStorage.setItem("user", JSON.stringify(resp.data.user));
         sessionStorage.setItem("jwt", resp.data.jwt);
-        toast("YeY! Account Created");
+        toast("Wah bhai Wah! Ban gaya Account");
         router.push("/");
         setLoder(false);
       },
       (e) => {
-        toast(e?.response?.data?.error?.message);
+        toast("Please Enter Valid Details");
         setLoder(false);
       }
     );
@@ -55,12 +56,18 @@ function CreateAccount() {
         </Link>
         <h1 className="text-3xl font-bold">Create an Account</h1>
         <h2 className="text-sm text-nowrap text-gray-500">
-          Enter Your Email & Password to Create an Account
+          Enter Your Email/Mobile & Password to Create an Account
         </h2>
         <div className="w-full flex flex-col gap-5  mt-8">
           <Input
             placeholder="Name"
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Input
+            placeholder="Mobile Number"
             onChange={(e) => setUsername(e.target.value)}
+            maxLength={10}
+            
           />
           <Input
             placeholder="name@example.com"

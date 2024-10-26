@@ -1,7 +1,7 @@
 import GlobalApi from '@/app/utils/GlobalApi'
 import React from 'react'
 import TopCategoryList from '../_components/TopCategoryList';
-import ProductList from '@/app/_components/ProductList';
+import ProductListwc from '@/app/_components/ProductListwc';
 import Footer from '@/app/_components/Footer';
 
 async function ProductCategory({params}) {
@@ -9,16 +9,23 @@ async function ProductCategory({params}) {
   const categoryList = await GlobalApi.getCategoryList();
  
   return (
-    <div>
-      <h2 className='p-4 bg-primary text-white text-3xl font-bold text-center'>{params.categoryName}</h2>
-      <TopCategoryList categoryList={categoryList} 
-      selectedCategory={params.categoryName}
-      />
-      <div className='p-2 md:p-10'>
-      <ProductList productList={productList} />
-      </div>
-      <Footer/>
-    </div>
+    <div >
+  <h2 className='pt-14 md:pt-0 bg-primary items-center justify-center p-2 text-white text-3xl font-bold text-center'>
+    {decodeURIComponent(params.categoryName)}
+  </h2>
+  <div className='flex flex-row'>
+  <div>
+  <TopCategoryList 
+    categoryList={categoryList} 
+    selectedCategory={decodeURIComponent(params.categoryName)}
+  />
+  </div>
+  <div className='p-2 md:p-4'>
+    <ProductListwc productList={productList} />
+  </div>
+  </div>
+  <Footer/>
+</div>
   )
 }
 

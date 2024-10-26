@@ -14,18 +14,17 @@ import ProductItemDetails from "./ProductItemDetails";
 function Productitem({ product }) {
   return (
     <div
-      className="p-2 md:p-6 flex flex-col items-center justify-center gap-3 border
+      className="p-1 md:p-2 flex flex-col items-center justify-center gap-3 border
     rounded-lg hover:shadow-md hover:scale-105 cursor-pointer transition-all ease-in-out"
     >
       <Image
         src={
-          process.env.NEXT_PUBLIC_BACKEND_BASE_URL +
           product?.attributes?.image?.data[0]?.attributes?.url
         }
         alt={product?.attributes?.name}
         width={500}
         height={200}
-        className="w-[100px] h-[100px] object-contain"
+        className="w-[100px] md:h-[100px] h-[50px] object-contain"
       />
       <h2 className="font-bold text-sm md:text-lg">
         {product?.attributes?.name}
