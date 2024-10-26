@@ -5,6 +5,7 @@ import GlobalApi from "./utils/GlobalApi";
 import CategoryList from "./_components/CategoryList";
 import ProductList from "./_components/ProductList";
 import Footer from "./_components/Footer";
+import ProductListwc from "./_components/ProductListwc";
 
 export default async function Home() {
 
@@ -13,6 +14,7 @@ export default async function Home() {
   const categoryList = await GlobalApi.getCategoryList();
 
   const productList = await GlobalApi.getAllProducts();
+  
   return (
     <div className="md:p-4 p-5 md:px-16">
       {/* Slider */}
@@ -21,6 +23,7 @@ export default async function Home() {
        <CategoryList className="" categoryList={categoryList} />
        {/* Product List */}
        <ProductList productList={productList}/>
+       <ProductListwc productList={productList}/>
        {/* Footer */}
        <Footer />
 
