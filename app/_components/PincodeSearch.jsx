@@ -9,6 +9,7 @@ const PincodeSearchPopup = () => {
   const [showPopup, setShowPopup] = useState(false); // To control popup visibility
   const [servicedPincode, setServicedPincode] = useState(""); // To store the serviced pincode
   const [serviceMessage, setServiceMessage] = useState(""); // To store the service message
+  const [pincodeNotEntered, setPincodeNotEntered] = useState(false); // To track if no pincode was entered
 
   useEffect(() => {
     const savedPincode = localStorage.getItem("servicedPincode");
@@ -39,8 +40,9 @@ const PincodeSearchPopup = () => {
       setServicedPincode(pincode); 
       setServiceMessage(pinMessage); 
       setShowPopup(false); 
+      setPincodeNotEntered(false); // Reset this state on successful search
     } else {
-      setMessage("Oops! we will coming soon in your area.");
+      setMessage("Oops! We will be coming soon in your area.");
     }
   };
 
@@ -49,11 +51,15 @@ const PincodeSearchPopup = () => {
     setShowPopup(true); 
     setMessage(""); 
     setPincode(""); 
+    setPincodeNotEntered(false); // Reset this state when changing the pincode
   };
 
   // Handle closing the popup
   const handleClosePopup = () => {
     setShowPopup(false);
+    if (!pincode) { // Check if no pincode was entered
+      setPincodeNotEntered(true); // Set this to true if no pincode was entered
+    }
   };
 
   return (
@@ -94,11 +100,17 @@ const PincodeSearchPopup = () => {
         </div>
       )}
 
-      {servicedPincode && (
+      {(servicedPincode || pincodeNotEntered) && (
         <div className="mt-2">
-          <p className="md:text-base text-xs text-nowrap text-primary font-semibold">
-            {serviceMessage} for {servicedPincode}
-          </p>
+          {pincodeNotEntered ? (
+            <p className="md:text-base text-xs text-nowrap text-red-500 font-semibold">
+              Please select the pincode.
+            </p>
+          ) : (
+            <p className="md:text-base text-xs text-nowrap text-primary font-semibold">
+              {serviceMessage} for {servicedPincode}
+            </p>
+          )}
           <button
             onClick={handleChangePincode}
             className="text-blue-500 md:text-sm text-xs mt-2"
