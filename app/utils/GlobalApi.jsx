@@ -85,6 +85,12 @@ export const getPincodes = async () => {
     return resp.data.data;
   };
 
+  const createOrder = (data,jwt)=>axiosClient.post('/Orders',data,{
+    headers:{
+         Authorization: `Bearer ${jwt}`,
+    },
+  })
+
 
 export default {
     getCategory,
@@ -97,5 +103,6 @@ export default {
     addToCart,
     getCartItems,
     deleteCartItem,
-    getPincodes
+    getPincodes,
+    createOrder
 }

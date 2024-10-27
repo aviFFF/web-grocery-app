@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 function Checkout() {
   const [user, setUser] = useState(null);
@@ -17,12 +18,15 @@ function Checkout() {
   const [username, setUsername] = useState('');
   const [address, setAddress] = useState('');
   const [pincode, setPincode] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [promoCode, setPromoCode] = useState('');
+  const [totalAmount, setTotalAmount] = useState(0);
   const [location, setLocation] = useState({ lat: 0, lng: 0 }); // Latitude and Longitude for Google Maps
 
   const router = useRouter();
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "YOUR_GOOGLE_MAPS_API_KEY", // Replace with your API key
+    googleMapsApiKey: "GOOGLE_MAPS_API_KEY", // Replace with your API key
   });
 
   useEffect(() => {
@@ -72,7 +76,7 @@ function Checkout() {
   const fetchCoordinates = async (pincode) => {
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${pincode}&key=YOUR_GOOGLE_MAPS_API_KEY`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${pincode}&key=GOOGLE_MAPS_API_KEY`
       );
       const data = await response.json();
       if (data.results.length > 0) {
@@ -93,6 +97,27 @@ function Checkout() {
       fetchCoordinates(value);
     }
   };
+
+  const onApprove = (data) => {
+    console.log(data);
+    const payload = {
+      data: {
+        paymentid: (data.paymentID).toString(),
+        totalOrderValue:totalAmount,
+        email:email,
+        phone:phone,
+        address:address,
+        pincode:pincode,
+        Orderitemlist:cartItemList,
+        status: "success",
+      }
+    }
+    GlobalApi.createOrder(payload,jwt).then(resp=>{
+      console.log(resp);
+      toast("Order Successfull")
+    })
+  };
+
 
   return (
     <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -138,6 +163,20 @@ function Checkout() {
           placeholder="Postal Code"
           value={pincode}
           onChange={handlePincodeChange}
+        />
+        <Input
+          className="p-2 border mt-5"
+          type="text"
+          placeholder="Phone"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+        <Input
+          className="p-2 border mt-5"
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         
         {/* Google Map Display */}
@@ -207,12 +246,14 @@ function Checkout() {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="gap-4">
-              <Button onClick={() => router.push("/payment")}>
+              <Button >
                 Pay Online
               </Button>
               <Button
                 variant="outline"
-                onClick={() => router.push("/cash-on-delivery")}
+                onClick={() => onApprove({ paymentID: "Cash on Delivery" },
+                  router.push("/orderPlaced")
+                )}
               >
                 Cash on Delivery
               </Button>
