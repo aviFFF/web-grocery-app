@@ -18,7 +18,6 @@ import {
 import GlobalApi from "../utils/GlobalApi";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Item } from "@radix-ui/react-dropdown-menu";
 import { UpdateCartContext } from "../_context/UpdatecartContext";
 import {
   Sheet,
@@ -31,29 +30,41 @@ import {
 } from "@/components/ui/sheet";
 import CartItemList from "./CartItemList";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
-import SearchBox from "./SearchBox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import ProductSearch from "./ProductSearch";
+import PincodeSearchPopup from "./PincodeSearch";
+
 
 function Header() {
   const [categoryList, setCategoryList] = useState([]);
-  const isLogin = sessionStorage.getItem("jwt") ? true : false;
-  const user = JSON.parse(sessionStorage.getItem("user"));
-  const jwt = sessionStorage.getItem("jwt");
+  const [isLogin, setIsLogin] = useState(false);
+  const [user, setUser] = useState(null);
+  const [jwt, setJwt] = useState(null);
   const [totalCartItems, setTotalCartItems] = useState(0);
   const { updateCart, setUpdateCart } = useContext(UpdateCartContext);
   const [cartItemList, setCartItemList] = useState([]);
-  const [searchinput, setSearchinput] = useState();
-  const [seachcatvalue, setSeachcatvalue] = useState();
-  const [pincode, setPincode] = useState("");
-  const [message, setMessage] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    // Fetch cart items based on user authentication and other conditions
+    const fetchCartItems = async () => {
+      if (user && user.id && jwt) {
+        const cartItemList_ = await GlobalApi.getCartItems(user.id, jwt);
+        setCartItemList(cartItemList_);
+        setTotalCartItems(cartItemList_.length);
+        setUpdateCart(!updateCart); // Trigger re-render
+      }
+    };
+
+    fetchCartItems();
+  }, [user, jwt, updateCart]);
+  useEffect(() => {
+    const storedJwt = sessionStorage.getItem("jwt");
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
+
+    setIsLogin(!!storedJwt);
+    setUser(storedUser);
+    setJwt(storedJwt);
+  }, []);
 
   useEffect(() => {
     getCategoryList();
@@ -61,7 +72,8 @@ function Header() {
 
   useEffect(() => {
     getCartItems();
-  }, [updateCart]);
+  }, 
+  [updateCart]);
 
   // Get Category List
   const getCategoryList = () => {
@@ -109,21 +121,9 @@ function Header() {
     setSubtotal(total.toFixed(2));
   }, [cartItemList]);
 
-  const searchInputValue = (e) => {
-    setSearchinput(e.target.value);
-  };
-  const handlePincodeCheck = async () => {
-    try {
-      const response = await fetch(`/api/checkPincode?pincode=${pincode}`);
-      const data = await response.json();
-      setMessage(data.message);
-    } catch (error) {
-      setMessage('Error checking pincode.');
-    }
-  };
 
   return (
-    <div className="p-5 flex justify-between items-center gap-5 sticky z-50 bg-white top-0 shadow-lg">
+    <div className="p-4 flex justify-between items-center gap-5 sticky z-50 bg-white top-0 shadow-lg">
       {/* Logo */}
       <Link href="/">
         <Image
@@ -131,35 +131,12 @@ function Header() {
           alt="logo"
           width={50}
           height={20}
-          className="rounded-xl cursor-pointer"
+          className="rounded-xl md:w-20  cursor-pointer"
         />
       </Link>
-      <Select>
-  <SelectTrigger className="w-[180px] outline-none ">
-    <SelectValue placeholder="Select Pincode" />
-  </SelectTrigger>
-  <SelectContent>
-    <SelectItem value="light">Light</SelectItem>
-    <SelectItem value="dark">Dark</SelectItem>
-    <SelectItem value="system">System</SelectItem>
-  </SelectContent>
-</Select>
-
-      <SearchBox/>
+      <PincodeSearchPopup/>
+      <ProductSearch/>
       <div className="flex items-center gap-5">
-        {/* Icons Section (Cart + User) */}
-        <div className="flex items-center ">
-          <div className="absolute left-0 top-20 block md:hidden w-full bg-white shadow-lg p-3">
-            <div className="flex items-center border rounded-lg p-2">
-              <Search />
-              <input
-                type="text"
-                placeholder="Search"
-                className="outline-none bg-transparent flex-grow"
-              />
-            </div>
-          </div>
-        </div>
         <Sheet>
           <SheetTrigger>
             <h2 className="relative flex gap-1 items-center text-lg">

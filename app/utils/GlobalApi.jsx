@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'http://localhost:1337/api',
+    baseURL:'https://groapp-admin.onrender.com/api',
 });
 
 const getCategory =()=>axiosClient.get('/categories?populate=*');
@@ -14,17 +14,35 @@ const getCategoryList =()=>axiosClient.get('/categories?populate=*').then(resp=>
     return resp.data.data
 })
 
-const getAllProducts =()=>axiosClient.get('/products?populate=*').then(resp=>{
-    return resp.data.data
-})
+export const getAllProducts = async (query = '') => {
+    const searchParam = query
+      ? `&filters[$or][0][name][$containsi]=${query}&filters[$or][1][categories][name][$containsi]=${query}`
+      : '';
+    
+    const resp = await axiosClient.get(`/products?populate=*&${searchParam}`);
+    return resp.data.data;
+  };
+  
+  // Debounce function to limit API calls
+  export const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func.apply(null, args);
+      }, delay);
+    };
+  };
+  
 
 const getProductsbyCategory =(category)=>axiosClient.get('/products?filters[categories][name][$in]='+category+"&populate=*").then(resp=>{
     return resp.data.data
 })
 
-const registeruser =(username,email,password)=>axiosClient.post('/auth/local/register',{username:username,
+const registeruser =(username,email,password,name)=>axiosClient.post('/auth/local/register',{username:username,
     email:email,
-    password:password
+    password:password,
+    name:name
 });
 
 const deleteCartItem =(id,jwt)=>axiosClient.delete('/user-carts/'+id,{
@@ -62,9 +80,10 @@ const getCartItems=(userId,jwt)=>axiosClient.get('/user-carts?filters[userId][$e
     return cartItemList
 })
 
-const getPincodes=()=>axiosClient.get('/pincodes?populate=*').then(resp=>{
-    return resp.data.data
-})
+export const getPincodes = async () => {
+    const resp = await axiosClient.get('/pincodes?populate=*');
+    return resp.data.data;
+  };
 
 
 export default {

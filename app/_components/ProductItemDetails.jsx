@@ -56,7 +56,6 @@ function ProductItemDetails({ product }) {
     <div className=" bg-white grid grid-cols-1 md:grid-cols-2">
       <Image
         src={
-          process.env.NEXT_PUBLIC_BACKEND_BASE_URL +
           product?.attributes?.image?.data[0]?.attributes?.url
         }
         alt={product?.attributes?.name}
@@ -75,7 +74,7 @@ function ProductItemDetails({ product }) {
           )}
           <h2
             className={`text-2xl p-2 font-bold ${
-              product?.attributes?.sellingPrice && "line-through text-gray-400"
+              product?.attributes?.sellingPrice && "line-through text-red-400"
             }`}
           >
             ₹{product?.attributes?.mrp}
@@ -94,7 +93,7 @@ function ProductItemDetails({ product }) {
                 -
               </button>
               <button>{productQuantity}</button>
-              <button onClick={() => setProductQuantity(productQuantity + 1)}>
+              <button onClick={() => setProductQuantity(productQuantity + 1)}> 
                 +
               </button>
             </div>

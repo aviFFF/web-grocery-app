@@ -8,8 +8,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Head from "next/head";
 function Checkout() {
-  const user = JSON.parse(sessionStorage.getItem("user"));
-  const jwt = sessionStorage.getItem("jwt");
+  const [user, setUser] = useState(null);
+  const [jwt, setJwt] = useState(null);
   const [totalCartItems, setTotalCartItems] = useState(0);
   const [cartItemList, setCartItemList] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
@@ -20,6 +20,14 @@ function Checkout() {
   const [pincode, setPincode] = useState();
 
   const router = useRouter();
+
+
+  useEffect(() => {
+    const storedJwt = sessionStorage.getItem("jwt");
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
+    setUser(storedUser);
+    setJwt(storedJwt);
+  }, []);
 
   useEffect(() => {
     if (!jwt) {
@@ -94,14 +102,6 @@ function Checkout() {
 
   return (
     <div className="p-3 bg-white text-xl font-bold text-center">
-      <Head>
-  <script
-    type="application/javascript"
-    src={`https://securegw.paytm.in/merchantpgpui/checkoutjs/merchants/${process.env.NEXT_PUBLIC_PAYTM_MID}.js`}
-  ></script>
-</Head>
-
-
       <h2>Checkout</h2>
       <div className="p-5 px-5 md:px-10 grid grid-col-1 md:grid-cols-3 py-8">
         <div className="md:col-span-2 mx-10 my-5 md:mx-20">
@@ -171,6 +171,7 @@ function Checkout() {
               onClick={handleCheckout}
             >
               Proceed to Checkout
+              <ArrowBigRight className="w-5 h-5" />
             </Button>
           </div>
         </div>
