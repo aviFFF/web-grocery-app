@@ -176,6 +176,21 @@ function Checkout() {
           <span>₹{calculateTotalAmount()}</span>
         </div>
 
+
+  {/* Promo Code Section */}
+  <div className="mt-5">
+          <h2 className="font-semibold text-lg mb-2">Apply a Promo Code</h2>
+          <div className="flex">
+            <Input
+              className="flex-1 p-2 border"
+              type="text"
+              placeholder="Promo Code"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+            />
+            <Button className="ml-2 bg-primary text-white">APPLY</Button>
+          </div>
+        </div>
         {/* Proceed to Checkout Popup */}
         <Dialog>
           <DialogTrigger asChild>
