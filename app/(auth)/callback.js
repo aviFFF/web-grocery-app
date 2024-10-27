@@ -11,7 +11,7 @@ export default function AuthCallback() {
       if (query.access_token) {
         // Make a request to Strapi to get user details
         try {
-          const response = await axios.get(NEXT_PUBLIC_API_URL + 'users/me', {
+          const response = await axios.get('http://localhost:1337/users/me', {
             headers: {
               Authorization: `Bearer ${query.access_token}`,
             },

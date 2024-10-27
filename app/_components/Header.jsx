@@ -44,6 +44,30 @@ function Header() {
   const [cartItemList, setCartItemList] = useState([]);
   const router = useRouter();
 
+
+  useEffect(() => {
+    // Fetch cart items based on user authentication and other conditions
+    const fetchCartItems = async () => {
+      if (user && user.id && jwt) {
+        const cartItemList_ = await GlobalApi.getCartItems(user.id, jwt);
+        setCartItemList(cartItemList_);
+        setTotalCartItems(cartItemList_.length);
+        setUpdateCart(!updateCart); // Trigger re-render
+      }
+    };
+
+    fetchCartItems();
+  }, [user, jwt, updateCart]);
+
+  useEffect(() => {
+    const storedJwt = sessionStorage.getItem("jwt");
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
+
+    setIsLogin(!!storedJwt);
+    setUser(storedUser);
+    setJwt(storedJwt);
+  }, []);
+
   useEffect(() => {
     // Fetch cart items based on user authentication and other conditions
     const fetchCartItems = async () => {
