@@ -42,8 +42,8 @@ function CreateAccount() {
     );
   };
   return (
-    <div className="flex items-baseline justify-center my-20">
-      <div className="flex flex-col items-center justify-center md:p-10 p-1 w-screen bg-slate-100 border border-gray-200">
+    <div className="flex items-center justify-center my-20">
+      <div className="flex flex-col items-center justify-center md:p-10 p-1 md:w-auto w-screen bg-slate-100 border border-gray-200">
         <Link href="/">
           {" "}
           <Image

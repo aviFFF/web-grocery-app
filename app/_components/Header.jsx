@@ -1,11 +1,7 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  Search,
-  ShoppingBag,
-  UserIcon,
-} from "lucide-react";
+import { Search, ShoppingBag, UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -33,7 +29,6 @@ import { toast } from "sonner";
 import ProductSearch from "./ProductSearch";
 import PincodeSearchPopup from "./PincodeSearch";
 
-
 function Header() {
   const [categoryList, setCategoryList] = useState([]);
   const [isLogin, setIsLogin] = useState(false);
@@ -44,7 +39,6 @@ function Header() {
   const [cartItemList, setCartItemList] = useState([]);
   const router = useRouter();
 
-
   useEffect(() => {
     // Fetch cart items based on user authentication and other conditions
     const fetchCartItems = async () => {
@@ -62,29 +56,30 @@ function Header() {
   useEffect(() => {
     const storedJwt = sessionStorage.getItem("jwt");
     const storedUser = JSON.parse(sessionStorage.getItem("user"));
-
+  
     setIsLogin(!!storedJwt);
     setUser(storedUser);
     setJwt(storedJwt);
+  
+    if (storedUser && storedJwt) {
+      fetchCartItems(storedUser, storedJwt);
+    }
   }, []);
+  
+  const fetchCartItems = async (user, jwt) => {
+    if (user?.id && jwt) {
+      const cartItemList_ = await GlobalApi.getCartItems(user.id, jwt);
+      setCartItemList(cartItemList_);
+      setTotalCartItems(cartItemList_.length);
+      setUpdateCart(!updateCart); // Trigger re-render
+    }
+  };
+  
 
-  useEffect(() => {
-    // Fetch cart items based on user authentication and other conditions
-    const fetchCartItems = async () => {
-      if (user && user.id && jwt) {
-        const cartItemList_ = await GlobalApi.getCartItems(user.id, jwt);
-        setCartItemList(cartItemList_);
-        setTotalCartItems(cartItemList_.length);
-        setUpdateCart(!updateCart); // Trigger re-render
-      }
-    };
 
-    fetchCartItems();
-  }, [user, jwt, updateCart]);
   useEffect(() => {
     const storedJwt = sessionStorage.getItem("jwt");
     const storedUser = JSON.parse(sessionStorage.getItem("user"));
-
     setIsLogin(!!storedJwt);
     setUser(storedUser);
     setJwt(storedJwt);
@@ -96,8 +91,7 @@ function Header() {
 
   useEffect(() => {
     getCartItems();
-  }, 
-  [updateCart]);
+  }, [updateCart]);
 
   // Get Category List
   const getCategoryList = () => {
@@ -145,7 +139,6 @@ function Header() {
     setSubtotal(total.toFixed(2));
   }, [cartItemList]);
 
-
   return (
     <div className="p-4 flex justify-between items-center gap-5 sticky z-50 bg-white top-0 shadow-lg">
       {/* Logo */}
@@ -158,8 +151,8 @@ function Header() {
           className="rounded-xl md:w-20  cursor-pointer"
         />
       </Link>
-      <PincodeSearchPopup/>
-      <ProductSearch/>
+      <PincodeSearchPopup />
+      <ProductSearch />
       <div className="flex items-center gap-5">
         <Sheet>
           <SheetTrigger>
