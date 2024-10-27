@@ -14,7 +14,7 @@ import ProductItemDetails from "./ProductItemDetails";
 function Productitem({ product }) {
   return (
     <div
-    className="relative p-2 md:p-4 flex flex-col text-nowrap items-center justify-center gap-3 border
+    className="relative p-2 md:p-5 flex flex-col text-nowrap items-center justify-center gap-3 border
       rounded-lg hover:shadow-md hover:scale-105 cursor-pointer transition-all ease-in-out"
   >
     {/* Calculate the discount percentage */}
@@ -53,7 +53,7 @@ function Productitem({ product }) {
       <Dialog>
         <DialogTrigger asChild>
             <Button
-        className="text-primary hover:text-white hover:bg-primary"
+        className="text-primary hover:text-white px-2 md:px-4 hover:bg-primary"
         variant="outline"
       >
         Add To Cart
