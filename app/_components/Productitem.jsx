@@ -15,7 +15,7 @@ function Productitem({ product }) {
   return (
     <div
     className="relative p-2 md:p-5 flex flex-col items-center justify-center gap-3 border
-      rounded-lg hover:shadow-md hover:scale-105 cursor-pointer transition-all ease-in-out"
+      rounded-xl hover:shadow-md hover:scale-105 cursor-pointer transition-all ease-in-out"
   >
     {/* Calculate the discount percentage */}
     {product?.attributes?.sellingPrice && product?.attributes?.mrp && product.attributes.mrp > 0 && (
@@ -33,7 +33,7 @@ function Productitem({ product }) {
       height={200}
       className="w-[100px] md:h-[100px] h-[50px] object-contain"
     />
-    <h2 className="font-bold text-sm md:text-lg">
+    <h2 className="font-bold text-xs md:text-lg">
       {product?.attributes?.name}
     </h2>
     <h2 className="text-gray-500">{product?.attributes?.itemQuantityType}</h2>
@@ -53,7 +53,7 @@ function Productitem({ product }) {
       <Dialog>
         <DialogTrigger asChild>
             <Button
-        className="text-primary hover:text-white px-2 md:px-4 hover:bg-primary"
+        className="text-primary hover:text-white px-2 md:px-4 rounded-xl hover:bg-primary"
         variant="outline"
       >
         Add To Cart

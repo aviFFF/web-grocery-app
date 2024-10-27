@@ -40,8 +40,8 @@ function LogIn() {
     }
   return (
     <div className='flex flex-col items-baseline justify-center my-20'>
-        <div className="flex flex-col items-center mx-auto justify-center md:p-8 p-2 bg-slate-100 border border-gray-200">
-        <Link href ="/" > <Image src="/newlogo.png" className='rounded-2xl' alt="logo" width={100} height={50} /></Link>
+      <div className="flex flex-col items-center justify-center md:p-10 p-1 w-screen bg-slate-100 border border-gray-200">
+      <Link href ="/" > <Image src="/newlogo.png" className='rounded-2xl' alt="logo" width={100} height={50} /></Link>
         <h1 className='text-3xl font-bold'>Sign In Your Account</h1>
             <h2 className='text-sm text-nowrap text-gray-500'>Enter Your Email/Mobile & Password to SignIn Your Account</h2>
             <div className='w-full flex flex-col gap-5  mt-8'>

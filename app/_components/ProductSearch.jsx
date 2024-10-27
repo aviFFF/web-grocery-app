@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { debounce, getAllProducts } from '../utils/GlobalApi';
 import './style.css';
@@ -25,6 +25,7 @@ const ProductSearch = () => {
     // Debounce fetching product suggestions
     const debounceFetchSuggestions = debounce((query) => {
       getAllProducts(query).then((results) => {
+        // Map the results to product names only, but search includes descriptions
         const productNames = results.map((product) => product.attributes.name);
         setSuggestions(productNames);
       });
@@ -58,7 +59,7 @@ const ProductSearch = () => {
             type="text"
             value={searchInput}
             onChange={handleInputChange}
-            placeholder="Search for Milk,Fruits,Chips..."
+            placeholder="Search for Milk, Fruits, Chips..."
             className="border p-2 rounded w-full flex-grow sliding-placeholder"
           />
         </form>
