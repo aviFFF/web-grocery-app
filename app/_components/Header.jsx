@@ -143,13 +143,13 @@ function Header() {
   return (
     <div className="p-4 flex justify-between items-center gap-5 sticky z-50 bg-white top-0 shadow-lg">
       {/* Logo */}
-      <Link href="/">
+       <Link href="/">
         <Image
           src="/newlogo.png"
           alt="logo"
-          width={200}
-          height={100}
-          className="rounded-xl cursor-pointer"
+          width={50}
+          height={20}
+          className="rounded-xl md:w-20  cursor-pointer"
         />
       </Link>
       <PincodeSearchPopup />
