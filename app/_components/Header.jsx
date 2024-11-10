@@ -145,7 +145,7 @@ function Header() {
       {/* Logo */}
       <Link href="/">
         <Image
-          src="/newlogo.png"
+          src="/bazzat-removebg-preview.png"
           alt="logo"
           width={50}
           height={20}
