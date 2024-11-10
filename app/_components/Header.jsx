@@ -147,8 +147,8 @@ function Header() {
         <Image
           src="/bazzat-removebg-preview.png"
           alt="logo"
-          width={50}
-          height={20}
+          width={200}
+          height={100}
           className="rounded-xl md:w-20  cursor-pointer"
         />
       </Link>
