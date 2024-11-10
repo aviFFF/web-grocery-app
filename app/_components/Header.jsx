@@ -149,7 +149,7 @@ function Header() {
           alt="logo"
           width={200}
           height={100}
-          className="rounded-xl md:w-20  cursor-pointer"
+          className="rounded-xl cursor-pointer"
         />
       </Link>
       <PincodeSearchPopup />
