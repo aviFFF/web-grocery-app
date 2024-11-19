@@ -23,10 +23,10 @@ export default async function Home() {
        <CategoryList className="" categoryList={categoryList} />
        {/* Product List */}
        <ProductList productList={productList}/>
+       {/* Product List by category */}
        <ProductListwc productList={productList}/>
        {/* Footer */}
        <Footer />
-
     </div>
   );
 }

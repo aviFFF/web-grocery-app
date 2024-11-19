@@ -9,15 +9,15 @@ function TopCategoryList({categoryList, selectedCategory} ) {
     <Link 
       key={index} 
       href={'/products-category/' + category?.attributes?.name}
-      className={`flex flex-row text-wrap gap-1 text-left items-center p-1
+      className={`flex flex-row text-wrap gap-1 p-2 text-right
         bg-green-50 group cursor-pointer hover:bg-primary 
-        md:w-[170px] md:h-[50px] w-[75px] h-[50px] md:text-sm text-[10px] 
+        md:w-[190px] md:h-[50px] w-[75px] h-[50px] md:text-sm text-[10px] 
         ${selectedCategory == category.attributes.name && 'bg-primary text-white'}
       `}
     >
       {/* Image inside the circular category */}
       <Image 
-        src={category.attributes.icon.data[0].attributes.url} 
+        src={category.attributes.icon.data.attributes.url} 
         alt='icon' 
         width={40} 
         height={40}

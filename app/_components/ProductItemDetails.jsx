@@ -7,8 +7,12 @@ import React, { useContext, useState } from "react";
 import GlobalApi from "../utils/GlobalApi";
 import { toast } from "sonner";
 import { UpdateCartContext } from "../_context/UpdatecartContext";
+import ProductCarousel from "./ProductItemcarousal";
+
 
 function ProductItemDetails({ product }) {
+  const images = product?.attributes?.image?.data || [];
+  const altText = product?.attributes?.name || "Product Image";
   const jwt = sessionStorage.getItem('jwt');
   const user = JSON.parse(sessionStorage.getItem('user'));
   const {updateCart, setUpdateCart} = useContext(UpdateCartContext)
@@ -53,16 +57,8 @@ function ProductItemDetails({ product }) {
   };
 
   return (
-    <div className=" bg-white grid grid-cols-1 md:grid-cols-2">
-      <Image
-        src={
-          product?.attributes?.image?.data[0]?.attributes?.url
-        }
-        alt={product?.attributes?.name}
-        width={300}
-        height={300}
-        className="rounded-lg w-[300px] h-[320px] object-contain"
-      />
+    <div className=" bg-white grid grid-cols-1 gap-4 md:grid-cols-2">
+          <ProductCarousel images={images} altText={altText} />
       <div className="flex flex-col gap-3">
         <h2 className="text-2xl font-bold">{product?.attributes?.name}</h2>
         <h2 className="text-lg line-clamp-3 ">{product?.attributes?.description}</h2>

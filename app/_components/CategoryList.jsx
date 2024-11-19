@@ -11,10 +11,10 @@ function CategoryList( {categoryList}) {
             <Link key={index} href ={'/products-category/' + category.attributes.name} className='flex flex-col items-center gap-2 bg-green-50  md:p-1 
             group cursor-pointer hover:bg-primary'>
                 <Image src={ 
-                    category?.attributes?.icon?.data[0]?.attributes?.url} 
+                    category?.attributes?.icon?.data?.attributes?.url} 
                     alt='icon' 
-                    width={50} 
-                    height={50}
+                    width={100} 
+                    height={100}
                     className='group-hover:scale-125 transition-all ease-in-out'
                     />
                     <h2 className='group-hover:text-white text-black text-[14px]' >{category?.attributes?.name}</h2>
