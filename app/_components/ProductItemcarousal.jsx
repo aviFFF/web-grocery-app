@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button"; 
 import { MdKeyboardArrowLeft,MdKeyboardArrowRight } from "react-icons/md";
+import Image from "next/image";
 
 
 const ProductCarousel = ({ images, altText }) => {
@@ -20,7 +21,9 @@ const ProductCarousel = ({ images, altText }) => {
   return (
     <div className="relative w-full max-w-md mx-auto">
       <div className="overflow-hidden rounded-lg">
-        <img
+        <Image
+          width={100}
+          height={50}
           src={images[currentIndex]?.attributes?.url}
           alt={altText}
           className="w-full object-contain"

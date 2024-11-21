@@ -39,60 +39,50 @@ function Header() {
   const [cartItemList, setCartItemList] = useState([]);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   // Fetch cart items based on user authentication and other conditions
-  //   const fetchCartItems = async () => {
-  //     if (user && user.id && jwt) {
-  //       const cartItemList_ = await GlobalApi.getCartItems(user.id, jwt);
-  //       setCartItemList(cartItemList_);
-  //       setTotalCartItems(cartItemList_.length);
-  //       setUpdateCart(!updateCart); // Trigger re-render
-  //     }
-  //   };
-
-  //   fetchCartItems();
-  // }, [user, jwt, updateCart]);
 
   useEffect(() => {
-    const storedJwt = sessionStorage.getItem("jwt");
-    const storedUser = JSON.parse(sessionStorage.getItem("user"));
+    const initializeState = async () => {
+      const storedJwt = sessionStorage.getItem("jwt");
+      const storedUser = JSON.parse(sessionStorage.getItem("user"));
   
-    setIsLogin(!!storedJwt);
-    setUser(storedUser);
-    setJwt(storedJwt);
+      if (storedJwt && storedUser) {
+        setJwt(storedJwt);
+        setUser(storedUser);
+        setIsLogin(true);
+        await fetchCartItems(storedUser, storedJwt); // Ensure cart items are fetched after state updates
+      } else {
+        setIsLogin(false);
+        setUser(null);
+        setJwt(null);
+        setTotalCartItems(0); // Clear cart info if not logged in
+        setCartItemList([]);
+      }
+    };
   
-    if (storedUser && storedJwt) {
-      fetchCartItems(storedUser, storedJwt);
-    }
-  }, []);
+    initializeState();
+  }, []); // Runs only on initial render
   
   const fetchCartItems = async (user, jwt) => {
     if (user?.id && jwt) {
-      const cartItemList_ = await GlobalApi.getCartItems(user.id, jwt);
-      setCartItemList(cartItemList_);
-      setTotalCartItems(cartItemList_.length);
-      setUpdateCart(!updateCart);
-      // Trigger re-render
+      try {
+        const cartItemList_ = await GlobalApi.getCartItems(user.id, jwt);
+        setCartItemList(cartItemList_);
+        setTotalCartItems(cartItemList_.length || 0);
+      } catch (error) {
+        console.error("Error fetching cart items:", error);
+      }
+    } else {
+      console.log("User is not logged in.");
     }
   };
   
-
-
+  // Update cart when `updateCart` changes
   useEffect(() => {
-    const storedJwt = sessionStorage.getItem("jwt");
-    const storedUser = JSON.parse(sessionStorage.getItem("user"));
-    setIsLogin(!!storedJwt);
-    setUser(storedUser);
-    setJwt(storedJwt);
-  }, []);
-
-  useEffect(() => {
-    getCategoryList();
-  }, []);
-
-  useEffect(() => {
-    getCartItems();
-  }, [updateCart]);
+    if (user && jwt) {
+      fetchCartItems(user, jwt);
+    }
+  }, [updateCart]); // Ensure `fetchCartItems` only runs when necessary
+  
 
   // Get Category List
   const getCategoryList = () => {
@@ -135,10 +125,11 @@ function Header() {
   useEffect(() => {
     let total = 0;
     cartItemList.forEach((element) => {
-      total = total + element.amount;
+      total += element.amount;
     });
     setSubtotal(total.toFixed(2));
-  }, [cartItemList]);
+  }, [cartItemList]); // Triggered on every change in `cartItemList`
+  
 
   return (
     <div className="p-4 flex justify-between items-center gap-5 sticky z-50 bg-white top-0 shadow-lg">
@@ -184,6 +175,7 @@ function Header() {
                 </h2>
                 <Button
                   onClick={() => router.push(jwt ? "/checkout" : "/log-in")}
+                  disabled={!totalCartItems}
                 >
                   Checkout
                 </Button>
@@ -208,9 +200,11 @@ function Header() {
               <DropdownMenuItem className="cursor-pointer">
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <Link href="/my-orders"><DropdownMenuItem className="cursor-pointer">
                 My Orders
               </DropdownMenuItem>
+              </Link>
+              
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() => onLogOut()}

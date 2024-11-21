@@ -15,7 +15,7 @@ function CategoryList( {categoryList}) {
                     alt='icon' 
                     width={100} 
                     height={100}
-                    className='group-hover:scale-125 transition-all ease-in-out'
+                    className=''
                     />
                     <h2 className='group-hover:text-white text-black text-[14px]' >{category?.attributes?.name}</h2>
             </Link>

@@ -73,7 +73,8 @@ const getCartItems=(userId,jwt)=>axiosClient.get('/user-carts?filters[userId][$e
         amount:item.attributes.amount,
         image:item.attributes.products.data.attributes.image.data[0].attributes.url,
         selingPrice:item.attributes.products.data.attributes.mrp, 
-        id:item.id
+        id:item.id,
+        product:item.attributes.products.data.id,
 
 
     }))
@@ -89,6 +90,26 @@ export const getPincodes = async () => {
     headers:{
          Authorization: `Bearer ${jwt}`,
     },
+  });
+
+  const getMyorders = (userid,jwt)=>axiosClient.get('orders?filters[userid][$eq]='+userid+'&populate[Orderitemlist][populate][product][populate][image]=url').then(resp=>{
+      const response = resp.data.data
+      const orderList = response.map((item,index)=>({
+          id:item.id,
+          totalOrderValue:item.attributes.totalOrderValue,
+          paymentid:item.attributes.paymentid,
+          Orderitemlist:item.attributes.Orderitemlist,
+          firstname:item.attributes.firstname,
+          lastname:item.attributes.lastname,
+          email:item.attributes.email,
+          phone:item.attributes.phone,
+          address:item.attributes.address,
+          pincode:item.attributes.pincode,
+          createdAt:item.attributes.createdAt,
+          status:item.attributes.Status
+      }));
+      return orderList
+
   })
 
 
@@ -104,5 +125,6 @@ export default {
     getCartItems,
     deleteCartItem,
     getPincodes,
-    createOrder
+    createOrder,
+    getMyorders
 }

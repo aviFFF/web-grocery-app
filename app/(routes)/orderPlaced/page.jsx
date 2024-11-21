@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 const OrderSuccess = () => {
     const router = useRouter();
     const handleGoHome = () => {
-        router.push('/');
+        router.replace('/my-orders');
     };
 
   return (
@@ -18,7 +18,7 @@ const OrderSuccess = () => {
         <p className="mb-4">Thank you for your purchase. Your order is being processed.</p>
         <p className="mb-6">You will receive a confirmation email shortly.</p>
         <Button className="bg-primary text-white" onClick={handleGoHome}>
-          Go to Home
+          Track Your Order
         </Button>
       </div>
     </div>

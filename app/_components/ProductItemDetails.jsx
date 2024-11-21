@@ -57,7 +57,7 @@ function ProductItemDetails({ product }) {
   };
 
   return (
-    <div className=" bg-white grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className=" bg-white grid grid-cols-1 w-full gap-4 md:grid-cols-2">
           <ProductCarousel images={images} altText={altText} />
       <div className="flex flex-col gap-3">
         <h2 className="text-2xl font-bold">{product?.attributes?.name}</h2>
@@ -81,7 +81,7 @@ function ProductItemDetails({ product }) {
         </h2>
         <div className="flex flex-col items-baseline gap-3">
           <div className="flex items-center gap-3">
-            <div className="p-2 border px-5 flex gap-10 items-center">
+            <div className="p-2 border px-4 flex gap-10 items-center">
               <button
                 disabled={productQuantity === 1}
                 onClick={() => setProductQuantity(productQuantity - 1)}

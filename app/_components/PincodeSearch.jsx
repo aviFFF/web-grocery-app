@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getPincodes } from "../utils/GlobalApi"; // Adjust the path to your globalapi file
 import { Input } from "@/components/ui/input";
 
-const PincodeSearchPopup = () => {
+const PincodeSearchPopup = ({onValidation}) => {
   const [pincode, setPincode] = useState(""); // To store the input value
   const [availablePincodes, setAvailablePincodes] = useState([]); // To store the fetched pincodes
   const [message, setMessage] = useState(""); // To store the message for the user
@@ -33,16 +33,21 @@ const PincodeSearchPopup = () => {
     );
 
     if (foundPincode) {
-      const { message: pinMessage } = foundPincode.attributes; 
+      const { message: pinMessage } = foundPincode.attributes;
       setMessage(pinMessage);
-      localStorage.setItem("servicedPincode", pincode); 
-      localStorage.setItem("serviceMessage", pinMessage); 
-      setServicedPincode(pincode); 
-      setServiceMessage(pinMessage); 
-      setShowPopup(false); 
-      setPincodeNotEntered(false); // Reset this state on successful search
+      localStorage.setItem("servicedPincode", pincode);
+      localStorage.setItem("serviceMessage", pinMessage);
+      setServicedPincode(pincode);
+      setServiceMessage(pinMessage);
+      setShowPopup(false);
+      setPincodeNotEntered(false);
+      
+      // Notify parent about validation success
+      if (onValidation) onValidation(true, pincode, pinMessage);
     } else {
       setMessage("Oops! We will be coming soon in your area.");
+      // Notify parent about validation failure
+      if (onValidation) onValidation(false, pincode, "Not Serviced");
     }
   };
 

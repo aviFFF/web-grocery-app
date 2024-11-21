@@ -1,15 +1,10 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 
 function Footer() {
   return (
     <div>
-      {/*
-  Heads up! 👋
-
-  This component comes with some `rtl` classes. Please remove them if they are not needed in your project.
-*/}
-
 <footer className="bg-white">
   <div className="mx-auto max-w-screen-xl px-4 pb-6 pt-16 sm:px-6 lg:px-8 lg:pt-24">
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -17,13 +12,9 @@ function Footer() {
         <div className="flex justify-center text-teal-600 sm:justify-start">
           <Image src="/newlogo.png" alt="logo" width={100} height={100} className='object-contain rounded-2xl' />
         </div>
-
         <p className="mt-6 max-w-md text-center leading-relaxed text-gray-500 sm:max-w-xs sm:text-left">
-        {/* Groapp is an online grocery store that offering a wide range of fresh produce, 
-        frozen food, pantry essentials, and household items. Shop conveniently from the comfort of your home and enjoy fast, reliable delivery straight to your doorstep.  */}
         Quality products, great deals, and a hassle-free shopping experience every time!
         </p>
-
         <ul className="mt-8 flex justify-center gap-6 sm:justify-start md:gap-8">
           <li>
             <a
@@ -42,7 +33,6 @@ function Footer() {
               </svg>
             </a>
           </li>
-
           <li>
             <a
               href="#"
@@ -60,7 +50,6 @@ function Footer() {
               </svg>
             </a>
           </li>
-
           <li>
             <a
               href="#"
@@ -79,69 +68,49 @@ function Footer() {
         </ul>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4 lg:col-span-2">
+      <div className="grid grid-cols-2 gap-8 sm:grid-cols-2 md:grid-cols-4 lg:col-span-2">
         <div className="text-center sm:text-left">
-          <p className="text-lg font-medium text-gray-900">About Us</p>
+          <p className="text-xl font-medium text-gray-900">Helpful Links</p>
 
-          <ul className="mt-8 space-y-4 text-sm">
+          <ul className="mt-8 space-y-4 text-sm text-left">
             <li>
               <a className="text-gray-700 transition hover:text-primary" href="#">
-                Company History
+                Terms
               </a>
             </li>
 
             <li>
               <a className="text-gray-700 transition hover:text-primary" href="#">
-                Meet the Team
+                About
               </a>
             </li>
 
             <li>
               <a className="text-gray-700 transition hover:text-primary" href="#">
-                Employee Handbook
+                Careers
               </a>
             </li>
 
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Careers </a>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Privacy </a>
             </li>
           </ul>
         </div>
 
         <div className="text-center sm:text-left">
-          <p className="text-lg font-medium text-gray-900">Our Services</p>
+          <p className="text-lg font-medium pb-8 text-gray-900"></p>
 
-          <ul className="mt-8 space-y-4 text-sm">
-            <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#">
-                Web Development
-              </a>
+          <ul className="mt-8 space-y-4 text-sm text-left">
+          <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Partner </a>
             </li>
 
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Web Design </a>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Contact </a>
             </li>
 
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Marketing </a>
-            </li>
-
-            <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Google Ads </a>
-            </li>
-          </ul>
-        </div>
-
-        <div className="text-center sm:text-left">
-          <p className="text-lg font-medium text-gray-900">Helpful Links</p>
-
-          <ul className="mt-8 space-y-4 text-sm">
-            <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> FAQs </a>
-            </li>
-
-            <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Support </a>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> FAQ </a>
             </li>
 
             <li>
@@ -165,83 +134,65 @@ function Footer() {
         </div>
 
         <div className="text-center sm:text-left">
-          <p className="text-lg font-medium text-gray-900">Contact Us</p>
+          <p className="text-xl font-medium sm:text-center md:text-left text-gray-900">Categories</p>
 
-          <ul className="mt-8 space-y-4 text-sm">
+          <ul className="mt-8 space-y-4 text-sm text-left">
             <li>
-              <a
-                className="flex items-center justify-center gap-1.5 ltr:sm:justify-start rtl:sm:justify-end"
-                href="#"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="size-5 shrink-0 text-gray-900"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Dairy & Breakfast </a>
+            </li>
+            <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Vegetables & Fruits </a>
+            </li>
+            <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Cold & Health Drinks </a>
+            </li>
+            <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Instant & Frozen Food </a>
+            </li>
+            <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Tea & Coffee </a>
+            </li>
+            <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Bakery & Biscuits </a>
+            </li>
+            <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Ice Cream & Desserts </a>
+            </li>
+            <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Personal Care </a>
+            </li>
+          </ul>
+        </div>
 
-                <span className="flex-1 text-gray-700">contact@gropp.com</span>
-              </a>
+        <div className="text-center sm:text-left">
+          <p className="text-lg font-medium pb-7 text-gray-900"></p>
+
+          <ul className="mt-8 space-y-4 text-sm text-left text-nowrap">
+          <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Atta,Rice & Dal </a>
             </li>
 
             <li>
-              <a
-                className="flex items-center justify-center gap-1.5 ltr:sm:justify-start rtl:sm:justify-end"
-                href="#"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="size-5 shrink-0 text-gray-900"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                  />
-                </svg>
-
-                <span className="flex-1 text-gray-700">+91 9451481758</span>
-              </a>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Dry Fruits,Masala & Oils </a>
             </li>
 
-            <li
-              className="flex items-start justify-center gap-1.5 ltr:sm:justify-start rtl:sm:justify-end"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="size-5 shrink-0 text-gray-900"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-
-              <address className="-mt-0.5 flex-1 not-italic text-gray-700">
-                Lucknow
-              </address>
+            <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Sauces & Spreads </a>
+            </li>
+            <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Pan Corner </a>
+            </li>
+            <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Baby Corner </a>
+            </li>
+            <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Pharma & Wellness </a>
+            </li>
+            <li>
+              <a className="text-gray-700 transition hover:text-primary" href="#"> Beauty & Cosmetics </a>
+            </li>
+            <li>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Toys & Games </Link>
             </li>
           </ul>
         </div>
@@ -260,7 +211,7 @@ function Footer() {
             Terms & Conditions
           </a>
 
-          <span>&middot;</span>
+          <span>&</span>
 
           <a
             className="inline-block text-teal-600 underline transition hover:text-teal-600/75"

@@ -31,7 +31,7 @@ function Productitem({ product }) {
       alt={product?.attributes?.name}
       width={500}
       height={200}
-      className="w-[100px] md:h-[100px] h-[50px] object-contain"
+      className="w-[100px] md:h-[80px] h-[50px] object-contain"
     />
     <h2 className="font-bold text-xs md:text-sm">
       {product?.attributes?.name}

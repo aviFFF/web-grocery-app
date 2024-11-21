@@ -4,31 +4,72 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowBigRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 
 function Checkout() {
   const [user, setUser] = useState(null);
   const [jwt, setJwt] = useState(null);
   const [totalCartItems, setTotalCartItems] = useState(0);
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
   const [cartItemList, setCartItemList] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
-  const [username, setUsername] = useState('');
   const [address, setAddress] = useState('');
   const [pincode, setPincode] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [promoCode, setPromoCode] = useState('');
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [location, setLocation] = useState({ lat: 0, lng: 0 }); // Latitude and Longitude for Google Maps
+  const [isPromoApplied, setIsPromoApplied] = useState(false);
+  const [isServicable, setIsServicable] = useState(null); // Servicability status
+  const [validationMessage, setValidationMessage] = useState(""); // Message for user
+  const [availablePincodes, setAvailablePincodes] = useState([]);
+  const getPincodes = useMemo(() => GlobalApi.getPincodes, []);
+
 
   const router = useRouter();
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "GOOGLE_MAPS_API_KEY", // Replace with your API key
-  });
 
+  useEffect(() => {
+    getPincodes().then((pincodes) => {
+      setAvailablePincodes(pincodes); // Store pincodes
+    });
+  }, []);
+
+  const handlePincodeChange = (e) => {
+    const enteredPincode = e.target.value;
+    setPincode(enteredPincode);
+
+    // Validate only if the input is 6 digits
+    if (enteredPincode.length === 6) {
+      const foundPincode = availablePincodes.find(
+        (item) => item.attributes.pins === enteredPincode
+      );
+
+      if (foundPincode) {
+        const { message: pinMessage } = foundPincode.attributes;
+        setIsServicable(true);
+        setValidationMessage(pinMessage);
+      } else {
+        setIsServicable(false);
+        setValidationMessage("Oops! We will be coming soon in your area.");
+      }
+    } else {
+      // Reset state if pincode length is less than 6
+      setIsServicable(null);
+      setValidationMessage("");
+    }
+  };
+
+  // Fetch user and JWT from session storage
   useEffect(() => {
     const storedJwt = sessionStorage.getItem("jwt");
     const storedUser = JSON.parse(sessionStorage.getItem("user"));
@@ -41,6 +82,7 @@ function Checkout() {
     }
   }, [router]);
 
+  // Fetch cart items
   useEffect(() => {
     if (user && jwt) {
       getCartItems();
@@ -57,67 +99,69 @@ function Checkout() {
     }
   };
 
+  // Calculate subtotal
   useEffect(() => {
-    let total = 0;
-    cartItemList.forEach((item) => {
-      total += item.amount;
-    });
+    const total = cartItemList.reduce((sum, item) => sum + item.amount, 0);
     setSubtotal(total.toFixed(2));
   }, [cartItemList]);
 
-  const calculateTotalAmount = () => {
-    const validSubtotal =
-      typeof subtotal === "number" ? subtotal : parseFloat(subtotal) || 0;
-    const tax = validSubtotal * 0.09;
-    const totalAmount = validSubtotal + tax + 19 + 5;
-    return parseFloat(totalAmount.toFixed(2));
-  };
+  // Calculate total amount (memoized)
+  const totalAmount = useMemo(() => {
+    const validSubtotal = parseFloat(subtotal) || 0;
+    const tax = validSubtotal * 0.09; // 9% tax
+    const shipping = 19; // Fixed shipping cost
+    const otherFees = 5; // Example: miscellaneous fees
+    const total = validSubtotal + tax + shipping + otherFees;
+    return total.toFixed(2);
+  }, [subtotal]);
 
-  const fetchCoordinates = async (pincode) => {
-    try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${pincode}&key=GOOGLE_MAPS_API_KEY`
-      );
-      const data = await response.json();
-      if (data.results.length > 0) {
-        const { lat, lng } = data.results[0].geometry.location;
-        setLocation({ lat, lng });
-      } else {
-        console.error("No results found for the entered pincode.");
-      }
-    } catch (error) {
-      console.error("Error fetching location data:", error);
+  const handlePromoCodeApply = () => {
+    if (isPromoApplied) {
+      toast.error("Promo code already applied!");
+      return;
     }
-  };
-
-  const handlePincodeChange = (e) => {
-    const value = e.target.value;
-    setPincode(value);
-    if (value.length === 6) {
-      fetchCoordinates(value);
+  
+    // Simulate promo code application
+    if (promoCode === "DISCOUNT10") {
+      const discount = subtotal * 0.1;
+      const newSubtotal = subtotal - discount;
+      setSubtotal(newSubtotal.toFixed(2));
+      setIsPromoApplied(true); // Prevent multiple applications
+      toast.success("Promo code applied successfully!");
+    } else {
+      toast.error("Invalid promo code!");
     }
   };
 
   const onApprove = (data) => {
-    console.log(data);
     const payload = {
       data: {
-        paymentid: (data.paymentID).toString(),
-        totalOrderValue:totalAmount,
+        paymentid: (data.paymentID || "Cash on Delivery").toString(),
+        totalOrderValue: totalAmount,
         email:email,
         phone:phone,
         address:address,
         pincode:pincode,
         Orderitemlist:cartItemList,
+        firstname:firstname,
+        lastname:lastname,
+        userid: user.id,
         status: "success",
-      }
-    }
-    GlobalApi.createOrder(payload,jwt).then(resp=>{
+      },
+    };
+    GlobalApi.createOrder(payload, jwt).then((resp) => {
       console.log(resp);
-      toast("Order Successfull")
-    })
+      toast.success("Order Placed Successfully!");
+      cartItemList.forEach((item) => {
+        GlobalApi.deleteCartItem(item.id, jwt);
+        router.replace("/orderPlaced");
+      })
+    }).catch((err) => {
+      console.error("Order creation failed:", err);
+      toast.error("Failed to place order. Try again later.");
+    });
   };
-
+  
 
   return (
     <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -126,79 +170,59 @@ function Checkout() {
         <h2 className="text-xl font-bold mb-5">Shipping Address</h2>
         <div className="grid grid-cols-2 gap-5">
           <Input
-            className="p-2 border"
             type="text"
             placeholder="First Name"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={firstname}
+            onChange={(e) => setFirstname(e.target.value)}
           />
           <Input
-            className="p-2 border"
             type="text"
             placeholder="Last Name"
+            value={lastname}
+            onChange={(e) => setLastname(e.target.value)}
           />
         </div>
         <Input
-          className="p-2 border mt-5"
           type="text"
-          placeholder="Street Address"
+          placeholder="Complete Address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
+          className="mt-5"
         />
-        <div className="grid grid-cols-2 gap-5 mt-5">
-          <Input
-            className="p-2 border"
-            type="text"
-            placeholder="City"
-          />
-          <Input
-            className="p-2 border"
-            type="text"
-            placeholder="Province"
-          />
-        </div>
         <Input
-          className="p-2 border mt-5"
           type="text"
-          placeholder="Postal Code"
+          placeholder="Pincode"
           value={pincode}
           onChange={handlePincodeChange}
+          className="mt-5"
+          maxLength={6}
         />
+        {validationMessage && (
+          <p className={`mt-2 ${isServicable ? "text-green-500" : "text-red-500"}`}>
+            {validationMessage}
+          </p>
+        )}
         <Input
-          className="p-2 border mt-5"
           type="text"
-          placeholder="Phone"
+          placeholder="Mobile Number"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          className="mt-5"
+          maxLength={10}
         />
         <Input
-          className="p-2 border mt-5"
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="mt-5"
         />
-        
-        {/* Google Map Display */}
-        {isLoaded ? (
-          <div className="mt-5" style={{ height: '300px', width: '100%' }}>
-            <GoogleMap
-              mapContainerStyle={{ height: '100%', width: '100%' }}
-              zoom={12}
-              center={location}
-            >
-              <Marker position={location} />
-            </GoogleMap>
-          </div>
-        ) : (
-          <p>Loading map...</p>
-        )}
       </div>
 
       {/* Order Summary Section */}
       <div className="p-5 border rounded-lg bg-white">
         <h2 className="text-xl font-bold mb-5">Order Summary</h2>
-        <div className="flex justify-between text-lg">
+        <div className="flex justify-between border-b border-gray-300 text-lg">
           <span>Subtotal</span>
           <span>₹{subtotal}</span>
         </div>
@@ -210,30 +234,39 @@ function Checkout() {
           <span>Shipping</span>
           <span>₹19.00</span>
         </div>
+        <div className="flex justify-between border-b border-gray-300 text-lg">
+          <span>Handling Fees</span>
+          <span>₹5.00</span>
+        </div>
         <div className="flex justify-between font-bold text-lg mt-5">
           <span>Total</span>
-          <span>₹{calculateTotalAmount()}</span>
+          <span>₹{totalAmount}</span>
         </div>
 
-
-  {/* Promo Code Section */}
-  <div className="mt-5">
+        {/* Promo Code Section */}
+        <div className="mt-5">
           <h2 className="font-semibold text-lg mb-2">Apply a Promo Code</h2>
           <div className="flex">
             <Input
-              className="flex-1 p-2 border"
               type="text"
               placeholder="Promo Code"
               value={promoCode}
               onChange={(e) => setPromoCode(e.target.value)}
+              className="flex-1"
             />
-            <Button className="ml-2 bg-primary text-white">APPLY</Button>
+            <Button onClick={handlePromoCodeApply} className="ml-2 bg-primary text-white">
+              APPLY
+            </Button>
           </div>
         </div>
+
         {/* Proceed to Checkout Popup */}
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="mt-5 w-full bg-primary text-white flex justify-center items-center gap-2">
+            <Button
+              className="mt-5 w-full bg-primary text-white flex justify-center items-center gap-2"
+              disabled={!firstname || !lastname || !address || !pincode || !phone || !email || !isServicable}
+            >
               Proceed to Checkout
               <ArrowBigRight className="w-5 h-5" />
             </Button>
@@ -246,14 +279,10 @@ function Checkout() {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="gap-4">
-              <Button >
-                Pay Online
-              </Button>
+              <Button>Pay Online</Button>
               <Button
                 variant="outline"
-                onClick={() => onApprove({ paymentID: "Cash on Delivery" },
-                  router.push("/orderPlaced")
-                )}
+                onClick={() => onApprove({ paymentID: "Cash on Delivery" })}
               >
                 Cash on Delivery
               </Button>
