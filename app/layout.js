@@ -19,7 +19,7 @@ const outfit = Outfit({
 export default function RootLayout({ children }) {
   const params= usePathname();
   const [updateCart, setUpdateCart] = useState(false);
-  const showHeader = params == '/create-a-account' ||  params == '/log-in'?false:true 
+  const showHeader = params == '/create-a-account' ||  params == '/log-in' || params == '/orderPlaced'?false:true 
   return (
     <html lang="en">
       <body

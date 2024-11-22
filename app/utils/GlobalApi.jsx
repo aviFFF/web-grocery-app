@@ -92,6 +92,10 @@ export const getPincodes = async () => {
     },
   });
 
+  const getPromocodes =()=>axiosClient.get('/promocodes?populate=*').then(resp=>{
+    return resp.data.data
+  })
+
   const getMyorders = (userid,jwt)=>axiosClient.get('orders?filters[userid][$eq]='+userid+'&populate[Orderitemlist][populate][product][populate][image]=url').then(resp=>{
       const response = resp.data.data
       const orderList = response.map((item,index)=>({
@@ -126,5 +130,6 @@ export default {
     deleteCartItem,
     getPincodes,
     createOrder,
-    getMyorders
+    getMyorders,
+    getPromocodes
 }

@@ -1,4 +1,5 @@
 'use client';
+
 import GlobalApi from "@/app/utils/GlobalApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,15 +7,17 @@ import { ArrowBigRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
+Dialog,
+DialogTrigger,
+DialogContent,
+DialogHeader,
+DialogTitle,
+DialogDescription,
+DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import axios from "axios";
+import { Loader } from "lucide-react";
 
 function Checkout() {
   const [user, setUser] = useState(null);
@@ -30,30 +33,26 @@ function Checkout() {
   const [email, setEmail] = useState('');
   const [promoCode, setPromoCode] = useState('');
   const [isPromoApplied, setIsPromoApplied] = useState(false);
-  const [isServicable, setIsServicable] = useState(null); // Servicability status
-  const [validationMessage, setValidationMessage] = useState(""); // Message for user
+  const [isServicable, setIsServicable] = useState(null);
+  const [validationMessage, setValidationMessage] = useState("");
   const [availablePincodes, setAvailablePincodes] = useState([]);
   const getPincodes = useMemo(() => GlobalApi.getPincodes, []);
-
+  const [isLoading, setIsLoading] = useState(true); // Loader state
 
   const router = useRouter();
 
   useEffect(() => {
-    getPincodes().then((pincodes) => {
-      setAvailablePincodes(pincodes); // Store pincodes
-    });
+    getPincodes().then((pincodes) => setAvailablePincodes(pincodes));
   }, []);
 
   const handlePincodeChange = (e) => {
     const enteredPincode = e.target.value;
     setPincode(enteredPincode);
 
-    // Validate only if the input is 6 digits
     if (enteredPincode.length === 6) {
       const foundPincode = availablePincodes.find(
         (item) => item.attributes.pins === enteredPincode
       );
-
       if (foundPincode) {
         const { message: pinMessage } = foundPincode.attributes;
         setIsServicable(true);
@@ -63,17 +62,14 @@ function Checkout() {
         setValidationMessage("Oops! We will be coming soon in your area.");
       }
     } else {
-      // Reset state if pincode length is less than 6
       setIsServicable(null);
       setValidationMessage("");
     }
   };
 
-  // Fetch user and JWT from session storage
   useEffect(() => {
     const storedJwt = sessionStorage.getItem("jwt");
     const storedUser = JSON.parse(sessionStorage.getItem("user"));
-
     if (storedUser && storedJwt) {
       setUser(storedUser);
       setJwt(storedJwt);
@@ -82,7 +78,6 @@ function Checkout() {
     }
   }, [router]);
 
-  // Fetch cart items
   useEffect(() => {
     if (user && jwt) {
       getCartItems();
@@ -94,25 +89,23 @@ function Checkout() {
       const cartItemList_ = await GlobalApi.getCartItems(user.id, jwt);
       setTotalCartItems(cartItemList_?.length);
       setCartItemList(cartItemList_);
+      setIsLoading(false); // Stop loader after cart items are fetched
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
   };
 
-  // Calculate subtotal
   useEffect(() => {
     const total = cartItemList.reduce((sum, item) => sum + item.amount, 0);
     setSubtotal(total.toFixed(2));
   }, [cartItemList]);
 
-  // Calculate total amount (memoized)
   const totalAmount = useMemo(() => {
     const validSubtotal = parseFloat(subtotal) || 0;
-    const tax = validSubtotal * 0.09; // 9% tax
-    const shipping = 19; // Fixed shipping cost
-    const otherFees = 5; // Example: miscellaneous fees
-    const total = validSubtotal + tax + shipping + otherFees;
-    return total.toFixed(2);
+    const tax = validSubtotal * 0.09;
+    const shipping = 19;
+    const otherFees = 5;
+    return (validSubtotal + tax + shipping + otherFees).toFixed(2);
   }, [subtotal]);
 
   const handlePromoCodeApply = () => {
@@ -120,19 +113,16 @@ function Checkout() {
       toast.error("Promo code already applied!");
       return;
     }
-  
-    // Simulate promo code application
-    if (promoCode === "DISCOUNT10") {
+    if (promoCode === "BUZZAT10") {
       const discount = subtotal * 0.1;
       const newSubtotal = subtotal - discount;
       setSubtotal(newSubtotal.toFixed(2));
-      setIsPromoApplied(true); // Prevent multiple applications
+      setIsPromoApplied(true);
       toast.success("Promo code applied successfully!");
     } else {
       toast.error("Invalid promo code!");
     }
   };
-
   const onApprove = (data) => {
     const payload = {
       data: {
@@ -148,7 +138,7 @@ function Checkout() {
         userid: user.id,
         status: "success",
       },
-    };
+    }
     GlobalApi.createOrder(payload, jwt).then((resp) => {
       console.log(resp);
       toast.success("Order Placed Successfully!");
@@ -161,11 +151,56 @@ function Checkout() {
       toast.error("Failed to place order. Try again later.");
     });
   };
-  
+
+  const handlePayUCheckout = async () => {
+    try {
+      const txnid = `txn_${Date.now()}`;
+      const productinfo = "Cart Items";
+      const paymentData = { txnid, amount: totalAmount, productinfo, firstname, email };
+
+      const { data } = await axios.post("/api/generate-hash", paymentData);
+
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = process.env.NEXT_PUBLIC_PAYU_BASE_URL;
+
+      const formData = {
+        ...paymentData,
+        key: process.env.NEXT_PUBLIC_PAYU_MERCHANT_KEY,
+        hash: data.hash,
+        surl: "http://localhost:3000/success",
+        furl: "http://localhost:3000/failure",
+        phone,
+        address,
+        lastname,
+      };
+
+      Object.entries(formData).forEach(([key, value]) => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+    } catch (error) {
+      console.error("Error initiating payment:", error);
+      toast.error("Failed to initiate payment. Please try again.");
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-green-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-5">
-      {/* Shipping Address Section */}
       <div className="md:col-span-2 p-5 border rounded-lg bg-white">
         <h2 className="text-xl font-bold mb-5">Shipping Address</h2>
         <div className="grid grid-cols-2 gap-5">
@@ -219,7 +254,6 @@ function Checkout() {
         />
       </div>
 
-      {/* Order Summary Section */}
       <div className="p-5 border rounded-lg bg-white">
         <h2 className="text-xl font-bold mb-5">Order Summary</h2>
         <div className="flex justify-between border-b border-gray-300 text-lg">
@@ -259,8 +293,6 @@ function Checkout() {
             </Button>
           </div>
         </div>
-
-        {/* Proceed to Checkout Popup */}
         <Dialog>
           <DialogTrigger asChild>
             <Button
@@ -275,11 +307,11 @@ function Checkout() {
             <DialogHeader>
               <DialogTitle>Choose Payment Method</DialogTitle>
               <DialogDescription>
-                Please select one of the following payment methods:
+                Proceed with PayU for secure online payment.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="gap-4">
-              <Button>Pay Online</Button>
+              <Button onClick={handlePayUCheckout}>Pay with PayU</Button>
               <Button
                 variant="outline"
                 onClick={() => onApprove({ paymentID: "Cash on Delivery" })}

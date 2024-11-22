@@ -30,7 +30,7 @@ function MyOrders() {
     }
     return (
         <>
-           <h2 className="p-4 bg-primary text-xl sm:text-2xl text-white font-bold text-center">
+           <h2 className="p-4 bg-primary mt-10 sm:mt-0 text-xl sm:text-2xl text-white font-bold text-center">
     My Orders
 </h2>
 
@@ -40,10 +40,10 @@ function MyOrders() {
     </h2>
     <div className="space-y-6">
         {orderList.map((item, index) => (
-            <Collapsible key={index}>
+            <Collapsible key={index} className="w-full max-w-[800px] mx-auto overflow-hidden" >
                 {/* Collapsible Trigger */}
                 <CollapsibleTrigger>
-                    <div className="border border-slate-200 rounded-lg shadow-md p-4 flex flex-row sm:flex-row sm:items-center sm:justify-between gap-4 bg-white hover:shadow-lg transition">
+                    <div className="border border-slate-200 w-full rounded-lg shadow-md p-4 flex flex-row sm:flex-row sm:items-center sm:justify-between gap-4 bg-white hover:shadow-lg transition">
                         <h2 className="text-sm sm:text-base">
                             <span className="font-bold text-gray-700">Order Date:</span>{" "}
                             {moment(item?.createdAt).format("DD-MM-YYYY")}
@@ -55,11 +55,11 @@ function MyOrders() {
                         <h2 className="text-sm sm:text-base">
                             <span className="font-bold text-gray-700">Status:</span>{" "}
                             <span
-                                className={`${
+                                className={`text-sm sm:text-base font-semibold text-center py-1 px-3 rounded-md ${
                                     item?.status === "Completed"
-                                        ? "text-green-600"
-                                        : "text-yellow-500"
-                                } font-semibold`}
+                                        ? "bg-green-100 text-green-600"
+                                        : "bg-yellow-100 text-yellow-500"
+                                } w-[100px]`}
                             >
                                 {item?.status}
                             </span>
