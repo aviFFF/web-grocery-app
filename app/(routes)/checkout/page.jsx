@@ -42,6 +42,12 @@ function Checkout() {
   const router = useRouter();
 
   useEffect(() => {
+    if (!isLoading && totalCartItems === 0) {
+      router.replace("/");
+    }
+  }, [isLoading, totalCartItems, router]);
+  
+  useEffect(() => {
     getPincodes().then((pincodes) => setAvailablePincodes(pincodes));
   }, []);
 
@@ -90,6 +96,7 @@ function Checkout() {
       setTotalCartItems(cartItemList_?.length);
       setCartItemList(cartItemList_);
       setIsLoading(false); // Stop loader after cart items are fetched
+      
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
