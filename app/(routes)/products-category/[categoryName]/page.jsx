@@ -24,7 +24,6 @@ async function ProductCategory({params}) {
     <ProductListwc productList={productList} />
   </div>
   </div>
-  <Footer/>
 </div>
   )
 }
