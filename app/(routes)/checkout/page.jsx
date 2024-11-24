@@ -207,7 +207,7 @@ function Checkout() {
   }
 
   return (
-    <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div className="p-5 grid grid-cols-1 pt-10 md:grid-cols-3 gap-5">
       <div className="md:col-span-2 p-5 border rounded-lg bg-white">
         <h2 className="text-xl font-bold mb-5">Shipping Address</h2>
         <div className="grid grid-cols-2 gap-5">
@@ -239,11 +239,6 @@ function Checkout() {
           className="mt-5"
           maxLength={6}
         />
-        {validationMessage && (
-          <p className={`mt-2 ${isServicable ? "text-green-500" : "text-red-500"}`}>
-            {validationMessage}
-          </p>
-        )}
         <Input
           type="text"
           placeholder="Mobile Number"
@@ -259,6 +254,11 @@ function Checkout() {
           onChange={(e) => setEmail(e.target.value)}
           className="mt-5"
         />
+        {validationMessage && (
+          <p className={`mt-2 ${isServicable ? "text-green-500" : "text-red-500"}`}>
+            {validationMessage}
+          </p>
+        )}
       </div>
 
       <div className="p-5 border rounded-lg bg-white">

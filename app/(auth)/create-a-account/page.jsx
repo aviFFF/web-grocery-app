@@ -31,7 +31,7 @@ function CreateAccount() {
       (resp) => {
         sessionStorage.setItem("user", JSON.stringify(resp.data.user));
         sessionStorage.setItem("jwt", resp.data.jwt);
-        toast("Wah bhai Wah! Ban gaya Account");
+        toast("Ban gaya Account");
         router.push("/");
         setLoder(false);
       },
