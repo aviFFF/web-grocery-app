@@ -9,7 +9,7 @@ function CategoryList( {categoryList}) {
       <div className='grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4 mt-4'>
         {categoryList.map((category, index) => (
             <Link key={index} href ={'/products-category/' + category.attributes.name} className='flex flex-col items-center gap-2 bg-green-50  md:p-1 
-            group cursor-pointer hover:bg-primary'>
+            group cursor-pointer rounded-xl hover:bg-primary'>
                 <Image src={ 
                     category?.attributes?.icon?.data?.attributes?.url} 
                     alt='icon' 

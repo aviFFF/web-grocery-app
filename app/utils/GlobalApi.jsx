@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'https://groapp-admin.onrender.com/api/',
+    baseURL:'http://localhost:1337/api/',
 });
 
 const getCategory =()=>axiosClient.get('/categories?populate=*');
@@ -95,6 +95,24 @@ export const getPincodes = async () => {
   const getPromocodes =()=>axiosClient.get('/promocodes?populate=*').then(resp=>{
     return resp.data.data
   })
+
+ const sendSubscriptionToServer = async (subscription) => {
+    try {
+      const response = await fetch('/subscriptions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(subscription),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to send subscription to server');
+      }
+     console.log('Subscription sent to server successfully');
+    } catch (error) {
+      console.error('Error sending subscription to server:', error);
+    }
+  };
 
   const getMyorders = (userid,jwt)=>axiosClient.get('orders?filters[userid][$eq]='+userid+'&populate[Orderitemlist][populate][product][populate][image]=url').then(resp=>{
       const response = resp.data.data
