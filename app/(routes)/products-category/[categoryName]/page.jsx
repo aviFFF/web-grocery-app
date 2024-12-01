@@ -9,9 +9,10 @@ async function ProductCategory({params}) {
   const categoryList = await GlobalApi.getCategoryList();
  
   return (
-    <div >
+    <>   
+     <div >
   <h2 className='pt-14 md:pt-0 bg-primary items-center justify-center p-2 text-white text-3xl font-bold text-center'>
-    {decodeURIComponent(params.categoryName)}
+    {(params.categoryName)}
   </h2>
   <div className='flex flex-row'>
   <div>
@@ -25,6 +26,8 @@ async function ProductCategory({params}) {
   </div>
   </div>
 </div>
+</>
+
   )
 }
 

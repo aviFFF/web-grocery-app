@@ -96,23 +96,30 @@ export const getPincodes = async () => {
     return resp.data.data
   })
 
- const sendSubscriptionToServer = async (subscription) => {
+  const sendSubscriptionToServer = async (subscription) => {
     try {
-      const response = await fetch('/subscriptions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(subscription),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to send subscription to server');
-      }
-     console.log('Subscription sent to server successfully');
+        console.log('Sending subscription to server:', subscription);
+
+        const response = await fetch('/subscriptions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(subscription),
+        });
+
+        if (!response.ok) {
+            const errorDetails = await response.text();
+            console.error('Server response:', response.status, errorDetails);
+            throw new Error('Failed to send subscription to server');
+        }
+
+        console.log('Subscription sent to server successfully');
     } catch (error) {
-      console.error('Error sending subscription to server:', error);
+        console.error('Error sending subscription to server:', error.message);
     }
-  };
+};
+
 
   const getMyorders = (userid,jwt)=>axiosClient.get('orders?filters[userid][$eq]='+userid+'&populate[Orderitemlist][populate][product][populate][image]=url').then(resp=>{
       const response = resp.data.data
@@ -149,5 +156,6 @@ export default {
     getPincodes,
     createOrder,
     getMyorders,
-    getPromocodes
+    getPromocodes,
+    sendSubscriptionToServer
 }

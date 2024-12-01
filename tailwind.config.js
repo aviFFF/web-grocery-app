@@ -8,6 +8,10 @@ module.exports = {
   ],
   theme: {
   	extend: {
+		fontFamily: {
+			bauhaus: ['"ITC Bauhaus"', 'sans-serif'], // For local fonts
+			poppins: ['Poppins', 'sans-serif'], // For Google Fonts
+		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -20,7 +24,7 @@ module.exports = {
   				foreground: 'hsl(var(--popover-foreground))'
   			},
   			primary: {
-  				DEFAULT: '#106EBE',
+  				DEFAULT: '#F6B643',
   				foreground: 'hsl(var(--primary-foreground))'
   			},
   			secondary: {

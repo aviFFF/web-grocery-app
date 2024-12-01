@@ -10,6 +10,8 @@ import {
 import moment from "moment";
 import Myorderitem from "./_compnents/Myorderitem";
 
+
+
 function MyOrders() {
     const router = useRouter();
     const [orderList, setOrderList] = useState([]);
@@ -17,6 +19,7 @@ function MyOrders() {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true); // Loader state
     const [error, setError] = useState(null); // Error state
+    
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -67,14 +70,12 @@ function MyOrders() {
             </div>
         );
     }
-
     return (
         <>
             <h2 className="p-4 bg-primary mt-10 sm:mt-0 text-xl sm:text-2xl text-white font-bold text-center">
                 My Orders
             </h2>
-
-            <div className="py-6 px-4 sm:px-8 md:px-20">
+            <div className=" container mx-auto py-6 px-4 sm:px-8 md:px-20">
                 <h2 className="text-2xl md:text-3xl font-bold text-primary pb-6 md:pb-10">
                     Order History
                 </h2>

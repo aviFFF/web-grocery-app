@@ -136,11 +136,11 @@ function Header() {
       {/* Logo */}
        <Link href="/">
         <Image
-          src="/newlogo.png"
+          src="/new-buzzatlogo.webp"
           alt="logo"
           width={50}
           height={20}
-          className="rounded-xl md:w-20  cursor-pointer"
+          className="rounded-xl md:w-24  cursor-pointer"
         />
       </Link>
       <PincodeSearchPopup />

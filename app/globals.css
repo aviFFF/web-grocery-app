@@ -29,3 +29,41 @@
     scrollbar-color: primary #f1f1f1;
   }
   
+  .notification-container {
+    position: fixed; /* Makes the container stay on screen */
+    top: 50%; /* Center vertically */
+    right: 1rem; /* Distance from the right edge */
+    transform: translateY(-50%); /* Adjusts to keep the element truly centered vertically */
+    z-index: 1000; /* Ensures it stays above other elements */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .notification-icon {
+    cursor: pointer;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    padding: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .notification-icon:hover {
+    transform: scale(1.1); /* Slight zoom effect on hover */
+  }
+  
+  .notification-box {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
