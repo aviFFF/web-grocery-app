@@ -132,20 +132,20 @@ function Header() {
   
 
   return (
-    <div className="p-4 flex justify-between items-center gap-5 sticky z-50 bg-white top-0 shadow-lg">
+    <div className="px-3 flex justify-between items-center gap-5 sticky z-50 bg-white top-0 shadow-lg">
       {/* Logo */}
        <Link href="/">
         <Image
-          src="/BUZZATo-logo.png"
+          src="/buzzat-logo.png"
           alt="logo"
-          width={500}
-          height={200}
-          className="rounded-xl md:w-48  w-[5.5rem] justify-center cursor-pointer"
+          width={300}
+          height={100}
+          className="rounded-xl md:w-[10rem]  w-[6rem] justify-center cursor-pointer"
         />
       </Link>
-      <PincodeSearchPopup className="justify-center" />
-      <ProductSearch className="justify-center" />
-      <div className="flex items-center justify-center gap-5">
+      <PincodeSearchPopup className="justify-start" />
+      <ProductSearch className="justify-start" />
+      <div className="flex items-center justify-start gap-5">
         <Sheet>
           <SheetTrigger>
             <h2 className="relative flex gap-1 items-center text-lg">

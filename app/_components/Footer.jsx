@@ -10,10 +10,12 @@ function Footer() {
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
       <div>
         <div className="flex justify-center text-teal-600 sm:justify-start">
-          <Image src="/newlogo.png" alt="logo" width={100} height={100} className='object-contain rounded-2xl' />
+          <Image src="/buzzat-logo.png" alt="logo" width={100} height={100} className='object-contain rounded-2xl' />
         </div>
-        <p className="mt-6 max-w-md text-center leading-relaxed text-gray-500 sm:max-w-xs sm:text-left">
+        <p className="mt-2 max-w-md text-center leading-relaxed text-gray-500 sm:max-w-xs sm:text-left">
+        Your one-stop destination for all your shopping needs! We offer a wide range of
         Quality products, great deals, and a hassle-free shopping experience every time!
+
         </p>
         <ul className="mt-8 flex justify-center gap-6 sm:justify-start md:gap-8">
           <li>
