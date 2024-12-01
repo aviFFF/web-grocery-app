@@ -60,7 +60,7 @@ const ProductSearch = () => {
     setPlaceholderIndex(0);
   };
   return (
-    <div className="w-full flex flex-col mx-auto items-center search-box-container">
+    <div className="w-full flex flex-col mx-auto items-center justify-center search-box-container">
       <form onSubmit={handleSearchSubmit} className="w-full flex">
         <Input
           type="text"

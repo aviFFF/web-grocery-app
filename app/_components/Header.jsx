@@ -136,16 +136,16 @@ function Header() {
       {/* Logo */}
        <Link href="/">
         <Image
-          src="/new-buzzatlogo.webp"
+          src="/BUZZATo-logo.png"
           alt="logo"
-          width={50}
-          height={20}
-          className="rounded-xl md:w-24  cursor-pointer"
+          width={500}
+          height={200}
+          className="rounded-xl md:w-48  w-[5.5rem] justify-center cursor-pointer"
         />
       </Link>
-      <PincodeSearchPopup />
-      <ProductSearch />
-      <div className="flex items-center gap-5">
+      <PincodeSearchPopup className="justify-center" />
+      <ProductSearch className="justify-center" />
+      <div className="flex items-center justify-center gap-5">
         <Sheet>
           <SheetTrigger>
             <h2 className="relative flex gap-1 items-center text-lg">
