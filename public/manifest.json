@@ -6,7 +6,7 @@
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#000000",
-    "title": "Buzzat",
+    "orientation": "portrait",
     "icons": [
       {
         "src": "/buzzat-logo.png",
