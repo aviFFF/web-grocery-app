@@ -109,7 +109,7 @@ export default function Home() {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen bg-green-50">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
-        <p className="text-green-600 mt-4 text-xl font-semibold">Welcome to Groapp</p>
+        <p className="text-green-600 mt-4 text-xl font-semibold">Welcome to buzzat</p>
       </div>
     );
   }
