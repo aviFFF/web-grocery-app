@@ -61,7 +61,7 @@ const ProductSearch = () => {
   };
   return (
     <div className="w-full flex flex-col mx-auto items-center justify-center search-box-container">
-      <form onSubmit={handleSearchSubmit} className="w-full pb-4 flex">
+      <form onSubmit={handleSearchSubmit} className="w-full sm:pb-4 flex">
         <Input
           type="text"
           value={searchInput}

@@ -134,7 +134,7 @@ function Footer() {
             </li>
           </ul>
         </div>
-
+  <Link href ={'/products-category/'}>
         <div className="text-center sm:text-left">
           <p className="text-xl font-medium sm:text-center md:text-left text-gray-900">Categories</p>
 
@@ -165,7 +165,7 @@ function Footer() {
             </li>
           </ul>
         </div>
-
+           </Link>
         <div className="text-center sm:text-left">
           <p className="text-lg font-medium pb-7 text-gray-900"></p>
 
