@@ -9,8 +9,6 @@ import ProductListwc from "./_components/ProductListwc";
 import GlobalApi from "./utils/GlobalApi";
 import { IoIosNotificationsOutline } from "react-icons/io";
 
-
-
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding)
@@ -32,6 +30,8 @@ export default function Home() {
   const [productList, setProductList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -65,6 +65,34 @@ export default function Home() {
         });
     }
   }, []);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault(); // Prevent the default prompt
+      setDeferredPrompt(e); // Save the event for later use
+      setShowInstallBanner(true); // Show the custom install banner
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const installPWA = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt(); // Show the install prompt
+      const choiceResult = await deferredPrompt.userChoice;
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+      setDeferredPrompt(null); // Reset the prompt
+      setShowInstallBanner(false); // Hide the banner
+    }
+  };
 
   const subscribeUser = async () => {
     try {
@@ -104,7 +132,6 @@ export default function Home() {
     }
   };
 
-
   if (isLoading) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen bg-green-50">
@@ -122,19 +149,29 @@ export default function Home() {
       <ProductListwc productList={productList} />
       <Footer />
 
-      <div className="notification-container">
-  {!isSubscribed && (
-    <div className="notification-icon" onClick={subscribeUser}>
-      <IoIosNotificationsOutline size={20} />
-    </div>
-  )}
-  {isSubscribed && (
-    <div className="notification-box hidden">
-      <Button onClick={unsubscribeUser}>Unsubscribe</Button>
-    </div>
-  )}
-</div>
+      {/* Install PWA Banner */}
+      {showInstallBanner && (
+        <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 flex justify-between items-center">
+          <span>Install our app for the best experience!</span>
+          <Button onClick={installPWA} className="bg-blue-500 text-white">
+            Install
+          </Button>
+        </div>
+      )}
 
+      {/* Notification subscription */}
+      <div className="notification-container">
+        {!isSubscribed && (
+          <div className="notification-icon" onClick={subscribeUser}>
+            <IoIosNotificationsOutline size={20} />
+          </div>
+        )}
+        {isSubscribed && (
+          <div className="notification-box hidden">
+            <Button onClick={unsubscribeUser}>Unsubscribe</Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
