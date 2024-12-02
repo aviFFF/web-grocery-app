@@ -72,7 +72,7 @@ function Footer() {
 
       <div className="grid grid-cols-2 gap-8 sm:grid-cols-2 md:grid-cols-4 lg:col-span-2">
         <div className="text-center sm:text-left">
-          <p className="text-xl font-medium text-gray-900">Helpful Links</p>
+          <p className="text-xl font-medium text-nowrap text-gray-900">Helpful Links</p>
 
           <ul className="mt-8 space-y-4 text-sm text-left">
             <li>
@@ -223,7 +223,7 @@ function Footer() {
           </a>
         </p>
 
-        <p className="mt-4 text-sm text-gray-500 sm:order-first sm:mt-0">&copy; 2024 Gropp India Pvt Ltd</p>
+        <p className="mt-4 text-sm text-gray-500 sm:order-first sm:mt-0">&copy; 2024 Buzzat India Pvt Ltd</p>
       </div>
     </div>
   </div>

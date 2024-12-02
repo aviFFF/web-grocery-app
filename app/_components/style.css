@@ -48,6 +48,24 @@
   }
 }
 
+/* Styles for mobile and smaller screens */
+@media (max-width: 350px) {
+  .search-box-container {
+    position: fixed; /* Stick it to the bottom */
+    top: 30px;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background-color: white; /* Give it a background */
+     /* Ensure it stays on top */
+  }
+
+  /* Ensure the input takes the full width on small screens */
+  .search-box-container input {
+    width: 100%;
+  }
+}
+
 .gsi-material-button {
   -moz-user-select: none;
   -webkit-user-select: none;
