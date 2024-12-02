@@ -2,7 +2,11 @@ import GlobalApi from '@/app/utils/GlobalApi'
 import React from 'react'
 import TopCategoryList from '../_components/TopCategoryList';
 import ProductListwc from '@/app/_components/ProductListwc';
-import Footer from '@/app/_components/Footer';
+
+export const metadata = {
+  title: 'Buzzat - Choose Your Product',
+  description: 'Browse our product catalog',
+};
 
 async function ProductCategory({params}) {
   const productList = await GlobalApi.getProductsbyCategory(params.categoryName);

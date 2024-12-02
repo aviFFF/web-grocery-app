@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+
 function CreateAccount() {
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();
@@ -47,15 +48,15 @@ function CreateAccount() {
         <Link href="/">
           {" "}
           <Image
-            src="/newlogo.png"
-            className="rounded-2xl"
+            src="/newblogo.png"
+            className="rounded-2xl md:w-32 w-24"
             alt="logo"
             width={100}
             height={50}
           />
         </Link>
         <h1 className="text-3xl font-bold">Create an Account</h1>
-        <h2 className="text-sm text-nowrap text-gray-500">
+        <h2 className="text-sm  text-gray-500">
           Enter Your Email/Mobile & Password to Create an Account
         </h2>
         <div className="w-full flex flex-col gap-5  mt-8">

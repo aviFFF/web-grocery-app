@@ -8,6 +8,8 @@ import Footer from "./_components/Footer";
 import ProductListwc from "./_components/ProductListwc";
 import GlobalApi from "./utils/GlobalApi";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import Head from 'next/head';
+
 
 
 
@@ -116,12 +118,14 @@ export default function Home() {
 
   return (
     <div className="md:p-4 p-5 md:px-16">
+      <Head>
+        <title>Dynamic Page Title</title>
+      </Head>
       <Slider sliderList={sliderList} />
       <CategoryList categoryList={categoryList} />
       <ProductList productList={productList} />
       <ProductListwc productList={productList} />
       <Footer />
-
       <div className="notification-container">
   {!isSubscribed && (
     <div className="notification-icon" onClick={subscribeUser}>

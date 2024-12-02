@@ -7,15 +7,13 @@ import { usePathname } from "next/navigation";
 import { UpdateCartContext } from "./_context/UpdatecartContext";
 import { useState } from "react";
 import Footer from "./_components/Footer";
+import Head from "next/head";
 
 const outfit = Outfit({
   subsets: ['latin']
 })
 
-// export const metadata = {
-//   title: 'My PWA App',
-//   description: 'An example PWA built with Next.js',
-// };
+
 
 export default function RootLayout({ children }) {
   const params= usePathname();
@@ -24,10 +22,11 @@ export default function RootLayout({ children }) {
   const showFooter = params == '/create-a-account' ||  params == '/log-in' || params == '/orderPlaced' || params == '/'?false:true
   return (
     <html lang="en">
-            <head>
+            <Head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#000000" />
-      </head>
+        <title>Dynamic Page Title</title>
+      </Head>
       <body
         className={outfit.className}
       >
