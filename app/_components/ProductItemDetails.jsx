@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle, ShoppingBasket } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useContext, useState } from "react";
 import GlobalApi from "../utils/GlobalApi";
@@ -61,7 +60,6 @@ function ProductItemDetails({ product }) {
           <ProductCarousel images={images} altText={altText} />
       <div className="flex flex-col gap-3">
         <h2 className="text-2xl font-bold">{product?.attributes?.name}</h2>
-        <h2 className="text-lg line-clamp-3 ">{product?.attributes?.description}</h2>
         <div className="flex items-center gap-2">
           {product?.attributes?.sellingPrice && (
             <h2 className="text-2xl font-bold">
@@ -110,9 +108,9 @@ function ProductItemDetails({ product }) {
             )}
           </Button>
         </div>
-        <h2>
-          Category: {product?.attributes?.categories?.data[0]?.attributes?.name}
-        </h2>
+        <h2 className="text-lg line-clamp-3 ">{product?.attributes?.description}</h2>
+        <h3>Vendor:Shri Krishna General Store{product?.attributes?.brand}</h3>
+        <h3>GST-FJ644GHJK765FG</h3>
       </div>
     </div>
   );

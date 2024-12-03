@@ -2,7 +2,7 @@
 import React, { useRef } from "react";
 import Productitem from "./Productitem";
 import { useState } from "react";
-import { IoIosArrowForward,IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 
 function ProductList({ productList }) {
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -33,26 +33,33 @@ function ProductList({ productList }) {
 
   return (
     <div className="relative mt-5">
-      <h2 className="text-primary text-2xl text-center mb-4 flex">
+      <h2 className="text-primary text-2xl text-center mb-4">
         Best Selling Products
       </h2>
 
       {/* Left Arrow */}
-      <button 
-      onClick={scrollLeft}
-      className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md p-2 rounded-full">
-        <IoIosArrowBack  />
+      <button
+        onClick={scrollLeft}
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md p-2 rounded-full hidden sm:block"
+      >
+        <IoIosArrowBack />
       </button>
 
       {/* Product Items List */}
-      <div className="overflow-hidden" ref={carouselRef}>
+      <div
+        className="overflow-x-auto scrollbar-hide touch-pan-x"
+        ref={carouselRef}
+      >
         <div
           className="flex transition-transform duration-300 ease-in-out"
           style={{ transform: `translateX(-${scrollPosition}px)` }}
         >
           {productList.map((product, index) => (
-            <div key={product.id} className="min-w-[175px] p-4">
-              {/* Using Productitem component for rendering individual product */}
+            <div
+              key={product.id}
+              className="min-w-[175px] p-4 flex-shrink-0"
+              style={{ width: `${itemWidth}px` }}
+            >
               <Productitem key={index} product={product} />
             </div>
           ))}
@@ -60,10 +67,11 @@ function ProductList({ productList }) {
       </div>
 
       {/* Right Arrow */}
-      <button 
-      onClick={scrollRight}
-      className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md p-2 rounded-full">
-        <IoIosArrowForward  />
+      <button
+        onClick={scrollRight}
+        className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md p-2 rounded-full hidden sm:block"
+      >
+        <IoIosArrowForward />
       </button>
     </div>
   );

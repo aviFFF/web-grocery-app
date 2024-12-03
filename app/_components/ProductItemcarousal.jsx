@@ -23,7 +23,7 @@ const ProductCarousel = ({ images, altText }) => {
       <div className="overflow-hidden rounded-lg">
         <Image
           width={100}
-          height={50}
+          height={30}
           src={images[currentIndex]?.attributes?.url}
           alt={altText}
           className="w-full object-contain"

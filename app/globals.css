@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* styles/globals.css */
-
 /* Webkit-based browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
     width: 12px;
@@ -31,7 +29,7 @@
   
   .notification-container {
     position: fixed; /* Makes the container stay on screen */
-    top: 50%; /* Center vertically */
+    bottom: 20%; /* Center vertically */
     right: 1rem; /* Distance from the right edge */
     transform: translateY(-50%); /* Adjusts to keep the element truly centered vertically */
     z-index: 1000; /* Ensures it stays above other elements */

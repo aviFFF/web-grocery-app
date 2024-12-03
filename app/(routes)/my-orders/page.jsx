@@ -73,7 +73,7 @@ function MyOrders() {
     }
     return (
         <>
-            <h2 className="p-4 bg-primary mt-10 sm:mt-0 text-xl sm:text-2xl text-white font-bold text-center">
+            <h2 className="p-4 bg-primary mt-[3rem] sm:mt-0 text-xl sm:text-2xl text-white font-bold text-center">
                 My Orders
             </h2>
             <div className=" container mx-auto py-6 px-4 sm:px-8 md:px-20">

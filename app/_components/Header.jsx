@@ -194,11 +194,11 @@ function Header() {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel className="cursor-pointer">
-                My Account
+              🙏 {user.name}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer">
-                Profile
+               <Link href="/discount-coupan">Discount Coupan</Link>
               </DropdownMenuItem>
               <Link href="/my-orders"><DropdownMenuItem className="cursor-pointer">
                 My Orders
