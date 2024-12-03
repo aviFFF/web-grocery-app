@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'http://127.0.0.1:1337/api/',
+    baseURL:'https://groapp-admin.onrender.com/api/',
 });
 
 const getCategory =()=>axiosClient.get('/categories?populate=*');
@@ -14,8 +14,7 @@ const getSliders=()=>axiosClient.get('/sliders?populate=*').then(resp=>{
 /**
  * Gets the list of categories from the server.
  * @returns {Promise<Array<Category>>} - A promise that resolves to an array of categories.
- */
-/******  c938ea7a-7333-4597-8409-3e54170cf48f  *******/const getCategoryList =()=>axiosClient.get('/categories?populate=*').then(resp=>{
+ */const getCategoryList =()=>axiosClient.get('/categories?populate=*').then(resp=>{
     return resp.data.data
 })
 
