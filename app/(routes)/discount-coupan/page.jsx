@@ -7,7 +7,7 @@ const DiscountPage = () => {
       {/* Banner Section */}
       <div className="mb-6">
         <img
-          src="Discount.gif" 
+          src="/Discount.gif" 
           alt="Discount Promo"
           className="w-full max-w-4xl mx-auto rounded-lg shadow-lg"
         />
