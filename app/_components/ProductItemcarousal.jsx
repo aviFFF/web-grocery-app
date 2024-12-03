@@ -20,13 +20,13 @@ const ProductCarousel = ({ images, altText }) => {
 
   return (
     <div className="relative w-full max-w-md mx-auto">
-      <div className="overflow-hidden rounded-lg">
+      <div className="overflow-auto rounded-lg">
         <Image
           width={100}
           height={30}
           src={images[currentIndex]?.attributes?.url}
           alt={altText}
-          className="w-full object-contain"
+          className="w-full h-[250px] md:h-full object-contain"
         />
       </div>
       {/* Navigation buttons */}

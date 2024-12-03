@@ -17,7 +17,7 @@ function Productitem({ product }) {
       {/* Wrap the entire div with DialogTrigger */}
       <DialogTrigger asChild>
         <div
-          className="relative p-2 md:p-5 flex flex-col items-center justify-center gap-3 border
+          className="relative p-2 md:p-5 overflow-auto flex flex-col items-center justify-center gap-3 border
           rounded-xl hover:shadow-md hover:scale-105 cursor-pointer transition-all ease-in-out"
         >
           {/* Calculate the discount percentage */}

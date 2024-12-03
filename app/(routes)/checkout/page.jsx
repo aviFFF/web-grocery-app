@@ -30,7 +30,7 @@ function Checkout() {
   const [address, setAddress] = useState('');
   const [pincode, setPincode] = useState('');
   const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
+  const [city, setCity] = useState('');
   const [promoCode, setPromoCode] = useState('');
   const [isPromoApplied, setIsPromoApplied] = useState(false);
   const [isServicable, setIsServicable] = useState(null);
@@ -109,7 +109,7 @@ function Checkout() {
 
   const totalAmount = useMemo(() => {
     const validSubtotal = parseFloat(subtotal) || 0;
-    const tax = validSubtotal * 0.09;
+    const tax = validSubtotal * 0.018;
     const shipping = 19;
     const otherFees = 5;
     return (validSubtotal + tax + shipping + otherFees).toFixed(2);
@@ -135,7 +135,7 @@ function Checkout() {
       data: {
         paymentid: (data.paymentID || "Cash on Delivery").toString(),
         totalOrderValue: totalAmount,
-        email:email,
+        city:city,
         phone:phone,
         address:address,
         pincode:pincode,
@@ -163,7 +163,7 @@ function Checkout() {
     try {
       const txnid = `txn_${Date.now()}`;
       const productinfo = "Cart Items";
-      const paymentData = { txnid, amount: totalAmount, productinfo, firstname, email };
+      const paymentData = { txnid, amount: totalAmount, productinfo, firstname, city };
 
       const { data } = await axios.post("/api/generate-hash", paymentData);
 
@@ -241,18 +241,18 @@ function Checkout() {
         />
         <Input
           type="text"
+          placeholder="city"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          className="mt-5"
+        />
+        <Input
+          type="text"
           placeholder="Mobile Number"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           className="mt-5"
           maxLength={10}
-        />
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mt-5"
         />
         {validationMessage && (
           <p className={`mt-2 ${isServicable ? "text-green-500" : "text-red-500"}`}>
@@ -304,7 +304,7 @@ function Checkout() {
           <DialogTrigger asChild>
             <Button
               className="mt-5 w-full bg-primary text-white flex justify-center items-center gap-2"
-              disabled={!firstname || !lastname || !address || !pincode || !phone || !email || !isServicable}
+              disabled={!firstname || !lastname || !address || !pincode || !phone || !city || !isServicable}
             >
               Proceed to Checkout
               <ArrowBigRight className="w-5 h-5" />

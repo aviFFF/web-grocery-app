@@ -108,7 +108,7 @@ function ProductItemDetails({ product }) {
             )}
           </Button>
         </div>
-        <h2 className="text-lg line-clamp-3 ">{product?.attributes?.description}</h2>
+        {/* <h2 className="text-lg line-clamp-3 ">{product?.attributes?.description}</h2> */}
         <h3>Vendor:Shri Krishna General Store{product?.attributes?.brand}</h3>
         <h3>GST-FJ644GHJK765FG</h3>
       </div>

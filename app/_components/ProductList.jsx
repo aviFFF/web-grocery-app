@@ -33,14 +33,14 @@ function ProductList({ productList }) {
 
   return (
     <div className="relative mt-5">
-      <h2 className="text-primary text-2xl text-center mb-4">
+      <h2 className="text-primary text-2xl text-left mb-4">
         Best Selling Products
       </h2>
 
       {/* Left Arrow */}
       <button
         onClick={scrollLeft}
-        className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md p-2 rounded-full hidden sm:block"
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md p-2 rounded-full"
       >
         <IoIosArrowBack />
       </button>
@@ -69,7 +69,7 @@ function ProductList({ productList }) {
       {/* Right Arrow */}
       <button
         onClick={scrollRight}
-        className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md p-2 rounded-full hidden sm:block"
+        className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md p-2 rounded-full"
       >
         <IoIosArrowForward />
       </button>
