@@ -19,7 +19,8 @@ const firebaseConfig = {
   projectId: "my-new-project-39060",
   storageBucket: "my-new-project-39060.firebasestorage.app",
   messagingSenderId: "987658077245",
-  appId: "1:987658077245:web:7f7d63d2148d7c5d505654"
+  appId: "1:987658077245:web:7f7d63d2148d7c5d505654",
+  measurementId: "G-XW38C6NHGV"
 };
 
 // Initialize Firebase
