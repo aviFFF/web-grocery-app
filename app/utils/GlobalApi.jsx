@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'http://127.0.0.1:1337/api/',
+    baseURL:'https://groapp-admin.onrender.com//api/',
 });
 
 const getCategory =()=>axiosClient.get('/categories?populate=*');
