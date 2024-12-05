@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'https://groapp-admin.onrender.com/api/',
+    baseURL:'http://127.0.0.1:1337/api/',
 });
 
 const getCategory =()=>axiosClient.get('/categories?populate=*');
@@ -100,29 +100,26 @@ export const getPincodes = async () => {
     return resp.data.data
   })
 
-  const sendSubscriptionToServer = async (subscription) => {
+  const saveSubscription = async (subscription) => {
     try {
-        console.log('Sending subscription to server:', subscription);
-
-        const response = await fetch('/subscriptions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(subscription),
-        });
-
-        if (!response.ok) {
-            const errorDetails = await response.text();
-            console.error('Server response:', response.status, errorDetails);
-            throw new Error('Failed to send subscription to server');
-        }
-
-        console.log('Subscription sent to server successfully');
+      const response = await fetch("http://localhost:1337/api/subscriptions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data: subscription }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to save subscription");
+      }
+  
+      console.log("Subscription saved successfully");
     } catch (error) {
-        console.error('Error sending subscription to server:', error.message);
+      console.error("Error saving subscription:", error);
     }
-};
+  };
+  
 
 
   const getMyorders = (userid,jwt)=>axiosClient.get('orders?filters[userid][$eq]='+userid+'&populate[Orderitemlist][populate][product][populate][image]=url').then(resp=>{
@@ -161,5 +158,5 @@ export default {
     createOrder,
     getMyorders,
     getPromocodes,
-    sendSubscriptionToServer
+    saveSubscription
 }

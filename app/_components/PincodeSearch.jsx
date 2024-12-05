@@ -113,7 +113,7 @@ const PincodeSearchPopup = ({onValidation}) => {
             </p>
           ) : (
             <p className="md:text-base text-xs text-nowrap text-primary font-semibold">
-              {serviceMessage} <br /> For {servicedPincode}
+              {serviceMessage} For {servicedPincode}
             </p>
           )}
           <button
