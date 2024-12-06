@@ -241,7 +241,7 @@ function Checkout() {
         />
         <Input
           type="text"
-          placeholder="city"
+          placeholder="City"
           value={city}
           onChange={(e) => setCity(e.target.value)}
           className="mt-5"

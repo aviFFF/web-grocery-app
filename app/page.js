@@ -7,64 +7,15 @@ import ProductList from "./_components/ProductList";
 import Footer from "./_components/Footer";
 import ProductListwc from "./_components/ProductListwc";
 import GlobalApi from "./utils/GlobalApi";
-import { IoIosNotificationsOutline } from "react-icons/io";
 import Head from 'next/head';
-import { getMessaging, getToken, onMessage, isSupported } from "firebase/messaging";
-import { initializeApp } from "firebase/app";
-
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDOh9RZDYm4NrmY9kyI0bhz62gSEubZFek",
-  authDomain: "my-new-project-39060.firebaseapp.com",
-  projectId: "my-new-project-39060",
-  storageBucket: "my-new-project-39060.firebasestorage.app",
-  messagingSenderId: "987658077245",
-  appId: "1:987658077245:web:7f7d63d2148d7c5d505654"
-};
-
-// Initialize Firebase
-let messaging;
-if (typeof window !== "undefined") {
-  const firebaseApp = initializeApp(firebaseConfig);
-  isSupported().then((supported) => {
-    if (supported) {
-      messaging = getMessaging(firebaseApp);
-    } else {
-      console.warn("Firebase Messaging is not supported on this browser.");
-    }
-  });
-}
 
 export default function Home() {
   const [sliderList, setSliderList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [productList, setProductList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [notification, setNotification] = useState(null);
-
-  useEffect(() => {
-    if (messaging) {
-      onMessage(messaging, (payload) => {
-        console.log("Foreground message received:", payload);
-        alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/firebase-messaging-sw.js")
-        .then((registration) => {
-          console.log("Service Worker registered successfully:", registration);
-        })
-        .catch((error) => {
-          console.error("Service Worker registration failed:", error);
-        });
-    }
-  }, []);
-  
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -86,46 +37,33 @@ export default function Home() {
     fetchData();
   }, []);
 
-  // Request Notification Permission and Subscribe
-  const requestNotificationPermission = async () => {
-    if (messaging) {
-      const permission = await Notification.requestPermission();
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault(); // Prevent the default prompt
+      setDeferredPrompt(e); // Save the event for later use
+      setShowInstallBanner(true); // Show the custom install banner
+    };
 
-      if (permission === "granted") {
-        try {
-          const token = await getToken(messaging, {
-            vapidKey: process.env.VAPID_PUBLIC_KEY,
-          });
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-          if (token) {
-            console.log("FCM Token:", token);
-            await GlobalApi.sendSubscriptionToServer({ token }); // Backend call to save the token
-            setIsSubscribed(true);
-            alert("Subscribed successfully!");
-          } else {
-            console.log("No FCM token available.");
-          }
-        } catch (error) {
-          console.error("Error getting FCM token:", error);
-          alert("Failed to subscribe. Please try again.");
-        }
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const installPWA = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt(); // Show the install prompt
+      const choiceResult = await deferredPrompt.userChoice;
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
       } else {
-        alert("Notifications permission is denied.");
+        console.log('User dismissed the install prompt');
       }
-    } else {
-      console.error("Firebase Messaging is not initialized or not supported.");
+      setDeferredPrompt(null); // Reset the prompt
+      setShowInstallBanner(false); // Hide the banner
     }
   };
-
-  // Listen to Incoming Messages
-  useEffect(() => {
-    if (messaging) {
-      onMessage(messaging, (payload) => {
-        console.log("Message received in foreground:", payload);
-        setNotification(payload.notification);
-      });
-    }
-  }, []);
 
   if (isLoading) {
     return (
@@ -148,20 +86,15 @@ export default function Home() {
         <ProductListwc productList={productList} />
         <Footer />
 
-        {/* Notification subscription */}
-        <div className="notification-container">
-          {!isSubscribed && (
-            <div className="notification-icon" onClick={requestNotificationPermission}>
-              <IoIosNotificationsOutline size={20} />
-            </div>
-          )}
-          {notification && (
-            <div className="notification-popup bg-gray-100 p-4 rounded shadow-lg">
-              <h4>{notification.title}</h4>
-              <p>{notification.body}</p>
-            </div>
-          )}
-        </div>
+        {/* Install PWA Banner */}
+        {showInstallBanner && (
+          <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 flex justify-between items-center">
+            <span>Install our app for the best experience!</span>
+            <Button onClick={installPWA} className="bg-primary text-white">
+              Install
+            </Button>
+          </div>
+        )}
       </div>
     </>
   );
