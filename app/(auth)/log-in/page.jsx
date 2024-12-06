@@ -30,23 +30,25 @@ function LogIn() {
         setLoader(true);
 
         try {
-            // Verify CAPTCHA
-            await GlobalApi.verifyCaptcha(captchaToken);
-
-            // Call your login logic here
+            console.log("Sending Login Request...");
             const resp = await GlobalApi.LogIn(email, password); // Assuming you have this method
+            console.log("Login Response:", resp);
+        
             sessionStorage.setItem("user", JSON.stringify(resp.data.user));
             sessionStorage.setItem("jwt", resp.data.jwt);
-
+        
             toast("Login Successful!");
             router.push("/");
-        } catch (error) {
-            console.error("Error:", error.message);
-            toast(error.response?.data?.message || "Something went wrong!");
-        } finally {
+        } catch (loginError) {
+            console.error("Login API Error:", loginError.response?.data || loginError.message);
+            toast(loginError.response?.data?.message || "Something went wrong!");
+        }
+        
+        finally {
             setLoader(false);
         }
     };
+    
 
     return (
         <div className="flex flex-col items-center justify-center my-20">
