@@ -104,7 +104,7 @@ export const getPincodes = async () => {
 
   const saveSubscription = async (subscription) => {
     try {
-      const response = await fetch("http://localhost:1337/api/subscriptions", {
+      const response = await fetch("/api/subscriptions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,32 +123,35 @@ export const getPincodes = async () => {
   };
 
   const verifyCaptcha = async (req, res) => {
-    const { token } = req.body;
+    const { token } = req.body;  // Make sure the token is in the request body
+
+    if (!token) {
+        console.error("Captcha token is missing in the request body.");
+        return res.status(400).send({ message: "Captcha token is missing." });
+    }
 
     try {
         const response = await axios.post(
-            `https://www.google.com/recaptcha/api/siteverify`,
+            "https://www.google.com/recaptcha/api/siteverify",
             null,
             {
                 params: {
                     secret: "6LeOTZQqAAAAABdsQMuEcBX11VglgBhiZaqGSe_E", // Replace with your reCAPTCHA secret key
-                    response: token,
+                    response: token,  // Send the token here
                 },
             }
         );
 
         if (response.data.success) {
-            res.status(200).send({ message: "Captcha verified successfully." });
+            return res.status(200).send({ message: "Captcha verified successfully." });
         } else {
-            res.status(400).send({ message: "Captcha verification failed." });
+            return res.status(400).send({ message: "Captcha verification failed." });
         }
     } catch (error) {
-        res.status(500).send({ message: "Internal server error." });
+        console.error("Error verifying CAPTCHA:", error);
+        return res.status(500).send({ message: "Internal server error." });
     }
 };
-
-  
-
 
   const getMyorders = (userid,jwt)=>axiosClient.get('orders?filters[userid][$eq]='+userid+'&populate[Orderitemlist][populate][product][populate][image]=url').then(resp=>{
       const response = resp.data.data
@@ -170,6 +173,30 @@ export const getPincodes = async () => {
 
   })
 
+  const getVendorOrders = (vendorId, jwt) =>
+    axiosClient.get(`orders?filters[vendor][$eq]=${vendorId}&populate=*`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    }).then(resp => resp.data.data.map((item) => ({
+      id: item.id,
+      createdAt: item.attributes.createdAt,
+      customerName:
+        item.attributes.customer.data.attributes.firstname +
+        ' ' +
+        item.attributes.customer.data.attributes.lastname,
+      totalOrderValue: item.attributes.totalOrderValue,
+      paymentid: item.attributes.paymentid,
+      Orderitemlist: item.attributes.Orderitemlist,
+      firstname: item.attributes.customer.data.attributes.firstname,
+      lastname: item.attributes.customer.data.attributes.lastname,
+      email: item.attributes.customer.data.attributes.email,
+      phone: item.attributes.customer.data.attributes.phone,
+      address: item.attributes.customer.data.attributes.address,
+      pincode: item.attributes.customer.data.attributes.pincode,
+      status: item.attributes.Status,
+    })));
+
 
 export default {
     getCategory,
@@ -187,5 +214,6 @@ export default {
     getMyorders,
     getPromocodes,
     saveSubscription,
-    verifyCaptcha
+    verifyCaptcha,
+    getVendorOrders
 }

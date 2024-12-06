@@ -48,7 +48,7 @@ function CreateAccount() {
             return;
         }
 
-        // Register the user if CAPTCHA is verified
+        // Proceed to user registration
         const resp = await GlobalApi.registeruser(username, email, password, name);
         sessionStorage.setItem("user", JSON.stringify(resp.data.user));
         sessionStorage.setItem("jwt", resp.data.jwt);
@@ -62,6 +62,7 @@ function CreateAccount() {
         setLoder(false);
     }
 };
+
 
 
   return (
