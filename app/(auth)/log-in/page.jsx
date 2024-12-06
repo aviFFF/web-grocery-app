@@ -16,7 +16,6 @@ function LogIn() {
   const [loader, setLoader] = useState(false);
   const router = useRouter();
 
-  // Captcha validation callback
   const onCaptchaChange = (token) => {
     setCaptchaToken(token);
   };
