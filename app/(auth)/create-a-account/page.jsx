@@ -59,15 +59,23 @@ function CreateAccount() {
       toast("Account successfully created!");
       router.push("/");
 
-    } catch (error) {
-      console.error("Error during account creation:", error.message);
+    } catch (e) {
+      console.error("Error during account creation:", e);
 
-      if (error.response) {
-        // Display backend error messages
-        toast(error.response.data.message || "Please Enter Valid Details");
-      } else {
-        // Handle network or unknown errors
+      // Check if there's a response from the API
+      if (e.response) {
+        // Log the full error response for debugging
+        console.error("Error Response:", e.response);
+
+        // Display backend error messages (or a fallback message)
+        toast(e.response.data?.message || "Please Enter Valid Details");
+      } else if (e.message) {
+        // Handle errors like network issues or unexpected errors
+        console.error("Error Message:", e.message);
         toast("Something went wrong. Please try again.");
+      } else {
+        // Catch any other unhandled cases
+        toast("An unexpected error occurred.");
       }
     } finally {
       setLoading(false);
