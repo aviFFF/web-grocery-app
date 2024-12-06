@@ -43,7 +43,9 @@ const getProductsbyCategory =(category)=>axiosClient.get('/products?filters[cate
     return resp.data.data
 })
 
-const registeruser =(username,email,password,name)=>axiosClient.post('/auth/local/register',{username:username,
+const registeruser =(username,email,password,name)=>axiosClient.post('/auth/local/register',
+  {
+    username:username,
     email:email,
     password:password,
     name:name
@@ -120,30 +122,32 @@ export const getPincodes = async () => {
     }
   };
 
-  const verifyCaptcha = async (req, res) => {
-    const { token } = req.body;
-
+  const verifyCaptcha = async (captchaToken) => {
     try {
         const response = await axios.post(
             `https://www.google.com/recaptcha/api/siteverify`,
             null,
             {
                 params: {
-                    secret: "6LeOTZQqAAAAABdsQMuEcBX11VglgBhiZaqGSe_E", // Replace with your reCAPTCHA secret key
-                    response: token,
+                    secret: "YOUR_SECRET_KEY", // Replace with your reCAPTCHA secret key
+                    response: captchaToken,
                 },
             }
         );
 
-        if (response.data.success) {
-            res.status(200).send({ message: "Captcha verified successfully." });
+        // Safely check if the response body contains the expected data
+        if (response.data && response.data.success) {
+            return true;
         } else {
-            res.status(400).send({ message: "Captcha verification failed." });
+            console.error("CAPTCHA verification failed:", response.data);
+            throw new Error("CAPTCHA verification failed.");
         }
     } catch (error) {
-        res.status(500).send({ message: "Internal server error." });
+        console.error("Error during CAPTCHA verification:", error);
+        throw new Error("An error occurred during CAPTCHA verification.");
     }
 };
+
 
   
 
