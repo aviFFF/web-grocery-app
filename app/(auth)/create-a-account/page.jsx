@@ -7,85 +7,46 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "sonner";
 
-function CreateAccount() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [captchaToken, setCaptchaToken] = useState(null); // Store CAPTCHA token
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
-  // Handle reCAPTCHA change event
-  const onCaptchaChange = (token) => {
-    setCaptchaToken(token);
-  };
+function CreateAccount() {
+  const [username, setUsername] = useState();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [Loder, setLoder] = useState();
+  const [name, setName] = useState();
+
+  const router = useRouter();
 
   useEffect(() => {
     const jwt = sessionStorage.getItem("jwt");
     if (jwt) {
       router.push("/");
     }
-  }, [router]);
+  }, []);
 
-  // Function to create the account
-  const onCreateAccount = async () => {
-    if (!captchaToken) {
-      toast("Please complete the CAPTCHA verification.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      // Verify CAPTCHA before proceeding with registration
-      console.log("Verifying CAPTCHA...");
-      await GlobalApi.verifyCaptcha(captchaToken);
-      console.log("CAPTCHA Verified.");
-
-      // Call the registration API
-      console.log("Registering User...");
-      const resp = await GlobalApi.registeruser(username, email, password, name);
-      console.log("Registration Response:", resp);
-
-      // Store user data in sessionStorage
-      sessionStorage.setItem("user", JSON.stringify(resp.data.user));
-      sessionStorage.setItem("jwt", resp.data.jwt);
-
-      // Show success message and redirect to homepage
-      toast("Account successfully created!");
-      router.push("/");
-
-    } catch (e) {
-      console.error("Error during account creation:", e);
-
-      // Check if there's a response from the API
-      if (e.response) {
-        // Log the full error response for debugging
-        console.error("Error Response:", e.response);
-
-        // Display backend error messages (or a fallback message)
-        toast(e.response.data?.message || "Please Enter Valid Details");
-      } else if (e.message) {
-        // Handle errors like network issues or unexpected errors
-        console.error("Error Message:", e.message);
-        toast("Something went wrong. Please try again.");
-      } else {
-        // Catch any other unhandled cases
-        toast("An unexpected error occurred.");
+  const onCreateAccount = () => {
+    setLoder(true);
+    GlobalApi.registeruser(username, email, password, name).then(
+      (resp) => {
+        sessionStorage.setItem("user", JSON.stringify(resp.data.user));
+        sessionStorage.setItem("jwt", resp.data.jwt);
+        toast("Ban gaya Account");
+        router.push("/");
+        setLoder(false);
+      },
+      (e) => {
+        toast("Please Enter Valid Details");
+        setLoder(false);
       }
-    } finally {
-      setLoading(false);
-    }
+    );
   };
-
   return (
     <div className="flex items-center justify-center my-20">
       <div className="flex flex-col items-center justify-center md:p-10 p-1 md:w-auto w-screen bg-slate-100 border border-gray-200">
         <Link href="/">
+          {" "}
           <Image
             src="/newblogo.png"
             className="rounded-2xl md:w-32 w-24"
@@ -95,45 +56,35 @@ function CreateAccount() {
           />
         </Link>
         <h1 className="text-3xl font-bold">Create an Account</h1>
-        <h2 className="text-sm text-gray-500">
-          Enter Your Details to Create an Account
+        <h2 className="text-sm  text-gray-500">
+          Enter Your Email/Mobile & Password to Create an Account
         </h2>
-        <div className="w-full flex flex-col gap-5 mt-8">
+        <div className="w-full flex flex-col gap-5  mt-8">
           <Input
-            placeholder="Full Name"
+            placeholder="Name"
             onChange={(e) => setName(e.target.value)}
-            value={name}
           />
           <Input
             placeholder="Mobile Number"
             onChange={(e) => setUsername(e.target.value)}
-            value={username}
             maxLength={10}
+            
           />
           <Input
             placeholder="name@example.com"
             onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            type="email"
           />
           <Input
             type="password"
             placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
-            value={password}
           />
-          
-          {/* reCAPTCHA Component */}
-          <ReCAPTCHA
-            sitekey="6LeOTZQqAAAAAHF62ZAdRx1rTS28sigTRSDtH_tn" // Replace with your actual site key
-            onChange={onCaptchaChange}
-          />
-          
           <Button
-            onClick={onCreateAccount}
-            disabled={!username || !email || !password || !name || !captchaToken || loading}
+            onClick={() => onCreateAccount()}
+            disabled={!username || !email || !password}
           >
-            {loading ? (
+            {" "}
+            {Loder ? (
               <LoaderIcon className="animate-spin" />
             ) : (
               "Create an Account"

@@ -122,32 +122,30 @@ export const getPincodes = async () => {
     }
   };
 
-  const verifyCaptcha = async (captchaToken) => {
+  const verifyCaptcha = async (req, res) => {
+    const { token } = req.body;
+
     try {
         const response = await axios.post(
             `https://www.google.com/recaptcha/api/siteverify`,
             null,
             {
                 params: {
-                    secret: "YOUR_SECRET_KEY", // Replace with your reCAPTCHA secret key
-                    response: captchaToken,
+                    secret: "6LeOTZQqAAAAABdsQMuEcBX11VglgBhiZaqGSe_E", // Replace with your reCAPTCHA secret key
+                    response: token,
                 },
             }
         );
 
-        // Safely check if the response body contains the expected data
-        if (response.data && response.data.success) {
-            return true;
+        if (response.data.success) {
+            res.status(200).send({ message: "Captcha verified successfully." });
         } else {
-            console.error("CAPTCHA verification failed:", response.data);
-            throw new Error("CAPTCHA verification failed.");
+            res.status(400).send({ message: "Captcha verification failed." });
         }
     } catch (error) {
-        console.error("Error during CAPTCHA verification:", error);
-        throw new Error("An error occurred during CAPTCHA verification.");
+        res.status(500).send({ message: "Internal server error." });
     }
 };
-
 
   
 
