@@ -119,6 +119,32 @@ export const getPincodes = async () => {
       console.error("Error saving subscription:", error);
     }
   };
+
+  const verifyCaptcha = async (req, res) => {
+    const { token } = req.body;
+
+    try {
+        const response = await axios.post(
+            `https://www.google.com/recaptcha/api/siteverify`,
+            null,
+            {
+                params: {
+                    secret: "6LeOTZQqAAAAABdsQMuEcBX11VglgBhiZaqGSe_E", // Replace with your reCAPTCHA secret key
+                    response: token,
+                },
+            }
+        );
+
+        if (response.data.success) {
+            res.status(200).send({ message: "Captcha verified successfully." });
+        } else {
+            res.status(400).send({ message: "Captcha verification failed." });
+        }
+    } catch (error) {
+        res.status(500).send({ message: "Internal server error." });
+    }
+};
+
   
 
 
@@ -158,5 +184,6 @@ export default {
     createOrder,
     getMyorders,
     getPromocodes,
-    saveSubscription
+    saveSubscription,
+    verifyCaptcha
 }
