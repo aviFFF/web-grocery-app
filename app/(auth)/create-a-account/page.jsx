@@ -34,34 +34,35 @@ function CreateAccount() {
   // Create account function
   const onCreateAccount = async () => {
     if (!captchaToken) {
-      toast("Please complete the CAPTCHA verification.");
-      return;
+        toast("Please complete the CAPTCHA verification.");
+        return;
     }
 
     setLoder(true);
 
     try {
-      // Verify CAPTCHA token before proceeding with account creation
-      const captchaVerified = await GlobalApi.verifyCaptcha(captchaToken);
-      if (!captchaVerified) {
-        toast("CAPTCHA verification failed.");
-        return;
-      }
+        // Verify CAPTCHA before registration
+        const captchaVerified = await GlobalApi.verifyCaptcha(captchaToken);
+        if (!captchaVerified) {
+            toast("CAPTCHA verification failed.");
+            return;
+        }
 
-      // Register the user if CAPTCHA is verified
-      const resp = await GlobalApi.registeruser(username, email, password, name);
-      sessionStorage.setItem("user", JSON.stringify(resp.data.user));
-      sessionStorage.setItem("jwt", resp.data.jwt);
+        // Register the user if CAPTCHA is verified
+        const resp = await GlobalApi.registeruser(username, email, password, name);
+        sessionStorage.setItem("user", JSON.stringify(resp.data.user));
+        sessionStorage.setItem("jwt", resp.data.jwt);
 
-      toast("Account successfully created!");
-      router.push("/");
+        toast("Account successfully created!");
+        router.push("/");
     } catch (error) {
-      console.error("Error during account creation:", error);
-      toast(error.response?.data?.message || "Something went wrong. Please try again.");
+        console.error("Error during account creation:", error);
+        toast(error.response?.data?.message || "Something went wrong. Please try again.");
     } finally {
-      setLoder(false);
+        setLoder(false);
     }
-  };
+};
+
 
   return (
     <div className="flex items-center justify-center my-20">
