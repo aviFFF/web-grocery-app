@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
   const params= usePathname();
   const [updateCart, setUpdateCart] = useState(false);
   const showHeader = params == '/create-a-account' ||  params == '/log-in' || params == '/orderPlaced'?false:true 
-  const showFooter = params == '/create-a-account' ||  params == '/log-in' || params == '/orderPlaced' || params == '/'?false:true
+  const showFooter = params == '/create-a-account' ||  params == '/log-in' || params == '/orderPlaced' || params == '/vendororder' || params == '/'?false:true
   return (
     <html lang="en">
             <head>

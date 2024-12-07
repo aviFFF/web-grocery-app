@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'https://groapp-admin.onrender.com/api/',
+    baseURL:'http://127.0.0.1:1337/api/',
 });
 
 const getCategory =()=>axiosClient.get('/categories?populate=*');
@@ -173,29 +173,35 @@ export const getPincodes = async () => {
 
   })
 
-  const getVendorOrders = (vendorId, jwt) =>
-    axiosClient.get(`orders?filters[vendor][$eq]=${vendorId}&populate=*`, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    }).then(resp => resp.data.data.map((item) => ({
+  const getVendorOrders = async (vendorId, pincode, jwt) => {
+    const resp = await axiosClient
+      .get(
+        `orders?filters[userid][$eq]=${vendorId}&filters[pincode][$eq]=${pincode}&populate[Orderitemlist][populate][product][populate][image]=url`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+    const response = resp.data.data;
+    const orderList = response.map((item, index) => ({
       id: item.id,
-      createdAt: item.attributes.createdAt,
-      customerName:
-        item.attributes.customer.data.attributes.firstname +
-        ' ' +
-        item.attributes.customer.data.attributes.lastname,
       totalOrderValue: item.attributes.totalOrderValue,
       paymentid: item.attributes.paymentid,
       Orderitemlist: item.attributes.Orderitemlist,
-      firstname: item.attributes.customer.data.attributes.firstname,
-      lastname: item.attributes.customer.data.attributes.lastname,
-      email: item.attributes.customer.data.attributes.email,
-      phone: item.attributes.customer.data.attributes.phone,
-      address: item.attributes.customer.data.attributes.address,
-      pincode: item.attributes.customer.data.attributes.pincode,
+      firstname: item.attributes.firstname,
+      lastname: item.attributes.lastname,
+      email: item.attributes.email,
+      phone: item.attributes.phone,
+      address: item.attributes.address,
+      pincode: item.attributes.pincode,
+      createdAt: item.attributes.createdAt,
       status: item.attributes.Status,
-    })));
+    }));
+    return orderList;
+  };
+  
+  
 
 
 export default {
