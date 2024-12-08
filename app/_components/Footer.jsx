@@ -18,7 +18,7 @@ function Footer() {
         </p>
         <ul className="mt-8 flex justify-center gap-6 sm:justify-start md:gap-8">
           <li>
-            <a
+            <Link
               href="#"
               rel="noreferrer"
               target="_blank"
@@ -32,10 +32,10 @@ function Footer() {
                   clipRule="evenodd"
                 />
               </svg>
-            </a>
+            </Link>
           </li>
           <li>
-            <a
+            <Link
               href="#"
               rel="noreferrer"
               target="_blank"
@@ -49,10 +49,10 @@ function Footer() {
                   clipRule="evenodd"
                 />
               </svg>
-            </a>
+            </Link>
           </li>
           <li>
-            <a
+            <Link
               href="#"
               rel="noreferrer"
               target="_blank"
@@ -64,7 +64,7 @@ function Footer() {
                   d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"
                 />
               </svg>
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
@@ -75,25 +75,28 @@ function Footer() {
 
           <ul className="mt-8 space-y-4 text-sm text-left">
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#">
+              <Link className="text-gray-700 transition hover:text-primary" href="#">
                 Terms
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#">
+              <Link className="text-gray-700 transition hover:text-primary" href="#">
                 About
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#">
+              <Link className="text-gray-700 transition hover:text-primary" href="#">
                 Careers
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Privacy </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Privacy </Link>
+            </li>
+            <li>
+              <Link href="/vendor-login" className="text-gray-700 transition hover:text-primary" > Vendor </Link>
             </li>
           </ul>
         </div>
@@ -103,19 +106,19 @@ function Footer() {
 
           <ul className="mt-8 space-y-4 text-sm text-left">
           <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Partner </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Partner </Link>
             </li>
 
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Contact </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Contact </Link>
             </li>
 
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> FAQ </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> FAQ </Link>
             </li>
 
             <li>
-              <a
+              <Link
                 className="group flex  gap-1.5 ltr:sm:justify-start rtl:sm:justify-end"
                 href="#"
               >
@@ -129,7 +132,7 @@ function Footer() {
                   ></span>
                   <span className="relative inline-flex size-2 rounded-full bg-teal-500"></span>
                 </span>
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -139,28 +142,28 @@ function Footer() {
 
           <ul className="mt-8 space-y-4 text-sm text-left">
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Dairy & Breakfast </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Dairy & Breakfast </Link>
             </li>
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Vegetables & Fruits </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Vegetables & Fruits </Link>
             </li>
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Cold & Health Drinks </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Cold & Health Drinks </Link>
             </li>
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Instant & Frozen Food </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Instant & Frozen Food </Link>
             </li>
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Tea & Coffee </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Tea & Coffee </Link>
             </li>
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Bakery & Biscuits </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Bakery & Biscuits </Link>
             </li>
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Ice Cream & Desserts </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Ice Cream & Desserts </Link>
             </li>
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Personal Care </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Personal Care </Link>
             </li>
           </ul>
         </div>
@@ -170,27 +173,27 @@ function Footer() {
 
           <ul className="mt-8 space-y-4 text-sm text-left text-nowrap">
           <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Atta,Rice & Dal </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Atta,Rice & Dal </Link>
             </li>
 
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Dry Fruits,Masala & Oils </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Dry Fruits,Masala & Oils </Link>
             </li>
 
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Sauces & Spreads </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Sauces & Spreads </Link>
             </li>
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Pan Corner </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Pan Corner </Link>
             </li>
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Baby Corner </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Baby Corner </Link>
             </li>
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Pharma & Wellness </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Pharma & Wellness </Link>
             </li>
             <li>
-              <a className="text-gray-700 transition hover:text-primary" href="#"> Beauty & Cosmetics </a>
+              <Link className="text-gray-700 transition hover:text-primary" href="#"> Beauty & Cosmetics </Link>
             </li>
             <li>
               <Link className="text-gray-700 transition hover:text-primary" href="#"> Toys & Games </Link>
@@ -205,21 +208,21 @@ function Footer() {
         <p className="text-sm text-gray-500">
           <span className="block sm:inline">All rights reserved.</span>
 
-          <a
+          <Link
             className="inline-block text-teal-600 underline transition hover:text-teal-600/75"
             href="#"
           >
             Terms & Conditions
-          </a>
+          </Link>
 
           <span>&</span>
 
-          <a
+          <Link
             className="inline-block text-teal-600 underline transition hover:text-teal-600/75"
             href="#"
           >
             Privacy Policy
-          </a>
+          </Link>
         </p>
 
         <p className="mt-4 text-sm text-gray-500 sm:order-first sm:mt-0">&copy; 2024 Buzzat India Pvt Ltd</p>

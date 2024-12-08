@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'https://groapp-admin.onrender.com/api/',
+    baseURL:'http://127.0.0.1:1337/api/',
 });
 
 const getCategory =()=>axiosClient.get('/categories?populate=*');
@@ -122,36 +122,24 @@ export const getPincodes = async () => {
     }
   };
 
-  const verifyCaptcha = async (req, res) => {
-    const { token } = req.body;  // Make sure the token is in the request body
-
-    if (!token) {
-        console.error("Captcha token is missing in the request body.");
-        return res.status(400).send({ message: "Captcha token is missing." });
-    }
-
+ async function verifyCaptcha(token) {
+    const secretKey = 'YOUR_SECRET_KEY'; // Replace with your reCAPTCHA secret key
     try {
         const response = await axios.post(
-            "https://www.google.com/recaptcha/api/siteverify",
-            null,
-            {
+            `https://www.google.com/recaptcha/api/siteverify`,
+            null, {
                 params: {
-                    secret: "6LeOTZQqAAAAABdsQMuEcBX11VglgBhiZaqGSe_E", // Replace with your reCAPTCHA secret key
-                    response: token,  // Send the token here
-                },
+                    secret: secretKey,
+                    response: token
+                }
             }
         );
-
-        if (response.data.success) {
-            return res.status(200).send({ message: "Captcha verified successfully." });
-        } else {
-            return res.status(400).send({ message: "Captcha verification failed." });
-        }
+        return response.data.success;
     } catch (error) {
-        console.error("Error verifying CAPTCHA:", error);
-        return res.status(500).send({ message: "Internal server error." });
+        console.error('CAPTCHA verification error:', error);
+        return false;
     }
-};
+}
 
   const getMyorders = (userid,jwt)=>axiosClient.get('orders?filters[userid][$eq]='+userid+'&populate[Orderitemlist][populate][product][populate][image]=url').then(resp=>{
       const response = resp.data.data
@@ -171,35 +159,26 @@ export const getPincodes = async () => {
       }));
       return orderList
 
-  })
+  });
 
-  const getVendorOrders = async (vendorId, pincode, jwt) => {
-    const resp = await axiosClient
-      .get(
-        `orders?filters[userid][$eq]=${vendorId}&filters[pincode][$eq]=${pincode}&populate[Orderitemlist][populate][product][populate][image]=url`,
-        {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        }
-      );
-    const response = resp.data.data;
-    const orderList = response.map((item, index) => ({
-      id: item.id,
-      totalOrderValue: item.attributes.totalOrderValue,
-      paymentid: item.attributes.paymentid,
-      Orderitemlist: item.attributes.Orderitemlist,
-      firstname: item.attributes.firstname,
-      lastname: item.attributes.lastname,
-      email: item.attributes.email,
-      phone: item.attributes.phone,
-      address: item.attributes.address,
-      pincode: item.attributes.pincode,
-      createdAt: item.attributes.createdAt,
-      status: item.attributes.Status,
-    }));
-    return orderList;
-  };
+ // Vendor Signup API
+export const vendorSignup = (name, email, password, phone) =>
+  axiosClient.post('/vendor/signup', { name, email, password, phone });
+
+// Vendor Login API
+export const vendorLogin = (email, password) =>
+  axiosClient.post('/vendor/login', { email, password });
+
+// Example function to get vendor data after login
+export const fetchVendorOrders = async () => {
+  return axiosClient.get('/orders', {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token retrieval logic
+    },
+  });
+};
+
+  
   
   
 
@@ -221,5 +200,7 @@ export default {
     getPromocodes,
     saveSubscription,
     verifyCaptcha,
-    getVendorOrders
+    fetchVendorOrders,
+    vendorSignup,
+    vendorLogin
 }

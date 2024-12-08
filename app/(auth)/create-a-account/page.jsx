@@ -8,7 +8,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import ReCAPTCHA from "react-google-recaptcha";
 
 function CreateAccount() {
   const [username, setUsername] = useState("");
@@ -16,13 +15,7 @@ function CreateAccount() {
   const [password, setPassword] = useState("");
   const [Loder, setLoder] = useState(false);
   const [name, setName] = useState("");
-  const [captchaToken, setCaptchaToken] = useState(null);
   const router = useRouter();
-
-  // Handles CAPTCHA token change
-  const onCaptchaChange = (token) => {
-    setCaptchaToken(token);
-  };
 
   useEffect(() => {
     const jwt = sessionStorage.getItem("jwt");
@@ -31,39 +24,29 @@ function CreateAccount() {
     }
   }, []);
 
-  // Create account function
   const onCreateAccount = async () => {
-    if (!captchaToken) {
-        toast("Please complete the CAPTCHA verification.");
-        return;
-    }
-
     setLoder(true);
 
     try {
-        // Verify CAPTCHA before registration
-        const captchaVerified = await GlobalApi.verifyCaptcha(captchaToken);
-        if (!captchaVerified) {
-            toast("CAPTCHA verification failed.");
-            return;
-        }
+      // Proceed to user registration
+      const resp = await GlobalApi.registeruser(username, email, password, name);
 
-        // Proceed to user registration
-        const resp = await GlobalApi.registeruser(username, email, password, name);
+      if (resp?.data?.user && resp?.data?.jwt) {
         sessionStorage.setItem("user", JSON.stringify(resp.data.user));
         sessionStorage.setItem("jwt", resp.data.jwt);
 
         toast("Account successfully created!");
-        router.push("/");
+        router.push("/"); // Redirect to homepage
+      } else {
+        toast("Unexpected error occurred during registration.");
+      }
     } catch (error) {
-        console.error("Error during account creation:", error);
-        toast(error.response?.data?.message || "Something went wrong. Please try again.");
+      console.error("Error during account creation:", error);
+      toast(error?.response?.data?.message || "Something went wrong. Please try again.");
     } finally {
-        setLoder(false);
+      setLoder(false);
     }
-};
-
-
+  };
 
   return (
     <div className="flex items-center justify-center my-20">
@@ -78,10 +61,10 @@ function CreateAccount() {
           />
         </Link>
         <h1 className="text-3xl font-bold">Create an Account</h1>
-        <h2 className="text-sm  text-gray-500">
+        <h2 className="text-sm text-gray-500">
           Enter Your Email/Mobile & Password to Create an Account
         </h2>
-        <div className="w-full flex flex-col gap-5  mt-8">
+        <div className="w-full flex flex-col gap-5 mt-8">
           <Input
             placeholder="Name"
             onChange={(e) => setName(e.target.value)}
@@ -105,15 +88,9 @@ function CreateAccount() {
             value={password}
           />
 
-          {/* reCAPTCHA Widget */}
-          <ReCAPTCHA
-            sitekey="6LeOTZQqAAAAAHF62ZAdRx1rTS28sigTRSDtH_tn"  
-            onChange={onCaptchaChange}
-          />
-
           <Button
             onClick={onCreateAccount}
-            disabled={!username || !email || !password || !captchaToken}
+            disabled={!username || !email || !password}
           >
             {Loder ? <LoaderIcon className="animate-spin" /> : "Create an Account"}
           </Button>

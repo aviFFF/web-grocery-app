@@ -10,17 +10,13 @@ import {
 import moment from "moment";
 import Myorderitem from "./_compnents/Myorderitem";
 
-
-
 function MyOrders() {
     const router = useRouter();
     const [orderList, setOrderList] = useState([]);
     const [jwt, setJwt] = useState(null);
     const [user, setUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(true); // Loader state
-    const [error, setError] = useState(null); // Error state
-    
-    
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -46,12 +42,13 @@ function MyOrders() {
     const fetchOrders = async () => {
         try {
             const orderList_ = await GlobalApi.getMyorders(user.id, jwt);
+            console.log("Fetched Orders:", orderList_); // Log orders for debugging
             setOrderList(orderList_);
         } catch (error) {
             console.error("Error fetching orders:", error);
             setError("Failed to load orders. Please try again later.");
         } finally {
-            setIsLoading(false); // Stop loader after fetching
+            setIsLoading(false);
         }
     };
 
@@ -71,12 +68,13 @@ function MyOrders() {
             </div>
         );
     }
+
     return (
         <>
             <h2 className="p-4 bg-primary mt-[3rem] sm:mt-0 text-xl sm:text-2xl text-white font-bold text-center">
                 My Orders
             </h2>
-            <div className=" container mx-auto py-6 px-4 sm:px-8 md:px-20">
+            <div className="container mx-auto py-6 px-4 sm:px-8 md:px-20">
                 <h2 className="text-2xl md:text-3xl font-bold text-primary pb-6 md:pb-10">
                     Order History
                 </h2>
@@ -85,10 +83,7 @@ function MyOrders() {
                         orderList
                             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                             .map((item, index) => (
-                                <Collapsible
-                                    key={index}
-                                    className="w-full mx-auto overflow-hidden"
-                                >
+                                <Collapsible key={index} className="w-full mx-auto overflow-hidden">
                                     <CollapsibleTrigger>
                                         <div className="border border-slate-200 w-full rounded-lg shadow-md p-4 flex flex-row sm:flex-row sm:items-center sm:justify-between gap-4 bg-white hover:shadow-lg transition">
                                             <h2 className="text-sm sm:text-base">
