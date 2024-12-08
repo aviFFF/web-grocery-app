@@ -15,19 +15,24 @@ const VendorLogin = () => {
 
   const router = useRouter();
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await vendorLogin(formData.email, formData.password);
-      console.log("Login Success:", response.data);
-      setToken(response.data.jwt); // Save JWT token
-      toast("Login successful!");
-      router.push("/vendor-order");
+      console.log('Login Success:', response.data);
+      // Save JWT to localStorage
+      localStorage.setItem("token", response.data.jwt);
+      toast('Login successful!');
+      router.push('/vendor-order');
     } catch (error) {
-      console.error("Login Error:", error.response?.data || error.message);
-      toast("Login failed. Please check your credentials.");
+      console.error('Login Error:', error.response?.data || error.message);
+      toast('Login failed. Please check your credentials.');
     }
   };
+  
+  
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-100 to-blue-50">
