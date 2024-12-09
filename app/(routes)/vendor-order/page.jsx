@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // For navigation
 import { fetchVendorOrders } from "@/app/utils/GlobalApi";
+import { useRouter } from "next/navigation";
 
 const VendorOrderHistory = () => {
   const [orders, setOrders] = useState([]);
@@ -14,10 +14,9 @@ const VendorOrderHistory = () => {
   };
 
   useEffect(() => {
-    // Check if the user is logged in
     const token = localStorage.getItem("token");
     if (!token) {
-      router.push("/vendor-login"); // Redirect to login page if not logged in
+      router.push("/vendor-login");
       return;
     }
 
@@ -28,12 +27,8 @@ const VendorOrderHistory = () => {
 
         const ordersArray = response.data?.data || [];
 
-        // Sort orders by 'createdAt' in descending order
-        const sortedOrders = ordersArray.sort((a, b) => {
-          const dateA = new Date(a.attributes.createdAt);
-          const dateB = new Date(b.attributes.createdAt);
-          return dateB - dateA; // Descending
-        });
+        // Sort orders by ID in descending order (latest order first)
+        const sortedOrders = ordersArray.sort((a, b) => b.id - a.id);
 
         // Check for new orders
         if (orders.length > 0 && orders[0].id !== sortedOrders[0]?.id) {
@@ -55,7 +50,7 @@ const VendorOrderHistory = () => {
 
     // Clean up the interval
     return () => clearInterval(interval);
-  }, [orders, router]); // Depend on orders and router for updates
+  }, [orders, router]); // Depend on orders and router to track updates
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
 
@@ -79,7 +74,7 @@ const VendorOrderHistory = () => {
                 <strong>Total Value:</strong> ₹{order.attributes.totalOrderValue}
               </div>
               <div className="text-sm text-gray-600 mb-3">
-                <strong>Order Date:</strong> {new Date(order.attributes.createdAt).toLocaleDateString()}
+                <strong>Order Date:</strong> {new Date(order.attributes.createdAt).toLocaleString()}
               </div>
 
               <div className="mt-4">
