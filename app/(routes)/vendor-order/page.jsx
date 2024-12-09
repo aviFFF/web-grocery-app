@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"; // For navigation
 import { fetchVendorOrders } from "@/app/utils/GlobalApi";
 
 const VendorOrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const playNotificationSound = () => {
     const audio = new Audio('/rooster-233738.mp3'); // Ensure the path is correct
@@ -12,6 +14,13 @@ const VendorOrderHistory = () => {
   };
 
   useEffect(() => {
+    // Check if the user is logged in
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/vendor-login"); // Redirect to login page if not logged in
+      return;
+    }
+
     const fetchOrders = async () => {
       try {
         const response = await fetchVendorOrders();
@@ -46,7 +55,7 @@ const VendorOrderHistory = () => {
 
     // Clean up the interval
     return () => clearInterval(interval);
-  }, [orders]); // Depend on orders to track updates
+  }, [orders, router]); // Depend on orders and router for updates
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
 
