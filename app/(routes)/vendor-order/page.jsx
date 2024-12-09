@@ -7,7 +7,7 @@ const VendorOrderHistory = () => {
   const [loading, setLoading] = useState(true);
 
   const playNotificationSound = () => {
-    const audio = new Audio('/rooster-233738.mp3'); // Provide the correct path to your sound file
+    const audio = new Audio('/rooster-233738.mp3'); // Ensure the path is correct
     audio.play();
   };
 
@@ -18,15 +18,17 @@ const VendorOrderHistory = () => {
         console.log("Orders fetched:", response.data);
 
         const ordersArray = response.data?.data || [];
-        
-        // Sort orders by 'createdAt' in descending order
-        const sortedOrders = ordersArray.sort(
-          (a, b) => new Date(b.attributes.createdAt) - new Date(a.attributes.createdAt)
-        );
 
-        // Check for new orders (comparing the current list with the previous list)
-        if (orders.length !== 0 && orders[0].id !== sortedOrders[0]?.id) {
-          playNotificationSound(); // Play sound if a new order is added
+        // Sort orders by 'createdAt' in descending order
+        const sortedOrders = ordersArray.sort((a, b) => {
+          const dateA = new Date(a.attributes.createdAt);
+          const dateB = new Date(b.attributes.createdAt);
+          return dateB - dateA; // Descending
+        });
+
+        // Check for new orders
+        if (orders.length > 0 && orders[0].id !== sortedOrders[0]?.id) {
+          playNotificationSound();
         }
 
         setOrders(sortedOrders);
@@ -37,13 +39,12 @@ const VendorOrderHistory = () => {
       }
     };
 
-    // Fetch orders once on page load
-    fetchOrders();
+    fetchOrders(); // Fetch once on load
 
-    // Set up interval to fetch orders every 5 seconds
+    // Fetch orders every 5 seconds
     const interval = setInterval(fetchOrders, 5000);
 
-    // Clean up the interval when the component is unmounted
+    // Clean up the interval
     return () => clearInterval(interval);
   }, [orders]); // Depend on orders to track updates
 
@@ -72,7 +73,6 @@ const VendorOrderHistory = () => {
                 <strong>Order Date:</strong> {new Date(order.attributes.createdAt).toLocaleDateString()}
               </div>
 
-              {/* Display Product Details */}
               <div className="mt-4">
                 <h4 className="text-lg font-semibold text-gray-700 mb-2">Products:</h4>
                 <div className="space-y-4">
