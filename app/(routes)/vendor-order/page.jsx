@@ -1,33 +1,32 @@
 "use client";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchVendorOrders } from "@/app/utils/GlobalApi";
-
-// Function to play a notification sound
-const playNotificationSound = () => {
-  const audio = new Audio("/Chin_Tapak_Dum_Dum.mp3"); // Path to your notification sound file
-  audio.play();
-};
 
 const VendorOrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
+  const playNotificationSound = () => {
+    const audio = new Audio('/rooster-233738.mp3'); // Provide the correct path to your sound file
+    audio.play();
+  };
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await fetchVendorOrders();
         console.log("Orders fetched:", response.data);
+
+        const ordersArray = response.data?.data || [];
         
         // Sort orders by 'createdAt' in descending order
-        const sortedOrders = response.data.sort(
+        const sortedOrders = ordersArray.sort(
           (a, b) => new Date(b.attributes.createdAt) - new Date(a.attributes.createdAt)
         );
-        
-        // Check if there are new orders and play notification
-        if (sortedOrders.length > orders.length) {
-          playNotificationSound();
+
+        // Check for new orders (comparing the current list with the previous list)
+        if (orders.length !== 0 && orders[0].id !== sortedOrders[0]?.id) {
+          playNotificationSound(); // Play sound if a new order is added
         }
 
         setOrders(sortedOrders);
@@ -38,17 +37,15 @@ const VendorOrderHistory = () => {
       }
     };
 
-   
-    // Fetch orders immediately
+    // Fetch orders once on page load
     fetchOrders();
 
-    // Set interval to fetch orders every 5 seconds
+    // Set up interval to fetch orders every 5 seconds
     const interval = setInterval(fetchOrders, 5000);
 
-    return () => {
-      clearInterval(interval); // Clean up interval on component unmount
-    };
-  }, [orders]); // Re-run the effect if orders change
+    // Clean up the interval when the component is unmounted
+    return () => clearInterval(interval);
+  }, [orders]); // Depend on orders to track updates
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
 

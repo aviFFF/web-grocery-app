@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowBigRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"; // Import VisuallyHidden
+import { Loader2 } from "lucide-react"; // Import the spinner icon
+
 import React, { useEffect, useMemo, useState } from "react";
 import {
 Dialog,
@@ -38,6 +41,7 @@ function Checkout() {
   const [availablePincodes, setAvailablePincodes] = useState([]);
   const getPincodes = useMemo(() => GlobalApi.getPincodes, []);
   const [isLoading, setIsLoading] = useState(true); // Loader state
+  const [isCODLoading, setIsCODLoading] = useState(false); // Add state for loading spinner on COD button
 
   const router = useRouter();
 
@@ -135,28 +139,36 @@ function Checkout() {
       data: {
         paymentid: (data.paymentID || "Cash on Delivery").toString(),
         totalOrderValue: totalAmount,
-        city:city,
-        phone:phone,
-        address:address,
-        pincode:pincode,
-        Orderitemlist:cartItemList,
-        firstname:firstname,
-        lastname:lastname,
+        city: city,
+        phone: phone,
+        address: address,
+        pincode: pincode,
+        Orderitemlist: cartItemList,
+        firstname: firstname,
+        lastname: lastname,
         userid: user.id,
         status: "success",
       },
-    }
-    GlobalApi.createOrder(payload, jwt).then((resp) => {
-      console.log(resp);
-      toast.success("Order Placed Successfully!");
-      cartItemList.forEach((item) => {
-        GlobalApi.deleteCartItem(item.id, jwt);
+    };
+    
+    setIsCODLoading(true); // Start loading spinner
+    
+    GlobalApi.createOrder(payload, jwt)
+      .then((resp) => {
+        console.log(resp);
+        toast.success("Order Placed Successfully!");
+        cartItemList.forEach((item) => {
+          GlobalApi.deleteCartItem(item.id, jwt);
+        });
         router.replace("/orderPlaced");
       })
-    }).catch((err) => {
-      console.error("Order creation failed:", err);
-      toast.error("Failed to place order. Try again later.");
-    });
+      .catch((err) => {
+        console.error("Order creation failed:", err);
+        toast.error("Failed to place order. Try again later.");
+      })
+      .finally(() => {
+        setIsCODLoading(false); // Stop loading spinner
+      });
   };
 
   const handlePayUCheckout = async () => {
@@ -301,33 +313,40 @@ function Checkout() {
           </div>
         </div>
         <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              className="mt-5 w-full bg-primary text-white flex justify-center items-center gap-2"
-              disabled={!firstname || !lastname || !address || !pincode || !phone || !city || !isServicable}
-            >
-              Proceed to Checkout
-              <ArrowBigRight className="w-5 h-5" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Choose Payment Method</DialogTitle>
-              <DialogDescription>
-                Proceed with PayU for secure online payment.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter className="gap-4">
-              <Button onClick={handlePayUCheckout}>Pay with PayU</Button>
-              <Button
-                variant="outline"
-                onClick={() => onApprove({ paymentID: "Cash on Delivery" })}
-              >
-                Cash on Delivery
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+  <DialogTrigger asChild>
+    <Button
+      className="mt-5 w-full bg-primary text-white flex justify-center items-center gap-2"
+      disabled={!firstname || !lastname || !address || !pincode || !phone || !city || !isServicable}
+    >
+      Proceed to Checkout
+      <ArrowBigRight className="w-5 h-5" />
+    </Button>
+  </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      {/* Use VisuallyHidden to hide the title visually but keep it accessible */}
+      <VisuallyHidden>
+        <DialogTitle>Choose Payment Method</DialogTitle>
+      </VisuallyHidden>
+      <DialogDescription>
+        Proceed with PayU for secure online payment.
+      </DialogDescription>
+    </DialogHeader>
+    <DialogFooter className="gap-4">
+      <Button onClick={handlePayUCheckout}>Pay with PayU</Button>
+      <Button
+        variant="outline"
+        onClick={() => onApprove({ paymentID: "Cash on Delivery" })}
+      >
+        {isCODLoading ? (
+                  <Loader2 className="animate-spin w-5 h-5 text-green-500" /> // Show spinner when loading
+                ) : (
+                  "Cash on Delivery"
+                )}
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
       </div>
     </div>
   );

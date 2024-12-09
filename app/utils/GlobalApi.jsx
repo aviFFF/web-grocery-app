@@ -10,7 +10,7 @@ const getSliders=()=>axiosClient.get('/sliders?populate=*').then(resp=>{
     return resp.data.data
 })
 
-/*************  ✨ Codeium Command ⭐  *************/
+/*************  ✨ Codeium Command ⭐  *************/ 
 /**
  * Gets the list of categories from the server.
  * @returns {Promise<Array<Category>>} - A promise that resolves to an array of categories.
@@ -123,7 +123,7 @@ export const getPincodes = async () => {
   };
 
  async function verifyCaptcha(token) {
-    const secretKey = 'YOUR_SECRET_KEY'; // Replace with your reCAPTCHA secret key
+    const secretKey = '6LcfP5QqAAAAACAP3RHVeioVCirG6BEo5EHrpTlg'; // Replace with your reCAPTCHA secret key
     try {
         const response = await axios.post(
             `https://www.google.com/recaptcha/api/siteverify`,

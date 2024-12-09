@@ -54,7 +54,7 @@ function Footer() {
               <FooterLink href="/vendor-login">Vendor</FooterLink>
             </FooterColumn>
 
-            <FooterColumn title="Support">
+            <FooterColumn title="Contact">
               <FooterLink href="#">Partner</FooterLink>
               <FooterLink href="#">Contact</FooterLink>
               <FooterLink href="#">FAQ</FooterLink>
@@ -68,7 +68,7 @@ function Footer() {
               <FooterLink href="#">Instant & Frozen Food</FooterLink>
             </FooterColumn>
 
-            <FooterColumn title="More">
+            <FooterColumn title="...">
               <FooterLink href="#">Atta, Rice & Dal</FooterLink>
               <FooterLink href="#">Dry Fruits, Masala & Oils</FooterLink>
               <FooterLink href="#">Sauces & Spreads</FooterLink>

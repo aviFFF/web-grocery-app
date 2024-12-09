@@ -1,15 +1,14 @@
 "use client";
 import { useState } from "react";
-import { Button } from "@/components/ui/button"; 
-import { MdKeyboardArrowLeft,MdKeyboardArrowRight } from "react-icons/md";
+import { Button } from "@/components/ui/button";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import Image from "next/image";
-
 
 const ProductCarousel = ({ images, altText }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handlePrevious = () => {
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       (prevIndex - 1 + images.length) % images.length
     );
   };
@@ -20,7 +19,7 @@ const ProductCarousel = ({ images, altText }) => {
 
   return (
     <div className="relative w-full max-w-md mx-auto">
-      <div className="overflow-auto rounded-lg">
+      <div className="overflow-hidden rounded-lg">
         <Image
           width={100}
           height={30}
@@ -32,15 +31,15 @@ const ProductCarousel = ({ images, altText }) => {
       {/* Navigation buttons */}
       <Button
         onClick={handlePrevious}
-        className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-transparent "
+        className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white p-1 rounded-full shadow-lg z-10"
       >
-        <MdKeyboardArrowLeft />
+        <MdKeyboardArrowLeft className="text-xl" />
       </Button>
       <Button
         onClick={handleNext}
-        className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-transparent "
+        className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white p-1 rounded-full shadow-lg z-10"
       >
-        <MdKeyboardArrowRight />
+        <MdKeyboardArrowRight className="text-xl" />
       </Button>
       {/* Dots Indicator */}
       <div className="flex justify-center space-x-2 mt-4">
