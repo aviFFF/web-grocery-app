@@ -96,6 +96,7 @@ const VendorOrderHistory = () => {
                     /> */}
                     <p>Price: ₹{orderItem.product?.data?.attributes?.sellingPrice}</p>
                     <p>Quantity: {orderItem.quantity}</p>
+                    <p>Payment Mode: {order.attributes.paymentid}</p>
                   </div>
                   ))}
                 </div>
