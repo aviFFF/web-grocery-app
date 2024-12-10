@@ -7,32 +7,20 @@ import Link from "next/link";
 import Image from "next/image";
 
 const VendorLogin = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [token, setToken] = useState(null);
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const router = useRouter();
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await vendorLogin(formData.email, formData.password);
-      console.log('Login Success:', response.data);
-      // Save JWT to localStorage
-      localStorage.setItem("token", response.data.jwt);
-      toast('Login successful!');
-      router.push('/vendor-order');
+      toast.success("Login successful!");
+      router.push("/vendor-order"); // Redirect to orders page
     } catch (error) {
-      console.error('Login Error:', error.response?.data || error.message);
-      toast('Login failed. Please check your credentials.');
+      console.error("Login Error:", error.response?.data || error.message);
+      toast.error("Login failed. Please check your credentials.");
     }
   };
-  
-  
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-100 to-blue-50">
@@ -54,31 +42,23 @@ const VendorLogin = () => {
         </Link>
         <div className="flex flex-col gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-600">
-              Email
-            </label>
+            <label className="block text-sm font-medium text-gray-600">Email</label>
             <input
               type="email"
               placeholder="Enter your email"
               value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600">
-              Password
-            </label>
+            <label className="block text-sm font-medium text-gray-600">Password</label>
             <input
               type="password"
               placeholder="Enter your password"
               value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
               required
             />

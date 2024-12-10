@@ -20,7 +20,7 @@
   .sliding-placeholder {
     transition: opacity 0.5s ease-in-out;
   }
-
+@media (min-width:768px){
  /* Styles for larger screens */
 .search-box-container {
   display: flex;
@@ -29,12 +29,14 @@
   margin-top: 20px;
   position: relative;
 }
+}
 
 /* Styles for mobile and smaller screens */
 @media (max-width: 767px) {
   .search-box-container {
     position: fixed; /* Stick it to the bottom */
     top: 50px;
+    margin-top: 20px;
     left: 0;
     width: 100%;
     padding: 10px;
@@ -49,10 +51,10 @@
 }
 
 /* Styles for mobile and smaller screens */
-@media (max-width: 350px) {
+@media (max-width: 360px) {
   .search-box-container {
     position: fixed; /* Stick it to the bottom */
-    top: 30px;
+    top: 32px;
     left: 0;
     width: 100%;
     padding: 10px;

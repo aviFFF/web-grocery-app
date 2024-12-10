@@ -1,20 +1,24 @@
+import Cookies from "js-cookie";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'https://groapp-admin.onrender.com/api/',
+    baseURL:'http://127.0.0.1:1337/api/',
 });
-
+axiosClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 const getCategory =()=>axiosClient.get('/categories?populate=*');
 
 const getSliders=()=>axiosClient.get('/sliders?populate=*').then(resp=>{
     return resp.data.data
 })
 
-/*************  ✨ Codeium Command ⭐  *************/ 
-/**
- * Gets the list of categories from the server.
- * @returns {Promise<Array<Category>>} - A promise that resolves to an array of categories.
- */const getCategoryList =()=>axiosClient.get('/categories?populate=*').then(resp=>{
+
+const getCategoryList =()=>axiosClient.get('/categories?populate=*').then(resp=>{
     return resp.data.data
 })
 
@@ -166,14 +170,32 @@ export const vendorSignup = (name, email, password, phone) =>
   axiosClient.post('/vendor/signup', { name, email, password, phone });
 
 // Vendor Login API
-export const vendorLogin = (email, password) =>
-  axiosClient.post('/vendor/login', { email, password });
+export const vendorLogin = async (email, password) => {
+  const response = await axiosClient.post('/vendor/login', { email, password });
+  
+  // Store token in a secure cookie
+  Cookies.set("token", response.data.jwt, {
+    expires: 7, // Token valid for 7 days
+    secure: true, // Only sent over HTTPS
+    sameSite: "Lax", // Protect against CSRF
+  });
+
+  return response;
+};
 
 // Example function to get vendor data after login
 export const fetchVendorOrders = async () => {
-  return axiosClient.get('/orders', {
+  const token = Cookies.get("token"); // Get token from cookies
+  console.log("Token from cookies:", token); // Debugging line
+
+  if (!token) {
+    console.error("No token available!"); // Log the error
+    throw new Error("Token is missing");
+  }
+
+  return axiosClient.get("/orders?populate[Orderitemlist][populate]=product.image", {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your token retrieval logic
+      Authorization: `Bearer ${token}`, // Pass token in Authorization header
     },
   });
 };

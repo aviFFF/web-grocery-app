@@ -2,23 +2,28 @@
 import { useEffect, useState } from "react";
 import { fetchVendorOrders } from "@/app/utils/GlobalApi";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const VendorOrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  // Function to play notification sound
   const playNotificationSound = () => {
     const audio = new Audio('/rooster-233738.mp3'); // Ensure the path is correct
     audio.play();
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token"); // Get token from cookies
+
     if (!token) {
-      router.push("/vendor-login");
+      console.error("Token is missing"); // Debugging line
+      router.push("/vendor-login"); // Redirect to login if no token
       return;
     }
+
 
     const fetchOrders = async () => {
       try {
@@ -30,9 +35,9 @@ const VendorOrderHistory = () => {
         // Sort orders by ID in descending order (latest order first)
         const sortedOrders = ordersArray.sort((a, b) => b.id - a.id);
 
-        // Check for new orders
+        // Check if the first order in the sorted array is new (compared to previous orders)
         if (orders.length > 0 && orders[0].id !== sortedOrders[0]?.id) {
-          playNotificationSound();
+          playNotificationSound(); // Play sound if new order
         }
 
         setOrders(sortedOrders);
@@ -43,21 +48,21 @@ const VendorOrderHistory = () => {
       }
     };
 
-    fetchOrders(); // Fetch once on load
+    // Fetch orders initially
+    fetchOrders();
 
     // Fetch orders every 5 seconds
     const interval = setInterval(fetchOrders, 5000);
 
-    // Clean up the interval
+    // Clean up the interval on component unmount
     return () => clearInterval(interval);
-  }, [orders, router]); // Depend on orders and router to track updates
+  }, [orders, router]); // Run the effect when `orders` or `router` changes
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-semibold text-gray-800 mb-8">Your Order History</h1>
-      
       <div className="flex flex-col gap-8">
         {orders.length > 0 ? (
           orders.map((order) => (
@@ -80,18 +85,18 @@ const VendorOrderHistory = () => {
               <div className="mt-4">
                 <h4 className="text-lg font-semibold text-gray-700 mb-2">Products:</h4>
                 <div className="space-y-4">
-                  {order.attributes.products && order.attributes.products.map((product) => (
-                    <div key={product.id} className="flex items-center space-x-4">
-                      <img 
-                        src={product.imageUrl} 
-                        alt={product.name} 
-                        className="w-16 h-16 object-cover rounded-md" 
-                      />
-                      <div className="text-sm text-gray-600">
-                        <p><strong>{product.name}</strong></p>
-                        <p>₹{product.price}</p>
-                      </div>
-                    </div>
+                  {order.attributes.Orderitemlist?.map((orderItem,idx) => (
+                    <div key={idx}>
+                    <h4>{orderItem.product?.data?.attributes?.name}</h4>
+                    {/* <img 
+                      src={orderItem.product?.data?.attributes?.image?.url || '/default-image.jpg'}
+                      alt={orderItem.product?.data?.attributes?.name}
+                      width={50}
+                      height={50}
+                    /> */}
+                    <p>Price: ₹{orderItem.product?.data?.attributes?.sellingPrice}</p>
+                    <p>Quantity: {orderItem.quantity}</p>
+                  </div>
                   ))}
                 </div>
               </div>

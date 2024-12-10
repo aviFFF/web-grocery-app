@@ -37,9 +37,9 @@ function Sliders({ sliderList }) {
             <Image
               src={slider?.attributes?.image?.data?.attributes?.url}
               width={1000}
-              height={400}
+              height={500}
               alt="image"
-              className="w-full md:h-[200px] md:pt-0 pt-10 h-[100px] object-fill md:rounded-2xl"
+              className="w-full md:h-[200px] mt-6 sm:mt-2 h-[100px] object-fill md:rounded-2xl"
             />
           </CarouselItem>
         ))}
