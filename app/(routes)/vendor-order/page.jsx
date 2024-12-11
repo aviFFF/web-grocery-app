@@ -11,7 +11,7 @@ const VendorOrderHistory = () => {
 
   // Function to play notification sound
   const playNotificationSound = () => {
-    const audio = new Audio('/hareram.mp3'); // Ensure the path is correct
+    const audio = new Audio('/noti-sound.mp3'); // Ensure the path is correct
     audio.play();
   };
 
