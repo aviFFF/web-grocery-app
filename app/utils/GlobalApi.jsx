@@ -118,7 +118,7 @@ export const getPincodes = async () => {
     };
 
     // Send the subscription data to Strapi
-    const response = await fetch("/subscriptions", {
+    const response = await fetch("https://groapp-admin.onrender.com/api/subscriptions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

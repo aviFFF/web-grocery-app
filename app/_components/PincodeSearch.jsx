@@ -71,7 +71,7 @@ const PincodeSearchPopup = ({onValidation}) => {
     <>
       {showPopup && (
         <div className="fixed inset-0 px-8 rounded-lg bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
+          <div className="bg-white p-6 rounded-xl shadow-lg max-w-md w-full relative">
             <h2 className="text-lg font-semibold mb-4">
               Check Service Availability
             </h2>
