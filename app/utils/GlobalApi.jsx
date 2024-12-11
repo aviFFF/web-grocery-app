@@ -106,25 +106,42 @@ export const getPincodes = async () => {
     return resp.data.data
   })
 
-  const saveSubscription = async (subscription) => {
-    try {
-      const response = await fetch("/api/subscriptions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ data: subscription }),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to save subscription");
-      }
-  
-      console.log("Subscription saved successfully");
-    } catch (error) {
-      console.error("Error saving subscription:", error);
+ const saveSubscription = async (subscription) => {
+  try {
+    // Extract the necessary fields from the PushSubscription object
+    const subscriptionData = {
+      endpoint: subscription.endpoint, // Push subscription endpoint
+      keys: {
+        p256dh: subscription.getKey('p256dh'), // Extract p256dh key
+        auth: subscription.getKey('auth'), // Extract auth key
+      },
+    };
+
+    // Send the subscription data to Strapi
+    const response = await fetch("/subscriptions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ data: subscriptionData }), // Use 'data' as the root object key
+    });
+
+    if (!response.ok) {
+      const errorDetails = await response.text();
+      console.error("Failed to save subscription:", errorDetails);
+      throw new Error("Failed to save subscription");
     }
-  };
+
+    console.log("Subscription saved successfully");
+  } catch (error) {
+    console.error("Error saving subscription:", error);
+  }
+};
+
+  
+  
+  
+  
 
  async function verifyCaptcha(token) {
     const secretKey = '6LcfP5QqAAAAACAP3RHVeioVCirG6BEo5EHrpTlg'; // Replace with your reCAPTCHA secret key

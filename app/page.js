@@ -37,6 +37,7 @@ export default function Home() {
     fetchData();
   }, []);
 
+  // Handle PWA install prompt
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault(); // Prevent the default prompt
@@ -64,6 +65,60 @@ export default function Home() {
       setShowInstallBanner(false); // Hide the banner
     }
   };
+
+  // Utility to convert Base64 to Uint8Array
+  const urlBase64ToUint8Array = (base64String) => {
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+    const rawData = atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  };
+
+  // Register Service Worker and Request Notification Permissions
+  useEffect(() => {
+    const registerServiceWorker = async () => {
+      if ("serviceWorker" in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.register('/service-worker.js');
+          console.log('Service Worker registered:', registration);
+
+          if ("Notification" in window) {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+              console.log("Notification permission granted.");
+
+              try {
+                const applicationServerKey = urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY);
+                const subscription = await registration.pushManager.subscribe({
+                  userVisibleOnly: true,
+                  applicationServerKey,
+                });
+                console.log("Push subscription:", subscription);
+
+                // Save the subscription to the server
+                await GlobalApi.saveSubscription(subscription);
+              } catch (error) {
+                console.error("Failed to subscribe for push notifications:", error);
+              }
+            } else {
+              console.log("Notification permission denied.");
+            }
+          }
+        } catch (error) {
+          console.error('Service Worker registration failed:', error);
+        }
+      }
+    };
+
+    registerServiceWorker();
+  }, []);
 
   if (isLoading) {
     return (
