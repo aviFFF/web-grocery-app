@@ -51,7 +51,7 @@ function Footer() {
               <FooterLink href="#">About</FooterLink>
               <FooterLink href="#">Careers</FooterLink>
               <FooterLink href="#">Privacy</FooterLink>
-              <FooterLink href="/vendor-login">Vendor</FooterLink>
+              <FooterLink href="/vendor">Vendor</FooterLink>
             </FooterColumn>
 
             <FooterColumn title="Contact">

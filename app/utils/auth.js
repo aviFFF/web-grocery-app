@@ -13,7 +13,7 @@ export const useAuth = () => {
     
     if (!token) {
       // If there's no token, redirect to login page
-      router.push('/vendor-login');
+      router.push('/vendor');
     }
   };
 

@@ -20,7 +20,7 @@ const VendorOrderHistory = () => {
 
     if (!token) {
       console.error("Token is missing"); // Debugging line
-      router.push("/vendor-login"); // Redirect to login if no token
+      router.push("/vendor"); // Redirect to login if no token
       return;
     }
 

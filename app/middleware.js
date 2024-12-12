@@ -7,7 +7,7 @@ export const useAuth = () => {
   const checkAuth = () => {
     const token = Cookies.get("token");
     if (!token) {
-      router.push("/vendor-login");
+      router.push("/vendor");
     }
   };
 

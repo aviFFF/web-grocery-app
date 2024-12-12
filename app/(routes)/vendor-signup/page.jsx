@@ -21,7 +21,7 @@ const VendorSignup = () => {
       const response = await vendorSignup(formData.name, formData.email, formData.password, formData.phone);
       console.log("Signup Success:", response.data);
       toast("Signup successful!");
-      router.push("/vendor-login");
+      router.push("/vendor");
     } catch (error) {
       console.error("Signup Error:", error.response?.data || error.message);
       toast("Signup failed. Please try again.");
@@ -100,7 +100,7 @@ const VendorSignup = () => {
         </div>
         <p className="mt-4 text-sm text-center text-gray-500">
           Already have an account?{" "}
-          <a href="/vendor-login" className="text-blue-500 hover:underline">
+          <a href="/vendor" className="text-blue-500 hover:underline">
             Login here
           </a>
         </p>
