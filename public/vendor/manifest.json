@@ -1,6 +1,6 @@
 {
   "name": "Vendor Portal - Buzzat",
-  "short_name": "VendorBuzzat",
+  "short_name": "Buzzat-Vendor",
   "start_url": "/vendor",
   "display": "standalone",
   "background_color": "#ffffff",

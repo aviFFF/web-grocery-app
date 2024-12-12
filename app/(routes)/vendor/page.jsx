@@ -103,15 +103,17 @@ const VendorLogin = () => {
           <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
             Vendor Login
           </h1>
+          <div className="flex justify-center">
           <Link href="/">
             <Image
-              src="/newblogo.png"
-              className="rounded-2xl md:w-32 w-24"
+              src="/vendor/vendor-buzzat.png"
+              className="rounded-2xl md:w-40 w-24"
               alt="logo"
               width={100}
               height={50}
             />
           </Link>
+          </div>
           <div className="flex flex-col gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-600">
