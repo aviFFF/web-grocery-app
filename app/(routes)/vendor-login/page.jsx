@@ -1,10 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { vendorLogin } from "@/app/utils/GlobalApi";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+
+
 
 const VendorLogin = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -21,6 +23,29 @@ const VendorLogin = () => {
       toast.error("Login failed. Please check your credentials.");
     }
   };
+
+  const requestNotificationPermission = () => {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        navigator.serviceWorker.ready.then((registration) => {
+          registration.pushManager
+            .subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+            })
+            .then((subscription) => {
+              console.log("Push subscription:", subscription);
+              // Send this subscription to the backend
+              axios.post("/api/subscription", { subscription });
+            });
+        });
+      }
+    });
+  };
+  
+  useEffect(() => {
+    requestNotificationPermission();
+  }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-100 to-blue-50">

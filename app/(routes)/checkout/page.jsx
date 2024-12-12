@@ -329,11 +329,11 @@ function Checkout() {
         <DialogTitle>Choose Payment Method</DialogTitle>
       </VisuallyHidden>
       <DialogDescription>
-        Proceed with PayU for secure online payment.
+        Proceed to checkout for secure online payment.
       </DialogDescription>
     </DialogHeader>
     <DialogFooter className="gap-4">
-      <Button onClick={handlePayUCheckout}>Pay with PayU</Button>
+      <Button onClick={handlePayUCheckout}>Pay Online</Button>
       <Button
         variant="outline"
         onClick={() => onApprove({ paymentID: "Cash on Delivery" })}
