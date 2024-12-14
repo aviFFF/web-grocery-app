@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'https://groapp-admin.onrender.com/sapi',
+    baseURL:'https://groapp-admin.onrender.com/api',
 });
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
