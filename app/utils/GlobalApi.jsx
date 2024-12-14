@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'http://127.0.0.1:1337/api',
+    baseURL:'https://groapp-admin.onrender.com/sapi',
 });
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -120,7 +120,7 @@ export const saveFCMToken = async (token) => {
           },
       };
 
-      const response = await fetch('http://localhost:1337/api/subscriptions', {
+      const response = await fetch('https://groapp-admin.onrender.com/api/subscriptions', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
