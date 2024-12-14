@@ -8,6 +8,10 @@ import Footer from "./_components/Footer";
 import ProductListwc from "./_components/ProductListwc";
 import GlobalApi from "./utils/GlobalApi";
 import Head from 'next/head';
+import { messaging } from './firebase-config';
+import { onMessage } from 'firebase/messaging';
+import { requestPermission } from './utils/notification';
+import { saveFCMToken } from './utils/GlobalApi';
 
 export default function Home() {
   const [sliderList, setSliderList] = useState([]);
@@ -17,6 +21,7 @@ export default function Home() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
 
+  // Fetch Slider, Categories, and Products
   useEffect(() => {
     async function fetchData() {
       try {
@@ -33,11 +38,10 @@ export default function Home() {
         setIsLoading(false);
       }
     }
-
     fetchData();
   }, []);
 
-  // Handle PWA install prompt
+  // Handle PWA Install Banner
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault(); // Prevent the default prompt
@@ -66,58 +70,29 @@ export default function Home() {
     }
   };
 
-  // Utility to convert Base64 to Uint8Array
-  const urlBase64ToUint8Array = (base64String) => {
-    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding)
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
-    const rawData = atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-
-    for (let i = 0; i < rawData.length; ++i) {
-      outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
-  };
-
-  // Register Service Worker and Request Notification Permissions
+  // Register Service Worker and Handle FCM Notifications
   useEffect(() => {
-    const registerServiceWorker = async () => {
-      if ("serviceWorker" in navigator) {
-        try {
-          const registration = await navigator.serviceWorker.register('/service-worker.js');
-          console.log('Service Worker registered:', registration);
-
-          if ("Notification" in window) {
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-              console.log("Notification permission granted.");
-
-              try {
-                const applicationServerKey = urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY);
-                const subscription = await registration.pushManager.subscribe({
-                  userVisibleOnly: true,
-                  applicationServerKey,
-                });
-                console.log("Push subscription:", subscription);
-
-                // Save the subscription to the server
-                await GlobalApi.saveSubscription(subscription);
-              } catch (error) {
-                console.error("Failed to subscribe for push notifications:", error);
-              }
-            } else {
-              console.log("Notification permission denied.");
-            }
-          }
-        } catch (error) {
-          console.error('Service Worker registration failed:', error);
+    const initializeNotifications = async () => {
+      try {
+        const fcmToken = await requestPermission(); // Request FCM permission and get the token
+        if (fcmToken) {
+          console.log('FCM Token:', fcmToken);
+          await saveFCMToken(fcmToken); // Save the token to your backend
         }
+      } catch (error) {
+        console.error('Service Worker registration or notification setup failed:', error);
       }
     };
 
-    registerServiceWorker();
+    initializeNotifications();
+
+    // Listen for foreground messages
+    const unsubscribe = onMessage(messaging, (payload) => {
+      console.log("Foreground message received:", payload);
+      alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   if (isLoading) {
@@ -130,27 +105,22 @@ export default function Home() {
   }
 
   return (
-    <>
-      <Head>
-        <title>Buzzat - Online Grocery Store</title>
-      </Head>
-      <div className="md:p-4 p-5 md:px-16">
-        <Slider sliderList={sliderList} />
-        <CategoryList categoryList={categoryList} />
-        <ProductList productList={productList} />
-        <ProductListwc productList={productList} />
-        <Footer />
+    <div className="md:p-4 p-5 md:px-16">
+      <Slider sliderList={sliderList} />
+      <CategoryList categoryList={categoryList} />
+      <ProductList productList={productList} />
+      <ProductListwc productList={productList} />
+      <Footer />
 
-        {/* Install PWA Banner */}
-        {showInstallBanner && (
-          <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 flex justify-between items-center">
-            <span>Install our app for the best experience!</span>
-            <Button onClick={installPWA} className="bg-primary text-white">
-              Install
-            </Button>
-          </div>
-        )}
-      </div>
-    </>
+      {/* Install PWA Banner */}
+      {showInstallBanner && (
+        <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 flex justify-between items-center">
+          <span>Install our app for the best experience!</span>
+          <Button onClick={installPWA} className="bg-primary text-white">
+            Install
+          </Button>
+        </div>
+      )}
+    </div>
   );
 }

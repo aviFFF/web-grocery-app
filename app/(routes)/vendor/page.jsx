@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import Head from "next/head";
+import axios from "axios";
 
 const VendorLogin = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });

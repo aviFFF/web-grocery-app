@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'https://groapp-admin.onrender.com/api/',
+    baseURL:'http://127.0.0.1:1337/api',
 });
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -106,37 +106,57 @@ export const getPincodes = async () => {
     return resp.data.data
   })
 
- const saveSubscription = async (subscription) => {
+// utils/GlobalApi.js
+
+export const saveFCMToken = async (token) => {
   try {
-    // Extract the necessary fields from the PushSubscription object
-    const subscriptionData = {
-      endpoint: subscription.endpoint, // Push subscription endpoint
-      keys: {
-        p256dh: subscription.getKey('p256dh'), // Extract p256dh key
-        auth: subscription.getKey('auth'), // Extract auth key
-      },
-    };
+      const payload = {
+          data: {
+              Endpoint: token, // Save the FCM token as the endpoint
+              Keys: {
+                  auth: '', // Optional - you can provide these if needed
+                  p256dh: '',
+              },
+          },
+      };
 
-    // Send the subscription data to Strapi
-    const response = await fetch("https://groapp-admin.onrender.com/api/subscriptions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ data: subscriptionData }), // Use 'data' as the root object key
-    });
+      const response = await fetch('http://localhost:1337/api/subscriptions', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`, // Use your environment variable here
+          },
+          body: JSON.stringify(payload),
+      });
 
-    if (!response.ok) {
-      const errorDetails = await response.text();
-      console.error("Failed to save subscription:", errorDetails);
-      throw new Error("Failed to save subscription");
-    }
+      if (!response.ok) {
+          const errorDetails = await response.json();
+          console.error('Failed to save FCM token. Error details:', errorDetails);
+          throw new Error('Failed to save FCM token');
+      }
 
-    console.log("Subscription saved successfully");
+      const data = await response.json();
+      console.log('FCM token saved successfully:', data);
   } catch (error) {
-    console.error("Error saving subscription:", error);
+      console.error('Error saving FCM token:', error);
   }
 };
+
+const sendNotification = async (fcmToken, title, body) => {
+  try {
+    const response = await axios.post('/notifications/send', {
+      fcmToken,
+      title,
+      body,
+    });
+    console.log('Notification sent:', response.data);
+  } catch (error) {
+    console.error('Error sending notification:', error);
+  }
+};
+
+
+  
 
   
   
@@ -237,7 +257,7 @@ export default {
     createOrder,
     getMyorders,
     getPromocodes,
-    saveSubscription,
+    saveFCMToken,
     verifyCaptcha,
     fetchVendorOrders,
     vendorSignup,
