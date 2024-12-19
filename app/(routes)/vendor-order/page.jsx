@@ -15,22 +15,6 @@ const VendorOrderHistory = () => {
     audio.play();
   };
 
-  // Function to display a browser notification
-  const showNotification = (order) => {
-    if (Notification.permission === "granted") {
-      const notification = new Notification("New Order!", {
-        body: `Order ID: ${order.id} from ${order.attributes.firstname} ${order.attributes.lastname}`,
-        icon: "/noti-icon.png", // Optional: Add a custom icon
-        badge: "/noti-badge.png", // Optional: Add a badge
-      });
-
-      notification.onclick = () => {
-        // Optionally, you can redirect the user to a specific page when the notification is clicked
-        router.push(`/orders/${order.id}`);
-      };
-    }
-  };
-
   useEffect(() => {
     const token = Cookies.get("token"); // Get token from cookies
 
@@ -40,10 +24,6 @@ const VendorOrderHistory = () => {
       return;
     }
 
-    // Request notification permission if not already granted
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
 
     const fetchOrders = async () => {
       try {
@@ -58,7 +38,6 @@ const VendorOrderHistory = () => {
         // Check if the first order in the sorted array is new (compared to previous orders)
         if (orders.length > 0 && orders[0].id !== sortedOrders[0]?.id) {
           playNotificationSound(); // Play sound if new order
-          showNotification(sortedOrders[0]); // Show browser notification for the new order
         }
 
         setOrders(sortedOrders);
@@ -109,6 +88,12 @@ const VendorOrderHistory = () => {
                   {order.attributes.Orderitemlist?.map((orderItem,idx) => (
                     <div key={idx}>
                     <h4>{orderItem.product?.data?.attributes?.name}</h4>
+                    {/* <img 
+                      src={orderItem.product?.data?.attributes?.image?.url || '/default-image.jpg'}
+                      alt={orderItem.product?.data?.attributes?.name}
+                      width={50}
+                      height={50}
+                    /> */}
                     <p>Price: ₹{orderItem.product?.data?.attributes?.sellingPrice}</p>
                     <p>Quantity: {orderItem.quantity}</p>
                     <p>Payment Mode: {order.attributes.paymentid}</p>
