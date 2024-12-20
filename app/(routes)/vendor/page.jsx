@@ -101,16 +101,19 @@ const VendorLogin = () => {
           className="w-full max-w-sm p-8 bg-white rounded-lg shadow-lg"
           onSubmit={handleSubmit}
         >
-          <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          <h1 className="text-2xl font-bold text-center text-gray-800">
             Vendor Login
           </h1>
+          <h2 className="text-sm text-center text-gray-600">
+            Please contact us for login details
+          </h2>
           <div className="flex justify-center">
           <Link href="/">
             <Image
               src="/vendor/vendor-buzzat.png"
-              className="rounded-2xl md:w-40 w-24"
+              className="rounded-2xl w-24"
               alt="logo"
-              width={100}
+              width={200}
               height={50}
             />
           </Link>
@@ -153,15 +156,6 @@ const VendorLogin = () => {
               Login
             </button>
           </div>
-          <p className="mt-4 text-sm text-center text-gray-500">
-            Don’t have an account?{" "}
-            <Link
-              href="/vendor-signup"
-              className="text-blue-500 hover:underline"
-            >
-              Sign up here
-            </Link>
-          </p>
         </form>
         {showInstallBanner && (
           <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 flex justify-between items-center">
