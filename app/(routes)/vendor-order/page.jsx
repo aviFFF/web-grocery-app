@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { fetchVendorOrders } from "@/app/utils/GlobalApi";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { io } from "socket.io-client"; // Import socket.io-client
 
 const VendorOrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [latestOrderId, setLatestOrderId] = useState(null); // Track the latest order ID
+  const [latestOrderId, setLatestOrderId] = useState(null);
+  const [socket, setSocket] = useState(null); // WebSocket state
   const router = useRouter();
 
   // Function to enable notifications and sound
@@ -29,7 +31,7 @@ const VendorOrderHistory = () => {
 
   // Function to play notification sound
   const playNotificationSound = () => {
-    const audio = new Audio("/noti-sound.wav");
+    const audio = new Audio("/notific.mp3");
     audio.play().catch((err) => {
       console.error("Audio play failed:", err);
     });
@@ -51,6 +53,7 @@ const VendorOrderHistory = () => {
     router.push("/vendor");
   };
 
+  // Connect to WebSocket and listen for new orders
   useEffect(() => {
     const token = Cookies.get("token");
 
@@ -60,38 +63,65 @@ const VendorOrderHistory = () => {
       return;
     }
 
-    const fetchOrders = async () => {
-      try {
-        const response = await fetchVendorOrders();
-        const ordersArray = response.data?.data || [];
-        const sortedOrders = ordersArray.sort((a, b) => b.id - a.id);
+    // Initialize WebSocket connection
+    const socketInstance = io("http://localhost:1337"); // Replace with your Strapi server URL
+    setSocket(socketInstance);
 
-        // Check for new order
-        if (notificationsEnabled && sortedOrders[0]?.id !== latestOrderId) {
-          setLatestOrderId(sortedOrders[0]?.id); // Update latest order ID
-          playNotificationSound();
-          showNotification(
-            "New Order Received",
-            `Order ID: ${sortedOrders[0]?.id} - ${sortedOrders[0]?.attributes.firstname} ${sortedOrders[0]?.attributes.lastname}.`
-          );
-        }
+    // Subscribe to vendor notifications using their ID
+    const vendorId = 1; // Replace this with the logged-in vendor's ID
+    socketInstance.emit("subscribe", vendorId);
 
-        setOrders(sortedOrders);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      } finally {
-        setLoading(false);
+    // Listen for 'new-order' event from the server
+    socketInstance.on("new-order", (data) => {
+      console.log("New order received:", data);
+
+      // Trigger the notification if permissions are granted
+      if (notificationsEnabled) {
+        playNotificationSound();
+        showNotification("New Order Received", `Order ID: ${data.orderId} - ${data.message}`);
       }
+
+      // Optionally fetch the latest orders if you want to refresh the list on new order
+      fetchOrders();
+    });
+
+    // Cleanup WebSocket on component unmount
+    return () => {
+      socketInstance.disconnect();
     };
+  }, [router, notificationsEnabled]);
 
-    // Fetch orders initially
+  const fetchOrders = async () => {
+    try {
+      const response = await fetchVendorOrders();
+      const ordersArray = response.data?.data || [];
+      const sortedOrders = ordersArray.sort((a, b) => b.id - a.id);
+
+      // Check for new order and show notification
+      if (notificationsEnabled && sortedOrders[0]?.id !== latestOrderId) {
+        setLatestOrderId(sortedOrders[0]?.id); // Update latest order ID
+        playNotificationSound();
+        showNotification(
+          "New Order Received",
+          `Order ID: ${sortedOrders[0]?.id} - ${sortedOrders[0]?.attributes.firstname} ${sortedOrders[0]?.attributes.lastname}.`
+        );
+      }
+
+      setOrders(sortedOrders);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch orders initially and every 5 seconds
+  useEffect(() => {
     fetchOrders();
-
-    // Fetch orders every 5 seconds
     const interval = setInterval(fetchOrders, 5000);
 
     return () => clearInterval(interval);
-  }, [router, notificationsEnabled, latestOrderId]); // Remove `orders` from dependencies
+  }, [notificationsEnabled, latestOrderId]); // Dependencies are notifications and latestOrderId
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
 
