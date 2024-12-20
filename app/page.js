@@ -1,17 +1,17 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import Slider from "./_components/Slider";
-import CategoryList from "./_components/CategoryList";
-import ProductList from "./_components/ProductList";
+const Slider = dynamic(() => import('./_components/Slider'), { ssr: false });
+const CategoryList = dynamic(() => import('./_components/CategoryList'), { ssr: false });
+const ProductList = dynamic(() => import('./_components/ProductList'), { ssr: false });
 import Footer from "./_components/Footer";
-import ProductListwc from "./_components/ProductListwc";
+const ProductListwc = dynamic(() => import('./_components/ProductListwc'), { ssr: false });
 import GlobalApi from "./utils/GlobalApi";
-import Head from 'next/head';
-import { messaging } from './firebase-config';
+import dynamic from 'next/dynamic';
+const messaging = dynamic(() => import('./firebase-config').then((mod) => mod.messaging), { ssr: false });
 import { onMessage } from 'firebase/messaging';
 import { requestPermission } from './utils/notification';
-import { saveFCMToken } from './utils/GlobalApi';
+// import { saveFCMToken } from './utils/GlobalApi';
 
 export default function Home() {
   const [sliderList, setSliderList] = useState([]);
@@ -43,18 +43,21 @@ export default function Home() {
 
   // Handle PWA Install Banner
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+  
     const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault(); // Prevent the default prompt
-      setDeferredPrompt(e); // Save the event for later use
-      setShowInstallBanner(true); // Show the custom install banner
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallBanner(true);
     };
-
+  
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
+  
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
   }, []);
+  
 
   const installPWA = async () => {
     if (deferredPrompt) {
@@ -71,29 +74,31 @@ export default function Home() {
   };
 
   // Register Service Worker and Handle FCM Notifications
-  useEffect(() => {
-    const initializeNotifications = async () => {
-      try {
-        const fcmToken = await requestPermission(); // Request FCM permission and get the token
-        if (fcmToken) {
-          console.log('FCM Token:', fcmToken);
-          await saveFCMToken(fcmToken); // Save the token to your backend
-        }
-      } catch (error) {
-        console.error('Service Worker registration or notification setup failed:', error);
-      }
-    };
-
-    initializeNotifications();
-
-    // Listen for foreground messages
-    const unsubscribe = onMessage(messaging, (payload) => {
-      console.log("Foreground message received:", payload);
-      alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
-    });
-
-    return () => unsubscribe();
-  }, []);
+  // useEffect(() => {
+  //   if (typeof window === 'undefined') return;
+  
+  //   const initializeNotifications = async () => {
+  //     try {
+  //       const fcmToken = await requestPermission();
+  //       if (fcmToken) {
+  //         console.log('FCM Token:', fcmToken);
+  //         // await saveFCMToken(fcmToken);
+  //       }
+  //     } catch (error) {
+  //       console.error('Notification setup failed:', error);
+  //     }
+  //   };
+  
+  //   initializeNotifications();
+  
+  //   const unsubscribe = onMessage(messaging, (payload) => {
+  //     console.log("Foreground message received:", payload);
+  //     alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
+  //   });
+  
+  //   return () => unsubscribe();
+  // }, []);
+  
 
   if (isLoading) {
     return (

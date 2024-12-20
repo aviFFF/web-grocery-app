@@ -68,7 +68,7 @@ function LogIn() {
         </h2>
         <div className="w-full flex flex-col gap-5 mt-8">
           <Input
-            placeholder="Email"
+            placeholder="Mobile/Email"
             onChange={(e) => setEmail(e.target.value)}
           />
           <Input

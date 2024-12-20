@@ -67,6 +67,7 @@ const VendorSignup = () => {
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
               required
+
             />
           </div>
           <div>
@@ -78,6 +79,7 @@ const VendorSignup = () => {
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
               required
+              maxLength={10}
             />
           </div>
           <div>

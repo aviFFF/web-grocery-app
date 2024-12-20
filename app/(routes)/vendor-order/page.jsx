@@ -7,37 +7,73 @@ import Cookies from "js-cookie";
 const VendorOrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [latestOrderId, setLatestOrderId] = useState(null); // Track the latest order ID
   const router = useRouter();
+
+  // Function to enable notifications and sound
+  const enableNotificationsAndSound = () => {
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          setNotificationsEnabled(true);
+          console.log("Notifications enabled");
+        } else {
+          console.warn("Notifications permission denied");
+        }
+      });
+    } else {
+      setNotificationsEnabled(true);
+    }
+  };
 
   // Function to play notification sound
   const playNotificationSound = () => {
-    const audio = new Audio('/noti-sound.wav'); // Ensure the path is correct
-    audio.play();
+    const audio = new Audio("/noti-sound.wav");
+    audio.play().catch((err) => {
+      console.error("Audio play failed:", err);
+    });
+  };
+
+  // Function to show browser notification
+  const showNotification = (title, body) => {
+    if (Notification.permission === "granted") {
+      new Notification(title, {
+        body,
+        icon: "/vendor/vendor-buzzat.png", // Optional: Path to notification icon
+      });
+    }
+  };
+
+  // Logout function
+  const handleLogout = () => {
+    Cookies.remove("token");
+    router.push("/vendor");
   };
 
   useEffect(() => {
-    const token = Cookies.get("token"); // Get token from cookies
+    const token = Cookies.get("token");
 
     if (!token) {
-      console.error("Token is missing"); // Debugging line
-      router.push("/vendor"); // Redirect to login if no token
+      console.error("Token is missing");
+      router.push("/vendor");
       return;
     }
-
 
     const fetchOrders = async () => {
       try {
         const response = await fetchVendorOrders();
-        console.log("Orders fetched:", response.data);
-
         const ordersArray = response.data?.data || [];
-
-        // Sort orders by ID in descending order (latest order first)
         const sortedOrders = ordersArray.sort((a, b) => b.id - a.id);
 
-        // Check if the first order in the sorted array is new (compared to previous orders)
-        if (orders.length > 0 && orders[0].id !== sortedOrders[0]?.id) {
-          playNotificationSound(); // Play sound if new order
+        // Check for new order
+        if (notificationsEnabled && sortedOrders[0]?.id !== latestOrderId) {
+          setLatestOrderId(sortedOrders[0]?.id); // Update latest order ID
+          playNotificationSound();
+          showNotification(
+            "New Order Received",
+            `Order ID: ${sortedOrders[0]?.id} - ${sortedOrders[0]?.attributes.firstname} ${sortedOrders[0]?.attributes.lastname}.`
+          );
         }
 
         setOrders(sortedOrders);
@@ -54,56 +90,93 @@ const VendorOrderHistory = () => {
     // Fetch orders every 5 seconds
     const interval = setInterval(fetchOrders, 5000);
 
-    // Clean up the interval on component unmount
     return () => clearInterval(interval);
-  }, [orders, router]); // Run the effect when `orders` or `router` changes
+  }, [router, notificationsEnabled, latestOrderId]); // Remove `orders` from dependencies
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-semibold text-gray-800 mb-8">Your Order History</h1>
+      {/* Header Dashboard */}
+      <header className="flex justify-between items-center bg-gray-800 text-white py-4 px-6 rounded-lg mb-8">
+        <div className="text-lg font-semibold">Vendor Dashboard</div>
+        <nav className="space-x-4">
+        </nav>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
+        >
+          Logout
+        </button>
+      </header>
+
+      {/* Order History */}
+      <h1 className="text-3xl font-semibold text-gray-800 mb-8">
+        Your Order History
+      </h1>
+      <button
+        onClick={enableNotificationsAndSound}
+        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+      >
+        Enable Notifications and Sound
+      </button>
       <div className="flex flex-col gap-8">
         {orders.length > 0 ? (
           orders.map((order) => (
-            <div key={order.id} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <h3 className="text-xl font-semibold text-gray-700 mb-4">Order ID: {order.id}</h3>
+            <div
+              key={order.id}
+              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+            >
+              <h3 className="text-xl font-semibold text-gray-700 mb-4">
+                Order ID: {order.id}
+              </h3>
               <div className="flex justify-between text-sm text-gray-600 mb-3">
-                <span><strong>Customer:</strong> {order.attributes.firstname} {order.attributes.lastname}</span>
-                <span><strong>Phone:</strong> {order.attributes.phone}</span>
+                <span>
+                  <strong>Customer:</strong> {order.attributes.firstname}{" "}
+                  {order.attributes.lastname}
+                </span>
+                <span>
+                  <strong>Phone:</strong> {order.attributes.phone}
+                </span>
               </div>
               <div className="text-sm text-gray-600 mb-3">
-                <strong>Address:</strong> {order.attributes.address} - {order.attributes.pincode}
+                <strong>Address:</strong> {order.attributes.address} -{" "}
+                {order.attributes.pincode}
               </div>
               <div className="text-sm text-gray-600 mb-3">
                 <strong>Total Value:</strong> ₹{order.attributes.totalOrderValue}
               </div>
               <div className="text-sm text-gray-600 mb-3">
-                <strong>Order Date:</strong> {new Date(order.attributes.createdAt).toLocaleString()}
+                <strong>Order Date:</strong>{" "}
+                {new Date(order.attributes.createdAt).toLocaleString()}
               </div>
 
               <div className="mt-4">
-                <h4 className="text-lg font-semibold text-gray-700 mb-2">Products:</h4>
+                <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                  Products:
+                </h4>
                 <div className="space-y-4">
-                  {order.attributes.Orderitemlist?.map((orderItem,idx) => (
+                  {order.attributes.Orderitemlist?.map((orderItem, idx) => (
                     <div key={idx}>
-                    <h4>{orderItem.product?.data?.attributes?.name}</h4>
-                    {/* <img 
-                      src={orderItem.product?.data?.attributes?.image?.url || '/default-image.jpg'}
-                      alt={orderItem.product?.data?.attributes?.name}
-                      width={50}
-                      height={50}
-                    /> */}
-                    <p>Price: ₹{orderItem.product?.data?.attributes?.sellingPrice}</p>
-                    <p>Quantity: {orderItem.quantity}</p>
-                    <p>Payment Mode: {order.attributes.paymentid}</p>
-                  </div>
+                      <h4>{orderItem.product?.data?.attributes?.name}</h4>
+                      <p>
+                        Price: ₹{orderItem.product?.data?.attributes?.sellingPrice}
+                      </p>
+                      <p>Quantity: {orderItem.quantity}</p>
+                      <p>Payment Mode: {order.attributes.paymentid}</p>
+                    </div>
                   ))}
                 </div>
               </div>
 
               <div className="flex justify-between items-center mt-4">
-                <span className={`px-3 py-1 text-xs rounded-full font-semibold ${order.attributes.Status === 'Pending' ? 'bg-yellow-200 text-yellow-800' : 'bg-green-200 text-green-800'}`}>
+                <span
+                  className={`px-3 py-1 text-xs rounded-full font-semibold ${
+                    order.attributes.Status === "Pending"
+                      ? "bg-yellow-200 text-yellow-800"
+                      : "bg-green-200 text-green-800"
+                  }`}
+                >
                   {order.attributes.Status}
                 </span>
               </div>

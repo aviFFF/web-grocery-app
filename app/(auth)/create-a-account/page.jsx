@@ -36,7 +36,7 @@ function CreateAccount() {
         sessionStorage.setItem("jwt", resp.data.jwt);
 
         toast("Account successfully created!");
-        router.push("/"); // Redirect to homepage
+        router.replace("/log-in"); 
       } else {
         toast("Unexpected error occurred during registration.");
       }
@@ -69,28 +69,37 @@ function CreateAccount() {
             placeholder="Name"
             onChange={(e) => setName(e.target.value)}
             value={name}
+            required
           />
           <Input
             placeholder="Mobile Number"
             onChange={(e) => setUsername(e.target.value)}
             value={username}
             maxLength={10}
+            required
+            pattern="[0-9]{10}"
+            title="Please enter a valid 10-digit mobile number."
           />
           <Input
             placeholder="name@example.com"
             onChange={(e) => setEmail(e.target.value)}
             value={email}
+            required
+            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+            title="Please enter a valid email address."
           />
           <Input
             type="password"
             placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
             value={password}
+            required
+            pattern=".{8,}"
           />
 
           <Button
             onClick={onCreateAccount}
-            disabled={!username || !email || !password}
+            disabled={!username || !name || !email || !password}
           >
             {Loder ? <LoaderIcon className="animate-spin" /> : "Create an Account"}
           </Button>

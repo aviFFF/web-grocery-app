@@ -19,6 +19,7 @@
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.2",
+    "@radix-ui/react-visually-hidden": "^1.1.1",
     "@react-google-maps/api": "^2.20.3",
     "@shadcn/ui": "^0.0.4",
     "axios": "^1.7.7",

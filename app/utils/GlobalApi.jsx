@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'https://groapp-admin.onrender.com/api',
+    baseURL:'http://127.0.0.1:1337/api',
 });
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -120,7 +120,7 @@ export const saveFCMToken = async (token) => {
           },
       };
 
-      const response = await fetch('https://groapp-admin.onrender.com/api/subscriptions', {
+      const response = await fetch('http://127.0.0.1:1337/api/subscriptions', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -155,6 +155,24 @@ const sendNotification = async (fcmToken, title, body) => {
   }
 };
 
+
+export const saveVendorFCMToken = async (fcmToken, vendorId) => {
+  try {
+    const payload = {
+      data: {
+        fcm_token: fcmToken,
+        vendor: vendorId,
+      },
+    };
+
+    const response = await axiosClient.post("/vendor-fcm-tokens", payload);
+    console.log("Vendor FCM Token saved:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error saving vendor FCM token:", error.response?.data || error.message);
+    throw error;
+  }
+};
 
   
 
@@ -261,5 +279,6 @@ export default {
     verifyCaptcha,
     fetchVendorOrders,
     vendorSignup,
-    vendorLogin
+    vendorLogin,
+    saveVendorFCMToken
 }

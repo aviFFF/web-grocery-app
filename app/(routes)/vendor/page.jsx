@@ -60,7 +60,7 @@ const VendorLogin = () => {
     try {
       const response = await vendorLogin(formData.email, formData.password);
       toast.success("Login successful!");
-      router.push("/vendor-order"); // Redirect to orders page
+      router.replace("/vendor-order"); // Redirect to orders page
     } catch (error) {
       console.error("Login Error:", error.response?.data || error.message);
       toast.error("Login failed. Please check your credentials.");
