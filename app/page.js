@@ -8,10 +8,6 @@ import Footer from "./_components/Footer";
 const ProductListwc = dynamic(() => import('./_components/ProductListwc'), { ssr: false });
 import GlobalApi from "./utils/GlobalApi";
 import dynamic from 'next/dynamic';
-const messaging = dynamic(() => import('./firebase-config').then((mod) => mod.messaging), { ssr: false });
-import { onMessage } from 'firebase/messaging';
-import { requestPermission } from './utils/notification';
-// import { saveFCMToken } from './utils/GlobalApi';
 
 export default function Home() {
   const [sliderList, setSliderList] = useState([]);
@@ -72,33 +68,6 @@ export default function Home() {
       setShowInstallBanner(false); // Hide the banner
     }
   };
-
-  // Register Service Worker and Handle FCM Notifications
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-  
-    const initializeNotifications = async () => {
-      try {
-        const fcmToken = await requestPermission();
-        if (fcmToken) {
-          console.log('FCM Token:', fcmToken);
-          // await saveFCMToken(fcmToken);
-        }
-      } catch (error) {
-        console.error('Notification setup failed:', error);
-      }
-    };
-  
-    initializeNotifications();
-  
-    const unsubscribe = onMessage(messaging, (payload) => {
-      console.log("Foreground message received:", payload);
-      alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
-    });
-  
-    return () => unsubscribe();
-  }, []);
-  
 
   if (isLoading) {
     return (

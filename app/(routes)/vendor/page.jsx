@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import Head from "next/head";
-import axios from "axios";
 
 const VendorLogin = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -42,6 +41,7 @@ const VendorLogin = () => {
       setShowInstallBanner(false);
     }
   };
+
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
@@ -67,31 +67,8 @@ const VendorLogin = () => {
     }
   };
 
-  const requestNotificationPermission = () => {
-    Notification.requestPermission().then((permission) => {
-      if (permission === "granted") {
-        navigator.serviceWorker.ready.then((registration) => {
-          registration.pushManager
-            .subscribe({
-              userVisibleOnly: true,
-              applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-            })
-            .then((subscription) => {
-              console.log("Push subscription:", subscription);
-              // Send this subscription to the backend
-              axios.post("/api/subscription", { subscription });
-            });
-        });
-      }
-    });
-  };
-
-  useEffect(() => {
-    requestNotificationPermission();
-  }, []);
-
   return (
-       <>
+    <>
       <Head>
         <link rel="manifest" href="vendor/manifest.json" />
         <meta name="theme-color" content="#000000" />
@@ -108,15 +85,15 @@ const VendorLogin = () => {
             Please contact us for login details
           </h2>
           <div className="flex justify-center">
-          <Link href="/">
-            <Image
-              src="/vendor/vendor-buzzat.png"
-              className="rounded-2xl w-24"
-              alt="logo"
-              width={200}
-              height={50}
-            />
-          </Link>
+            <Link href="/">
+              <Image
+                src="/vendor/vendor-buzzat.png"
+                className="rounded-2xl w-24"
+                alt="logo"
+                width={200}
+                height={50}
+              />
+            </Link>
           </div>
           <div className="flex flex-col gap-4">
             <div>
