@@ -74,30 +74,30 @@ export default function Home() {
   };
 
   // Register Service Worker and Handle FCM Notifications
-  // useEffect(() => {
-  //   if (typeof window === 'undefined') return;
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
   
-  //   const initializeNotifications = async () => {
-  //     try {
-  //       const fcmToken = await requestPermission();
-  //       if (fcmToken) {
-  //         console.log('FCM Token:', fcmToken);
-  //         // await saveFCMToken(fcmToken);
-  //       }
-  //     } catch (error) {
-  //       console.error('Notification setup failed:', error);
-  //     }
-  //   };
+    const initializeNotifications = async () => {
+      try {
+        const fcmToken = await requestPermission();
+        if (fcmToken) {
+          console.log('FCM Token:', fcmToken);
+          // await saveFCMToken(fcmToken);
+        }
+      } catch (error) {
+        console.error('Notification setup failed:', error);
+      }
+    };
   
-  //   initializeNotifications();
+    initializeNotifications();
   
-  //   const unsubscribe = onMessage(messaging, (payload) => {
-  //     console.log("Foreground message received:", payload);
-  //     alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
-  //   });
+    const unsubscribe = onMessage(messaging, (payload) => {
+      console.log("Foreground message received:", payload);
+      alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
+    });
   
-  //   return () => unsubscribe();
-  // }, []);
+    return () => unsubscribe();
+  }, []);
   
 
   if (isLoading) {

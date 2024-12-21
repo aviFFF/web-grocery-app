@@ -1,223 +1,105 @@
 "use client";
-import { useEffect, useState } from "react";
-import { fetchVendorOrders } from "@/app/utils/GlobalApi";
+import React, { useEffect, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import { io } from "socket.io-client"; // Import socket.io-client
+import { toast } from "sonner";
+import GlobalApi from "@/app/utils/GlobalApi";
+import Link from "next/link";
+import Image from "next/image";
 
-const VendorOrderHistory = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [latestOrderId, setLatestOrderId] = useState(null);
-  const [socket, setSocket] = useState(null); // WebSocket state
+function LogIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const [loader, setLoader] = useState(false);
   const router = useRouter();
 
-  // Function to enable notifications and sound
-  const enableNotificationsAndSound = () => {
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          setNotificationsEnabled(true);
-          console.log("Notifications enabled");
-        } else {
-          console.warn("Notifications permission denied");
-        }
-      });
-    } else {
-      setNotificationsEnabled(true);
-    }
+  const onCaptchaChange = (token) => {
+    setCaptchaToken(token);
   };
 
-  // Function to play notification sound
-  const playNotificationSound = () => {
-    const audio = new Audio("/notific.mp3");
-    audio.play().catch((err) => {
-      console.error("Audio play failed:", err);
-    });
-  };
-
-  // Function to show browser notification
-  const showNotification = (title, body) => {
-    if (Notification.permission === "granted") {
-      new Notification(title, {
-        body,
-        icon: "/vendor/vendor-buzzat.png", // Optional: Path to notification icon
-      });
-    }
-  };
-
-  // Logout function
-  const handleLogout = () => {
-    Cookies.remove("token");
-    router.push("/vendor");
-  };
-
-  // Connect to WebSocket and listen for new orders
-  useEffect(() => {
-    const token = Cookies.get("token");
-
-    if (!token) {
-      console.error("Token is missing");
-      router.push("/vendor");
+  const onLogIn = async () => {
+    if (!captchaToken) {
+      toast("Please complete the CAPTCHA verification.");
       return;
     }
 
-    // Initialize WebSocket connection only once
-    const socketInstance = io("http://localhost:1337"); // Replace with your Strapi server URL
-    setSocket(socketInstance);
+    setLoader(true);
 
-    // Subscribe to vendor notifications using their ID
-    const vendorId = 1; // Replace this with the logged-in vendor's ID
-    socketInstance.emit("subscribe", vendorId);
-
-    // Listen for 'new-order' event from the server
-    socketInstance.on("new-order", (data) => {
-      console.log("New order received:", data);
-
-      // Trigger the notification if permissions are granted
-      if (notificationsEnabled) {
-        playNotificationSound();
-        showNotification("New Order Received", `Order ID: ${data.orderId} - ${data.message}`);
-      }
-
-      // Optionally fetch the latest orders if you want to refresh the list on new order
-      fetchOrders();
-    });
-
-    // Cleanup WebSocket on component unmount
-    return () => {
-      socketInstance.disconnect();
-    };
-  }, [notificationsEnabled, router]);
-
-  const fetchOrders = async () => {
     try {
-      const response = await fetchVendorOrders();
-      const ordersArray = response.data?.data || [];
-      const sortedOrders = ordersArray.sort((a, b) => b.id - a.id);
+      console.log("Sending Login Request...");
+      const resp = await GlobalApi.LogIn(email, password); // Assuming you have this method
+      console.log("Login Response:", resp);
 
-      // Check for new order and show notification
-      if (notificationsEnabled && sortedOrders[0]?.id !== latestOrderId) {
-        setLatestOrderId(sortedOrders[0]?.id); // Update latest order ID
-        playNotificationSound();
-        showNotification(
-          "New Order Received",
-          `Order ID: ${sortedOrders[0]?.id} - ${sortedOrders[0]?.attributes.firstname} ${sortedOrders[0]?.attributes.lastname}.`
-        );
-      }
+      sessionStorage.setItem("user", JSON.stringify(resp.data.user));
+      sessionStorage.setItem("jwt", resp.data.jwt);
 
-      setOrders(sortedOrders);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
+      toast("Login Successful!");
+      router.push("/");
+    } catch (loginError) {
+      console.error(
+        "Login API Error:",
+        loginError.response?.data || loginError.message
+      );
+      toast(loginError.response?.data?.message || "Something went wrong!");
     } finally {
-      setLoading(false);
+      setLoader(false);
     }
   };
 
-  // Fetch orders initially and every 5 seconds
-  useEffect(() => {
-    fetchOrders();
-    const interval = setInterval(fetchOrders, 5000);
-
-    return () => clearInterval(interval);
-  }, [notificationsEnabled, latestOrderId]); // Dependencies are notifications and latestOrderId
-
-  if (loading) return <div className="text-center py-8">Loading...</div>;
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header Dashboard */}
-      <header className="flex justify-between items-center bg-gray-800 text-white py-4 px-6 rounded-lg mb-8">
-        <div className="text-lg font-semibold">Vendor Dashboard</div>
-        <nav className="space-x-4">
-        </nav>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
-        >
-          Logout
-        </button>
-      </header>
-
-      {/* Order History */}
-      <h1 className="text-3xl font-semibold text-gray-800 mb-8">
-        Your Order History
-      </h1>
-      <button
-        onClick={enableNotificationsAndSound}
-        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-      >
-        Enable Notifications and Sound
-      </button>
-      <div className="flex flex-col gap-8">
-        {orders.length > 0 ? (
-          orders.map((order) => (
-            <div
-              key={order.id}
-              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-            >
-              <h3 className="text-xl font-semibold text-gray-700 mb-4">
-                Order ID: {order.id}
-              </h3>
-              <div className="flex justify-between text-sm text-gray-600 mb-3">
-                <span>
-                  <strong>Customer:</strong> {order.attributes.firstname}{" "}
-                  {order.attributes.lastname}
-                </span>
-                <span>
-                  <strong>Phone:</strong> {order.attributes.phone}
-                </span>
-              </div>
-              <div className="text-sm text-gray-600 mb-3">
-                <strong>Address:</strong> {order.attributes.address} -{" "}
-                {order.attributes.pincode}
-              </div>
-              <div className="text-sm text-gray-600 mb-3">
-                <strong>Total Value:</strong> ₹{order.attributes.totalOrderValue}
-              </div>
-              <div className="text-sm text-gray-600 mb-3">
-                <strong>Order Date:</strong>{" "}
-                {new Date(order.attributes.createdAt).toLocaleString()}
-              </div>
-
-              <div className="mt-4">
-                <h4 className="text-lg font-semibold text-gray-700 mb-2">
-                  Products:
-                </h4>
-                <div className="space-y-4">
-                  {order.attributes.Orderitemlist?.map((orderItem, idx) => (
-                    <div key={idx}>
-                      <h4>{orderItem.product?.data?.attributes?.name}</h4>
-                      <p>
-                        Price: ₹{orderItem.product?.data?.attributes?.sellingPrice}
-                      </p>
-                      <p>Quantity: {orderItem.quantity}</p>
-                      <p>Payment Mode: {order.attributes.paymentid}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center mt-4">
-                <span
-                  className={`px-3 py-1 text-xs rounded-full font-semibold ${
-                    order.attributes.Status === "Pending"
-                      ? "bg-yellow-200 text-yellow-800"
-                      : "bg-green-200 text-green-800"
-                  }`}
-                >
-                  {order.attributes.Status}
-                </span>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-500 mt-6">No orders found.</p>
-        )}
+    <div className="flex flex-col items-center justify-center my-20">
+      <div className="flex flex-col items-center justify-center md:p-10 p-1 md:w-auto w-screen bg-slate-100 border border-gray-200">
+        <Link href="/">
+          {" "}
+          <Image
+            src="/newblogo.png"
+            className="rounded-2xl md:w-32 w-24"
+            alt="logo"
+            width={100}
+            height={50}
+          />
+        </Link>
+        <h1 className="text-3xl font-bold">Sign in Your Account</h1>
+        <h2 className="text-sm  text-gray-500">
+          Enter Your Email/Mobile & Password to Signin an Account
+        </h2>
+        <div className="w-full flex flex-col gap-5 mt-8">
+          <Input
+            placeholder="Mobile/Email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Input
+            type="password"
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <ReCAPTCHA
+            sitekey="6LeOTZQqAAAAAHF62ZAdRx1rTS28sigTRSDtH_tn"
+            onChange={onCaptchaChange}
+          />
+          <Button
+            onClick={onLogIn}
+            disabled={!email || !password || !captchaToken}
+            className="mb-4"
+          >
+            {loader ? "Please wait..." : "Log In"}
+          </Button>
+        </div>
+        <div>
+        <h2>
+          Don't have an account?
+          <Link href="/create-a-account " className="text-blue-500 text-wrap">
+            {" "}
+            Create an Account
+          </Link>
+        </h2>
+        </div>
       </div>
     </div>
   );
-};
+}
 
-export default VendorOrderHistory;
+export default LogIn;

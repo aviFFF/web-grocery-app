@@ -57,11 +57,7 @@ const VendorOrderHistory = () => {
   useEffect(() => {
     const token = Cookies.get("token");
 
-    if (!token) {
-      console.error("Token is missing");
-      router.push("/vendor");
-      return;
-    }
+
 
     // Initialize WebSocket connection
     const socketInstance = io("http://localhost:1337"); // Replace with your Strapi server URL
