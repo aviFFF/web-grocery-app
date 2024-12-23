@@ -1,7 +1,7 @@
-import webPush from 'web-push';
-
+import pkg from "web-push";
+const { generateVAPIDKeys } = pkg;
 // Generate VAPID keys
-const vapidKeys = webPush.generateVAPIDKeys();
+const vapidKeys = generateVAPIDKeys();
 
-console.log('NEXT_PUBLIC_VAPID_PUBLIC_KEY:', vapidKeys.publicKey);
-console.log('NEXT_PUBLIC_VAPID_PRIVATE_KEY:', vapidKeys.privateKey);
+console.log("Public Key:", vapidKeys.publicKey);
+console.log("Private Key:", vapidKeys.privateKey);

@@ -4,6 +4,7 @@ import { fetchVendorOrders } from "@/app/utils/GlobalApi";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { io } from "socket.io-client"; // Import socket.io-client
+import {subscribeToPushNotifications} from "@/app/utils/GlobalApi";
 
 const VendorOrderHistory = () => {
   const [orders, setOrders] = useState([]);
@@ -13,6 +14,40 @@ const VendorOrderHistory = () => {
   const [socket, setSocket] = useState(null); // WebSocket state
   const router = useRouter();
 
+
+  const urlBase64ToUint8Array = (base64String) => {
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, "+")
+      .replace(/_/g, "/");
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; i++) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  };
+
+
+  useEffect(() => {
+    if ("Notification" in window && "serviceWorker" in navigator) {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+        } else {
+          console.warn("Notification permission denied");
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/vendor/service-worker.js").then((registration) => {
+        console.log("Service Worker registered:", registration);
+      });
+    }
+  }, []);
+  
   // Function to enable notifications and sound
   const enableNotificationsAndSound = () => {
     if (Notification.permission !== "granted") {

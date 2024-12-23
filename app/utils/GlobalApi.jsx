@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'https://buzzat-admin.onrender.com/api',
+    baseURL:'http://localhost:1337/api',
 });
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -106,41 +106,6 @@ export const getPincodes = async () => {
     return resp.data.data
   })
 
-// utils/GlobalApi.js
-
-export const saveFCMToken = async (token) => {
-  try {
-      const payload = {
-          data: {
-              Endpoint: token, // Save the FCM token as the endpoint
-              Keys: {
-                  auth: '', // Optional - you can provide these if needed
-                  p256dh: '',
-              },
-          },
-      };
-
-      const response = await fetch('http://127.0.0.1:1337/api/subscriptions', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`, // Use your environment variable here
-          },
-          body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-          const errorDetails = await response.json();
-          console.error('Failed to save FCM token. Error details:', errorDetails);
-          throw new Error('Failed to save FCM token');
-      }
-
-      const data = await response.json();
-      console.log('FCM token saved successfully:', data);
-  } catch (error) {
-      console.error('Error saving FCM token:', error);
-  }
-};
 
 const sendNotification = async (fcmToken, title, body) => {
   try {
@@ -154,32 +119,6 @@ const sendNotification = async (fcmToken, title, body) => {
     console.error('Error sending notification:', error);
   }
 };
-
-
-export const saveVendorFCMToken = async (fcmToken, vendorId) => {
-  try {
-    const payload = {
-      data: {
-        fcm_token: fcmToken,
-        vendor: vendorId,
-      },
-    };
-
-    const response = await axiosClient.post("/vendor-fcm-tokens", payload);
-    console.log("Vendor FCM Token saved:", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Error saving vendor FCM token:", error.response?.data || error.message);
-    throw error;
-  }
-};
-
-  
-
-  
-  
-  
-  
 
  async function verifyCaptcha(token) {
     const secretKey = '6LcfP5QqAAAAACAP3RHVeioVCirG6BEo5EHrpTlg'; // Replace with your reCAPTCHA secret key
@@ -255,6 +194,33 @@ export const fetchVendorOrders = async () => {
   });
 };
 
+const subscribeToPushNotifications = async () => {
+  try {
+    const registration = await navigator.serviceWorker.ready;
+
+    const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY; // Replace this with the Base64 URL-safe public key
+    const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: convertedVapidKey,
+    });
+
+    console.log("Push Subscription:", subscription);
+
+    // Send subscription to your backend
+    await fetch("http://localhost:1337/api/save-subscription", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(subscription),
+    });
+  } catch (error) {
+    console.error("Error subscribing to push notifications:", error);
+  }
+};
+
   
   
   
@@ -275,10 +241,9 @@ export default {
     createOrder,
     getMyorders,
     getPromocodes,
-    saveFCMToken,
     verifyCaptcha,
     fetchVendorOrders,
     vendorSignup,
     vendorLogin,
-    saveVendorFCMToken
+    subscribeToPushNotifications
 }

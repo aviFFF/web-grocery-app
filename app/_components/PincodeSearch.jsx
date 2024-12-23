@@ -106,7 +106,7 @@ const PincodeSearchPopup = ({onValidation}) => {
       )}
 
       {(servicedPincode || pincodeNotEntered) && (
-        <div className="mt-2">
+        <div className="mt-0">
           {pincodeNotEntered ? (
             <p className="md:text-base text-xs text-nowrap text-red-500 font-semibold">
               Please select the pincode.
