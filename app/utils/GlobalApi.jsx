@@ -2,10 +2,10 @@ import Cookies from "js-cookie";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'http://localhost:1337/api',
+    baseURL:'http://127.0.0.1:1337/api',
 });
 axiosClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+  const token = Cookies.get("token"); // Retrieve token from cookies
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

@@ -9,7 +9,7 @@ function TopCategoryList({categoryList, selectedCategory} ) {
     <Link 
       key={index} 
       href={'/products-category/' + category?.attributes?.name}
-      className={`flex flex-row text-wrap gap-1 p-2 text-right
+      className={`flex flex-col md:flex-row text-wrap gap-1 p-2 text-right
         bg-green-50 group cursor-pointer hover:bg-primary 
         md:w-[190px] md:h-[50px] w-[75px] h-[50px] md:text-sm text-[10px] 
         ${selectedCategory == category.attributes.name && 'bg-primary text-white'}
@@ -25,7 +25,7 @@ function TopCategoryList({categoryList, selectedCategory} ) {
       />
       
       {/* Smaller text inside the circular category */}
-      <h2 className={`md:text-xs text-[8px] text-center mt-1 text-green-800 group-hover:text-white 
+      <h2 className={`md:text-xs text-[8px] text-nowrap text-center contain mt-1 text-green-800 group-hover:text-white 
         ${selectedCategory == category?.attributes?.name && 'text-white'}
       `}>
         {category?.attributes?.name}
@@ -33,8 +33,6 @@ function TopCategoryList({categoryList, selectedCategory} ) {
     </Link>
   ))}
 </div>
-
-
   )
 }
 

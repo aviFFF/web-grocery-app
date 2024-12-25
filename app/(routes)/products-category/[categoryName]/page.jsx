@@ -15,16 +15,16 @@ async function ProductCategory({params}) {
   return (
     <>   
      <div >
-     <h2 className="pt-14 md:pt-0 bg-primary items-center justify-center p-2 text-white text-3xl font-bold text-center">
-  {decodeURIComponent(params.categoryName)}
+     <h2 className="pt-14 md:pt-0 bg-primary  items-center justify-center p-2 text-white text-3xl font-bold text-center">
+      {decodeURIComponent(params.categoryName)}
 </h2>
 
   <div className='flex flex-row'>
   <div>
   <TopCategoryList 
     categoryList={categoryList} 
-    selectedCategory={decodeURIComponent(params.categoryName)}
-  />
+    selectedCategory={params.categoryName}
+/>
   </div>
   <div className='p-2 md:p-4'>
     <ProductListwc productList={productList} />
