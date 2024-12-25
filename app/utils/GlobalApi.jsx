@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'http://127.0.0.1:1337/api',
+    baseURL:'https://buzzat-admin.onrender.com/api',
 });
 axiosClient.interceptors.request.use((config) => {
   const token = Cookies.get("token"); // Retrieve token from cookies
