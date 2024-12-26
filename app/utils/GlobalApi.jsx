@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'https://buzzat-admin.onrender.com/api',
+    baseURL:'https://intuitive-blessing-2c82ca049f.strapiapp.com/api',
 });
 axiosClient.interceptors.request.use((config) => {
   const token = Cookies.get("token"); // Retrieve token from cookies
@@ -209,7 +209,7 @@ const subscribeToPushNotifications = async () => {
     console.log("Push Subscription:", subscription);
 
     // Send subscription to your backend
-    await fetch("http://localhost:1337/api/save-subscription", {
+    await fetch(process.env.NEXT_PUBLIC_API_URL + "/save-subscription", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

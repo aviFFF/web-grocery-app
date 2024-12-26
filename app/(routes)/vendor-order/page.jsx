@@ -91,11 +91,12 @@ const VendorOrderHistory = () => {
   // Connect to WebSocket and listen for new orders
   useEffect(() => {
     const token = Cookies.get("token");
-
-
+    if(!token){
+      router.push("/vendor");
+    }
 
     // Initialize WebSocket connection
-    const socketInstance = io("http://localhost:1337"); // Replace with your Strapi server URL
+    const socketInstance = io(process.env.NEXT_PUBLIC_API_URL); // Replace with your Strapi server URL
     setSocket(socketInstance);
 
     // Subscribe to vendor notifications using their ID
