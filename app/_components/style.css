@@ -54,7 +54,7 @@
 @media (max-width: 360px) {
   .search-box-container {
     position: fixed; /* Stick it to the bottom */
-    top: 35px;
+    top: 40px;
     left: 0;
     width: 100%;
     padding: 10px;
