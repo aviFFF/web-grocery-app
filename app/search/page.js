@@ -39,7 +39,7 @@ const SearchResults = () => {
         {searchResults.length > 0 ? (
           searchResults.map((product) => (
             <div key={product.id} className="p-4 rounded">
-              <div className="p-1 md:p-2 flex flex-col items-center justify-center gap-3 border rounded-lg hover:shadow-md hover:scale-105 cursor-pointer transition-all ease-in-out">
+              <div className="p-1 md:p-2 flex flex-col items-center text-center justify-center gap-3 border rounded-lg hover:shadow-md hover:scale-105 cursor-pointer transition-all ease-in-out">
                 <Image
                   src={product?.attributes?.image?.data[0]?.attributes?.url}
                   alt={product?.attributes?.name}
@@ -62,7 +62,7 @@ const SearchResults = () => {
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button
-                      className="text-primary hover:text-white hover:bg-primary"
+                      className="text-primary rounded-xl hover:text-white hover:bg-primary"
                       variant="outline"
                     >
                       Add To Cart

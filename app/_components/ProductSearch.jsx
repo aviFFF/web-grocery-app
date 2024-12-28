@@ -67,12 +67,12 @@ const ProductSearch = () => {
           value={searchInput}
           onChange={handleInputChange}
           placeholder={placeholders[placeholderIndex]}
-          className="border p-2 rounded w-full flex-grow sliding-placeholder"
+          className="border py-2 rounded w-full flex-grow sliding-placeholder"
         />
       </form>
       {/* Render suggestions */}
       {suggestions.length > 0 && (
-        <ul className="absolute top-full left-0 bg-white border rounded-lg w-full lg:w-full mt-1 p-2 z-20">
+        <ul className="absolute top-full left-0 bg-white border rounded-xl w-full lg:w-full -mt-1 p-2 z-20">
           {suggestions.map((item, index) => (
             <li
               key={index}
