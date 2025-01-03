@@ -19,8 +19,8 @@ const DiscountPage = () => {
           Grab Your 10% Discount!
         </h1>
         <p className="text-lg text-gray-600 mb-6">
-          Use the promo code <span className="font-bold text-orange-500">BUZZAT10</span> 
-          at checkout and get 10% off on your complete order amount. Don't miss this amazing deal!
+          Use the promo code <span className="font-bold text-orange-500">BUZZAT005</span> 
+          at checkout and get 5% off on your complete order amount. Don't miss this amazing deal!
         </p>
         <Link href="/">
         <button className="bg-primary text-white py-2 px-6 rounded-full text-lg hover:bg-orange-600 transition-all">
