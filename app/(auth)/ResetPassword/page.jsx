@@ -1,4 +1,4 @@
-// "use client"; // Ensure this is a client component
+// "use client";
 // import React, { useState, useEffect } from "react";
 // import { useRouter, useSearchParams } from "next/navigation";
 // import { Input } from "@/components/ui/input";
@@ -7,40 +7,40 @@
 // import GlobalApi from "@/app/utils/GlobalApi";
 
 // const ResetPassword = () => {
-//   const [code, setCode] = useState(""); // Store reset token
-//   const [password, setPassword] = useState(""); // New password
-//   const [confirmPassword, setConfirmPassword] = useState(""); // Confirm password
+//   const searchParams = useSearchParams();  // Extract query params from URL
+//   const router = useRouter();
+  
+//   const [code, setCode] = useState("");  // Store the reset token
+//   const [password, setPassword] = useState("");  // New password
+//   const [confirmPassword, setConfirmPassword] = useState("");  // Password confirmation
 //   const [loading, setLoading] = useState(false);
 
-//   const searchParams = useSearchParams(); // Use query params
-//   const router = useRouter(); // For navigation
-
+//   // When the component mounts, extract the 'code' from the URL
 //   useEffect(() => {
-//     // Extract 'code' from query parameters
-//     const resetCode = searchParams?.get("code"); // Check for query param
+//     const resetCode = searchParams.get("code");  // Extract 'code' from query params
 //     if (resetCode) {
-//       setCode(resetCode); // Store the reset token
+//       setCode(resetCode);  // Store the reset token
 //     } else {
-//       toast.error("Invalid reset link!"); // Show error for missing code
-//       router.push("/forgot-password"); // Redirect to forgot password
+//       toast("Invalid reset link!");  // In case the code is not present
+//       router.push("/forgot-password");  // Redirect to forgot password
 //     }
 //   }, [searchParams, router]);
 
 //   const handleResetPassword = async () => {
 //     if (!password || password !== confirmPassword) {
-//       toast.error("Passwords do not match!");
+//       toast("Passwords do not match!");
 //       return;
 //     }
 
 //     setLoading(true);
 
 //     try {
-//       // Send reset password request
-//       await GlobalApi.ResetPassword({ code, password });
-//       toast.success("Password reset successful! You can now log in.");
-//       router.push("/login"); // Redirect to login
+//       // Send the reset request with the reset code and new password
+//       await GlobalApi.ResetPassword(code, password, confirmPassword);
+//       toast("Password reset successful! You can now log in.");
+//       router.push("/login");
 //     } catch (error) {
-//       toast.error(error.response?.data?.message || "Failed to reset password.");
+//       toast(error.response?.data?.message || "Failed to reset password.");
 //     } finally {
 //       setLoading(false);
 //     }
