@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'https://buzzat-admin.onrender.com/api',
+    baseURL:'http://localhost:1337/api',
 });
 axiosClient.interceptors.request.use((config) => {
   const token = Cookies.get("token"); // Retrieve token from cookies
@@ -55,13 +55,33 @@ const registeruser =(username,email,password,name)=>axiosClient.post('/auth/loca
     name:name
 });
 
+const LogIn =(email,password)=>axiosClient.post('/auth/local', { identifier: email, password: password })
+
+const ForgotPassword = (email) => {
+  return axiosClient.post('/auth/forgot-password', {
+    email: email,  // User's email
+  });
+};
+
+
+const ResetPassword = (code, password, passwordConfirmation) =>
+  axiosClient.post('/auth/reset-password', {
+    code, // Token from the reset link
+    password,
+    passwordConfirmation,
+  });
+
+
+
+
+
+
 const deleteCartItem =(id,jwt)=>axiosClient.delete('/user-carts/'+id,{
     headers:{
         Authorization: `Bearer ${jwt}`,
     },
 });
 
-const LogIn =(email,password)=>axiosClient.post('/auth/local', { identifier: email, password: password })
 
 const addToCart =(data,jwt)=>axiosClient.post('/user-carts',data,{
     headers:{
@@ -245,5 +265,8 @@ export default {
     fetchVendorOrders,
     vendorSignup,
     vendorLogin,
-    subscribeToPushNotifications
+    subscribeToPushNotifications,
+    sendNotification,
+    ForgotPassword,
+    ResetPassword,
 }

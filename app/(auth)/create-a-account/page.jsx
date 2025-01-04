@@ -42,7 +42,7 @@ function CreateAccount() {
       }
     } catch (error) {
       console.error("Error during account creation:", error);
-      toast(error?.response?.data?.message || "Something went wrong. Please try again.");
+      toast(error?.response?.data?.message || "You are already registered with us.");
     } finally {
       setLoder(false);
     }

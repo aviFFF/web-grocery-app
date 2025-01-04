@@ -175,25 +175,34 @@ function Checkout() {
     try {
       const txnid = `txn_${Date.now()}`;
       const productinfo = "Cart Items";
-      const paymentData = { txnid, amount: totalAmount, productinfo, firstname, city };
-
+      const email = user?.email || "test@example.com"; // Placeholder for email
+  
+      const paymentData = {
+        txnid,
+        amount: totalAmount,
+        productinfo,
+        firstname,
+        email,
+      };
+  
+      // Get hash from the backend
       const { data } = await axios.post("/api/generate-hash", paymentData);
-
+  
       const form = document.createElement("form");
       form.method = "POST";
       form.action = process.env.NEXT_PUBLIC_PAYU_BASE_URL;
-
+  
       const formData = {
         ...paymentData,
         key: process.env.NEXT_PUBLIC_PAYU_MERCHANT_KEY,
         hash: data.hash,
-        surl: "http://localhost:3000/success",
-        furl: "http://localhost:3000/failure",
         phone,
-        address,
         lastname,
+        address,
+        surl: "http://yourdomain.com/success",
+        furl: "http://yourdomain.com/failure",
       };
-
+  
       Object.entries(formData).forEach(([key, value]) => {
         const input = document.createElement("input");
         input.type = "hidden";
@@ -201,7 +210,7 @@ function Checkout() {
         input.value = value;
         form.appendChild(input);
       });
-
+  
       document.body.appendChild(form);
       form.submit();
     } catch (error) {
@@ -209,6 +218,7 @@ function Checkout() {
       toast.error("Failed to initiate payment. Please try again.");
     }
   };
+    
 
   if (isLoading) {
     return (

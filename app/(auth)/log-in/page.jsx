@@ -89,13 +89,15 @@ function LogIn() {
           </Button>
         </div>
         <div>
-        <h2>
-          Don't have an account?
+        <div className="flex flex-row text-sm items-center justify-around gap-4"> 
           <Link href="/create-a-account " className="text-blue-500 text-wrap">
             {" "}
             Create an Account
           </Link>
-        </h2>
+          <Link href="/ForgotPassword" className="text-blue-500 text-wrap">
+            Forgot Password?
+          </Link>
+        </div>
         </div>
       </div>
     </div>
