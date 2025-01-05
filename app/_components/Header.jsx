@@ -136,7 +136,7 @@ function Header() {
       {/* Logo */}
        <Link href="/">
         <Image
-          src="/buzzat-logo.png"
+          src={"/buzzat-logo.png"}
           alt="logo"
           width={300}
           height={100}

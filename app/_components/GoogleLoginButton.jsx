@@ -13,7 +13,7 @@ export default function GoogleLoginButton() {
     <div className='cursor-pointer w-full'>
 
 
-        <Image src="/google-sigin.png" width={100} height={100} alt="Login with Google" onclick={handleGoogleLogin} className='object-contain w-full' />
+        <Image src={"/google-sigin.png"} width={100} height={100} alt="Login with Google" onclick={handleGoogleLogin} className='object-contain w-full' />
 
     </div>
   );

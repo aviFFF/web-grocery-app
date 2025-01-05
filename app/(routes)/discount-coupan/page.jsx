@@ -1,15 +1,20 @@
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
 
 const DiscountPage = () => {
   return (
     <div className="bg-gray-50 text-center p-8 font-sans">
       {/* Banner Section */}
       <div className="mb-6">
-        <img
-          src="/Discount.gif" 
+        <Image
+          src={"/Discount.gif"} 
           alt="Discount Promo"
           className="w-full max-w-4xl mx-auto rounded-lg shadow-lg"
+          width={800}
+          height={400}
+
         />
       </div>
 

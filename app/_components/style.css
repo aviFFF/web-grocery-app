@@ -13,12 +13,12 @@
   /* Apply the sliding animation to the input placeholder */
   input::placeholder {
     opacity: 0;
-    animation: slide-up 0.5s ease-in-out forwards;
+    animation: slide-up 1s ease-in forwards;
   }
   
   /* Optional: Add custom class for input if needed */
   .sliding-placeholder {
-    transition: opacity 0.5s ease-in-out;
+    transition: opacity 1s ease-in-out;
   }
 @media (min-width:768px){
  /* Styles for larger screens */

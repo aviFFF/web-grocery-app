@@ -87,7 +87,7 @@ const VendorLogin = () => {
           <div className="flex justify-center">
             <Link href="/">
               <Image
-                src="/vendor/vendor-buzzat.png"
+                src={"/vendor/vendor-buzzat.png"}
                 className="rounded-2xl w-24"
                 alt="logo"
                 width={200}

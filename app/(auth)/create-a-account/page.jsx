@@ -53,7 +53,7 @@ function CreateAccount() {
       <div className="flex flex-col items-center justify-center md:p-10 p-1 md:w-auto w-screen bg-slate-100 border border-gray-200">
         <Link href="/">
           <Image
-            src="/newblogo.png"
+            src={"/newblogo.png"}
             className="rounded-2xl md:w-32 w-24"
             alt="logo"
             width={100}

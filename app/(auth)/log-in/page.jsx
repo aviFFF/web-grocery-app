@@ -55,7 +55,7 @@ function LogIn() {
         <Link href="/">
           {" "}
           <Image
-            src="/newblogo.png"
+            src={"/newblogo.png"}
             className="rounded-2xl md:w-32 w-24"
             alt="logo"
             width={100}

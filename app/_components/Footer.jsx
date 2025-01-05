@@ -10,7 +10,7 @@ function Footer() {
           <div>
             <div className="flex justify-center text-teal-600 sm:justify-start">
               <Image
-                src="/buzzat-logo.png"
+                src={"/buzzat-logo.png"}
                 alt="logo"
                 width={100}
                 height={100}
