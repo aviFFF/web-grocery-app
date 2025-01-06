@@ -36,8 +36,8 @@ function Sliders({ sliderList }) {
           >
             <Image
               src={slider?.attributes?.image?.data?.attributes?.url}
-              width={1000}
-              height={500}
+              width={800}
+              height={100}
               alt="image"
               className="w-full md:h-[200px] mt-6 sm:mt-2 h-[100px] object-fill md:rounded-2xl"
             />

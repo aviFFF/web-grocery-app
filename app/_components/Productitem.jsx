@@ -42,6 +42,7 @@ function Productitem({ product }) {
             alt={product?.attributes?.name || "Default Alt Text"}
             width={200}
             height={100}
+            className="w-40 h-40 md:w-52 md:h-52 object-contain"
           />
 
           <h2 className="font-bold text-xs md:text-sm">
