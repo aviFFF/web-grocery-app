@@ -36,10 +36,10 @@ function Sliders({ sliderList }) {
           >
             <Image
               src={slider?.attributes?.image?.data?.attributes?.url}
-              width={800}
+              width={400}
               height={100}
               alt="image"
-              className="w-full md:h-[200px] mt-6 sm:mt-2 h-[100px] object-fill md:rounded-2xl"
+              className="w-full md:h-[200px] mt-6 sm:mt-2 h-[100px] object-fill rounded-2xl"
             />
           </CarouselItem>
         ))}
