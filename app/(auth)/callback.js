@@ -17,9 +17,6 @@ export default function AuthCallback() {
             },
           });
 
-          // Save the user details and token to your context or localStorage
-          console.log(response.data);
-
           // Redirect user to dashboard or homepage
           router.push('/dashboard');
         } catch (error) {

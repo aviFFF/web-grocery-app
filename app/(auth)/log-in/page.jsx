@@ -29,9 +29,9 @@ function LogIn() {
     setLoader(true);
 
     try {
-      console.log("Sending Login Request...");
+      // console.log("Sending Login Request...");
       const resp = await GlobalApi.LogIn(email, password); // Assuming you have this method
-      console.log("Login Response:", resp);
+      // console.log("Login Response:", resp);
 
       sessionStorage.setItem("user", JSON.stringify(resp.data.user));
       sessionStorage.setItem("jwt", resp.data.jwt);

@@ -101,7 +101,7 @@ const getCartItems=(userId,jwt)=>axiosClient.get('/user-carts?filters[userId][$e
         name:item.attributes.products.data.attributes?.name,
         quantity:item.attributes.quantity,
         amount:item.attributes.amount,
-        image:item.attributes.products.data.attributes.image.data[0].attributes.url,
+        image: item.attributes.products.data?.attributes?.image?.data?.[0]?.attributes?.url ?? 'default-image-url',
         selingPrice:item.attributes.products.data.attributes.mrp, 
         id:item.id,
         product:item.attributes.products.data.id,

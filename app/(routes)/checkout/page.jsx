@@ -155,7 +155,7 @@ function Checkout() {
     
     GlobalApi.createOrder(payload, jwt)
       .then((resp) => {
-        console.log(resp);
+        // console.log(resp);
         toast.success("Order Placed Successfully!");
         cartItemList.forEach((item) => {
           GlobalApi.deleteCartItem(item.id, jwt);

@@ -59,7 +59,7 @@ function ProductItemDetails({ product }) {
     <div className=" bg-white grid grid-cols-1 w-full gap-4 md:grid-cols-2">
           <ProductCarousel images={images} altText={altText} />
       <div className="flex flex-col gap-3">
-        <h2 className="text-2xl font-bold">{product?.attributes?.name}</h2>
+        <h2 className="text-2xl font-bold">{product?.attributes?.description}</h2>
         <div className="flex items-center gap-2">
           {product?.attributes?.sellingPrice && (
             <h2 className="text-2xl font-bold">

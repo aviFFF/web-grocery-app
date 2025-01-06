@@ -20,11 +20,11 @@ const DiscountPage = () => {
       {/* Content Section */}
       <div className="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Grab Your 10% Discount!
+          Grab Your Discount upto 100₹!
         </h1>
         <p className="text-lg text-gray-600 mb-6">
           Use the promo code <span className="font-bold text-orange-500">BUZZAT005</span> 
-          at checkout and get 5% off on your complete order amount. Don't miss this amazing deal!
+          at checkout and get upto 100₹ off on your complete order amount. Don't miss this amazing deal!
         </p>
         <Link href="/">
         <button className="bg-primary text-white py-2 px-6 rounded-full text-lg hover:bg-orange-600 transition-all">
