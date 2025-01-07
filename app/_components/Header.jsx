@@ -122,7 +122,7 @@ function Header() {
       setCartItemList([]);
   
       // Navigate to login page
-      router.push("/log-in");
+      router.push("/");
     } catch (error) {
       console.error("Error during logout:", error);
     }
