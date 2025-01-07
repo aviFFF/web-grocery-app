@@ -24,7 +24,7 @@ const getCategoryList =()=>axiosClient.get('/categories?populate=*').then(resp=>
 
 export const getAllProducts = async (query = '') => {
     const searchParam = query
-      ? `&filters[$or][0][name][$containsi]=${query}&filters[$or][1][categories][name][$containsi]=${query}`
+      ? `&filters[$or][0][name][$containsi]=${query}&filters[$or][1][description][$containsi]=${query}`
       : '';
     
     const resp = await axiosClient.get(`/products?populate=*&${searchParam}`);

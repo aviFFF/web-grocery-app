@@ -38,7 +38,8 @@ const ProductSearch = () => {
   // Debounce fetching product suggestions
   const debounceFetchSuggestions = debounce((query) => {
     getAllProducts(query).then((results) => {
-      const productNames = results.map((product) => product.attributes.name);
+      const productNames = results.map((product) => product?.attributes?.name);     
+      
       setSuggestions(productNames);
     });
   }, 200);

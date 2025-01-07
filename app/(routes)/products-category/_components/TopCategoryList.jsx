@@ -4,7 +4,7 @@ import React from 'react'
 
 function TopCategoryList({categoryList, selectedCategory} ) {
   return (
-    <div className='flex-col flex gap-2 mt-6 overflow-hidden justify-center px-2 md:px-20 overflow-y-auto'>
+    <div className='flex-col flex gap-2 mt-6 overflow-hidden  justify-center px-2 md:px-20 overflow-y-auto'>
   {categoryList.map((category, index) => (
     <Link 
       key={index} 
@@ -12,7 +12,7 @@ function TopCategoryList({categoryList, selectedCategory} ) {
       className={`flex flex-col md:flex-row p-2
         bg-green-50 text-center group items-center justify-center cursor-pointer  overflow-hidden
         md:w-[190px] md:h-[50px] w-[70px] h-[50px] md:text-sm text-[10px] 
-        ${selectedCategory == category.attributes.name && 'bg-primary text-white'}
+        ${selectedCategory == category.attributes.name && 'bg-green-300 text-white'}
       `}
     >
       {/* Image inside the circular category */}
