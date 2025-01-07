@@ -1,77 +1,97 @@
-import React from 'react';
+import React from "react";
 
 const TermsAndConditions = () => {
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800">
-      <div className="container mx-auto py-12 px-6 lg:px-16">
-        <h1 className="text-4xl font-bold text-center mb-6">Terms and Conditions</h1>
-        <p className="text-lg leading-relaxed text-center mb-12">
-          Welcome to BuzzAt! By using our services, you agree to abide by the terms and conditions outlined below. Please read them carefully to ensure you understand your rights and responsibilities.
+    <div className="bg-gray-50 min-h-screen py-8 px-4 md:px-20">
+      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6 md:p-10">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          Terms and Conditions
+        </h1>
+        <p className="text-gray-600 mb-4 text-center">
+          Effective Date: <span className="font-medium">01-01-2025</span>
+        </p>
+        <p className="text-gray-700 mb-6 text-justify">
+          Welcome to <strong>BUZZAt</strong>! These terms and conditions govern your use of the BUZZAt platform, including our website, mobile application, and any services provided through the platform (collectively, the "Services"). By accessing or using the Services, you agree to comply with these Terms and Conditions. If you do not agree with these terms, please do not use the Services.
         </p>
 
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold mb-4">About BuzzAt</h2>
-          <p className="text-lg leading-relaxed">
-            <strong>BuzzAt</strong> is a cutting-edge on-demand delivery service designed to bring your essentials and everyday items right to your doorstep in record time. We prioritize convenience and customer satisfaction, ensuring you never have to wait long for what you need.
-          </p>
-        </section>
+        <div className="space-y-6">
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">1. Introduction</h2>
+            <p className="text-gray-700">
+              BUZZAt is a hyperlocal quick commerce platform designed to deliver groceries, daily essentials, and other goods to your doorstep in the shortest time possible. We aim to provide a fast, reliable, and seamless shopping experience.
+            </p>
+          </section>
 
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold mb-4">Our Services</h2>
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-2xl font-semibold">1. Fast & Fresh Grocery Delivery</h3>
-              <p className="text-lg leading-relaxed">
-                BuzzAt offers a wide selection of groceries, including fresh produce, dairy products, snacks, and pantry staples. With just a tap on your phone, you can order and receive your groceries in minutes.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-2xl font-semibold">2. Daily Essentials at Your Doorstep</h3>
-              <p className="text-lg leading-relaxed">
-                We deliver everything from toiletries and cleaning products to pet supplies and personal care items. BuzzAt ensures you never run out of the essentials you need.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-2xl font-semibold">3. Instant Delivery Service</h3>
-              <p className="text-lg leading-relaxed">
-                Our ultra-fast delivery service ensures you get what you need when you need it. With BuzzAt, delays are a thing of the past.
-              </p>
-            </div>
-          </div>
-        </section>
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">2. Services Provided</h2>
+            <ul className="list-disc list-inside text-gray-700 space-y-2">
+              <li>Online ordering of groceries, food, and other daily essentials.</li>
+              <li>Quick delivery services to your location.</li>
+              <li>Payment options for your purchases via digital means.</li>
+              <li>Customer support for order inquiries, delivery issues, etc.</li>
+            </ul>
+          </section>
 
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold mb-4">User Responsibilities</h2>
-          <ul className="list-disc list-inside space-y-2 text-lg">
-            <li>Ensure all information provided during registration is accurate and up-to-date.</li>
-            <li>Use our services responsibly and comply with all applicable laws and regulations.</li>
-            <li>Respect our delivery personnel and ensure a safe environment for them to deliver your items.</li>
-          </ul>
-        </section>
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">3. Eligibility</h2>
+            <p className="text-gray-700">
+              You must be at least 18 years old to use the Services. By using our platform, you represent and warrant that you are at least 18 years of age and have the legal capacity to enter into a contract.
+            </p>
+          </section>
 
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold mb-4">Why Choose BuzzAt?</h2>
-          <p className="text-lg leading-relaxed">
-            Our mission is to make your life easier by delivering quality products at lightning speed. With BuzzAt, you can count on:
-          </p>
-          <ul className="list-disc list-inside space-y-2 text-lg">
-            <li>Unmatched convenience for all your daily needs.</li>
-            <li>Reliable and efficient delivery services 24/7.</li>
-            <li>High-quality products sourced from trusted suppliers.</li>
-          </ul>
-        </section>
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">4. Account Registration</h2>
+            <p className="text-gray-700">
+              To access certain features of our platform, you may be required to register for an account. When you create an account, you agree to provide accurate, complete, and up-to-date information. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.
+            </p>
+          </section>
 
-        <section>
-          <h2 className="text-3xl font-semibold mb-4">Contact Us</h2>
-          <p className="text-lg leading-relaxed">
-            If you have any questions about our terms and conditions, feel free to reach out to us through our website or customer support channels. We’re here to help you every step of the way.
-          </p>
-          <p className='font-bold'>Email:-</p>buzzatstore@gmail.com
-        </section>
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">5. Order Placement</h2>
+            <ul className="list-disc list-inside text-gray-700 space-y-2">
+              <li><strong>Product Availability:</strong> All orders placed are subject to product availability and location-based inventory.</li>
+              <li><strong>Order Acceptance:</strong> We reserve the right to cancel or refuse an order for reasons such as product unavailability, payment issues, or location restrictions.</li>
+              <li><strong>Pricing and Offers:</strong> Prices are subject to change. Errors may occur, and we will inform you before proceeding.</li>
+              <li><strong>Payment:</strong> Payments must be made via the methods provided. By completing payment, you confirm the transaction is authorized.</li>
+            </ul>
+          </section>
 
-        <p className="text-lg leading-relaxed text-center mt-12">
-          By using BuzzAt’s services, you agree to our terms and conditions and understand that our goal is to provide you with the best possible experience. Thank you for choosing BuzzAt!
-        </p>
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">6. Delivery</h2>
+            <p className="text-gray-700">
+              We aim to deliver your orders promptly. Delivery times may vary due to location, traffic, or other conditions. Fees may apply.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">7. Returns and Refunds</h2>
+            <p className="text-gray-700">
+              If unsatisfied with a product, contact support within 24 hours of delivery. Refunds or replacements may apply after review.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">8. Prohibited Uses</h2>
+            <p className="text-gray-700">
+              You agree not to use the platform for unlawful activities, posting offensive content, or interfering with the platform’s functionality.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">9. Privacy Policy</h2>
+            <p className="text-gray-700">
+              Your data is protected under our Privacy Policy. Please review it for more details.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">10. Contact Us</h2>
+            <p className="text-gray-700">
+              For any questions or concerns, reach us at:  
+              <span className="block">Email: buzzatstore@gmail.com</span>
+            </p>
+          </section>
+        </div>
       </div>
     </div>
   );
