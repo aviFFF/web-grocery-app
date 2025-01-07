@@ -10,7 +10,7 @@ function TopCategoryList({categoryList, selectedCategory} ) {
       key={index} 
       href={'/products-category/' + category?.attributes?.name}
       className={`flex flex-col md:flex-row p-2
-        bg-green-50 group items-center justify-center cursor-pointer hover:bg-primary overflow-hidden
+        bg-green-50 text-center group items-center justify-center cursor-pointer  overflow-hidden
         md:w-[190px] md:h-[50px] w-[70px] h-[50px] md:text-sm text-[10px] 
         ${selectedCategory == category.attributes.name && 'bg-primary text-white'}
       `}

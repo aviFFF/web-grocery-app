@@ -190,54 +190,77 @@ function Checkout() {
       <div className="md:col-span-2 p-5 border rounded-lg bg-white">
         <h2 className="text-xl font-bold mb-5">Shipping Address</h2>
         <div className="grid grid-cols-2 gap-5">
-          <Input
-            type="text"
-            placeholder="First Name"
-            value={firstname}
-            onChange={(e) => setFirstname(e.target.value)}
-          />
-          <Input
-            type="text"
-            placeholder="Last Name"
-            value={lastname}
-            onChange={(e) => setLastname(e.target.value)}
-          />
+          <div>
+            <Input
+              type="text"
+              placeholder="First Name"
+              value={firstname}
+              onChange={(e) => setFirstname(e.target.value)}
+            />
+            {errors.firstname && (
+              <p className="text-red-500 text-sm">{errors.firstname}</p>
+            )}
+          </div>
+          <div>
+            <Input
+              type="text"
+              placeholder="Last Name"
+              value={lastname}
+              onChange={(e) => setLastname(e.target.value)}
+            />
+            {errors.lastname && (
+              <p className="text-red-500 text-sm">{errors.lastname}</p>
+            )}
+          </div>
         </div>
-        <Input
-          type="text"
-          placeholder="Complete Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          className="mt-5"
-        />
-        <Input
-          type="text"
-          placeholder="Pincode"
-          value={pincode}
-          onChange={handlePincodeChange}
-          className="mt-5"
-          maxLength={6}
-        />
-        <Input
-          type="text"
-          placeholder="City"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          className="mt-5"
-        />
-        <Input
-          type="text"
-          placeholder="Mobile Number"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="mt-5"
-          maxLength={10}
-        />
-        {validationMessage && (
-          <p className={`mt-2 ${isServicable ? "text-green-500" : "text-red-500"}`}>
-            {validationMessage}
-          </p>
-        )}
+        <div>
+          <Input
+            type="text"
+            placeholder="Complete Address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            className="mt-5"
+          />
+          {errors.address && (
+            <p className="text-red-500 text-sm">{errors.address}</p>
+          )}
+        </div>
+        <div>
+          <Input
+            type="text"
+            placeholder="Pincode"
+            value={pincode}
+            onChange={handlePincodeChange}
+            className="mt-5"
+            maxLength={6}
+          />
+          {errors.pincode && (
+            <p className="text-red-500 text-sm">{errors.pincode}</p>
+          )}
+        </div>
+        <div>
+          <Input
+            type="text"
+            placeholder="City"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="mt-5"
+          />
+          {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
+        </div>
+        <div>
+          <Input
+            type="text"
+            placeholder="Mobile Number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="mt-5"
+            maxLength={10}
+          />
+          {errors.phone && (
+            <p className="text-red-500 text-sm">{errors.phone}</p>
+          )}
+        </div>
       </div>
 
       <div className="p-5 border rounded-lg bg-white">

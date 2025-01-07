@@ -109,10 +109,25 @@ function Header() {
     }
   };
 
-  const onLogOut = () => {
-    sessionStorage.clear();
-    router.push("log-in");
+  const onLogOut = async () => {
+    try {
+      // Clear session storage
+      sessionStorage.clear();
+  
+      // Reset states
+      setUser(null);
+      setJwt(null);
+      setIsLogin(false);
+      setTotalCartItems(0);
+      setCartItemList([]);
+  
+      // Navigate to login page
+      router.push("/log-in");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
+  
 
   const onDeleteItem = (id) => {
     GlobalApi.deleteCartItem(id, jwt).then((resp) => {

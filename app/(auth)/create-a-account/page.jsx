@@ -99,7 +99,7 @@ function CreateAccount() {
 
           <Button
             onClick={onCreateAccount}
-            disabled={!username || !name || !email || !password}
+            disabled={!username || !name || !password}
           >
             {Loder ? <LoaderIcon className="animate-spin" /> : "Create an Account"}
           </Button>
