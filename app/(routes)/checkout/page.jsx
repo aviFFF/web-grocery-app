@@ -3,20 +3,23 @@
 import GlobalApi from "@/app/utils/GlobalApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowBigRight, Package, Truck, Percent } from "lucide-react";
+import { ArrowBigRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"; // Import VisuallyHidden
+import { Loader2 } from "lucide-react"; // Import the spinner icon
+
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogHeader,
+  DialogTitle,
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import axios from "axios";
-import { Loader2 } from "lucide-react";
 
 function Checkout() {
   const [user, setUser] = useState(null);
@@ -36,8 +39,8 @@ function Checkout() {
   const [validationMessage, setValidationMessage] = useState("");
   const [availablePincodes, setAvailablePincodes] = useState([]);
   const getPincodes = useMemo(() => GlobalApi.getPincodes, []);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isCODLoading, setIsCODLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Loader state
+  const [isCODLoading, setIsCODLoading] = useState(false); // Add state for loading spinner on COD button
 
   const router = useRouter();
 
@@ -95,7 +98,7 @@ function Checkout() {
       const cartItemList_ = await GlobalApi.getCartItems(user.id, jwt);
       setTotalCartItems(cartItemList_?.length);
       setCartItemList(cartItemList_);
-      setIsLoading(false);
+      setIsLoading(false); // Stop loader after cart items are fetched
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
@@ -108,16 +111,17 @@ function Checkout() {
 
   const deliveryFee = useMemo(() => {
     if (subtotal < 300) return 25;
-    if (subtotal < 500) return 9.5;
+    if (subtotal >= 300 && subtotal <= 500) return 9.5;
     return 0;
   }, [subtotal]);
 
-  const handlingFee = useMemo(() => (subtotal < 1000 ? 9 : 19), [subtotal]);
+  const handlingFee = useMemo(() => {
+    return subtotal < 1000 ? 9 : 19;
+  }, [subtotal]);
 
   const totalAmount = useMemo(() => {
     const validSubtotal = parseFloat(subtotal) || 0;
-    const tax = validSubtotal * 0.018;
-    return (validSubtotal + tax + deliveryFee + handlingFee).toFixed(2);
+    return (validSubtotal + deliveryFee + handlingFee).toFixed(2);
   }, [subtotal, deliveryFee, handlingFee]);
 
   const handlePromoCodeApply = () => {
@@ -136,17 +140,54 @@ function Checkout() {
     }
   };
 
+  const onApprove = async (data) => {
+    try {
+      setIsCODLoading(true); // Start the spinner
+
+      const payload = {
+        data: {
+          paymentid: data.paymentID || "Cash on Delivery",
+          totalOrderValue: totalAmount,
+          city: city,
+          phone: phone,
+          address: address,
+          pincode: pincode,
+          Orderitemlist: cartItemList,
+          firstname: firstname,
+          lastname: lastname,
+          userid: user.id,
+          status: "success",
+        },
+      };
+
+      const response = await GlobalApi.createOrder(payload, jwt);
+      toast.success("Order Placed Successfully!");
+
+      // Clear cart items after order is placed
+      await Promise.all(
+        cartItemList.map((item) => GlobalApi.deleteCartItem(item.id, jwt))
+      );
+
+      router.replace("/orderPlaced");
+    } catch (error) {
+      console.error("Order creation failed:", error);
+      toast.error("Failed to place order. Please try again later.");
+    } finally {
+      setIsCODLoading(false); // Stop the spinner
+    }
+  };
+
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
-        <Loader2 className="animate-spin w-16 h-16 text-primary" />
+      <div className="flex justify-center items-center min-h-screen bg-green-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
       </div>
     );
   }
 
   return (
     <div className="p-5 grid grid-cols-1 pt-10 md:grid-cols-3 gap-5">
-      <div className="md:col-span-2 p-5 border shadow-md rounded-lg bg-white">
+      <div className="md:col-span-2 p-5 border rounded-lg bg-white">
         <h2 className="text-xl font-bold mb-5">Shipping Address</h2>
         <div className="grid grid-cols-2 gap-5">
           <Input
@@ -193,37 +234,32 @@ function Checkout() {
           maxLength={10}
         />
         {validationMessage && (
-          <p
-            className={`mt-2 ${isServicable ? "text-green-500" : "text-red-500"}`}
-          >
+          <p className={`mt-2 ${isServicable ? "text-green-500" : "text-red-500"}`}>
             {validationMessage}
           </p>
         )}
       </div>
 
-      <div className="p-5 border shadow-md rounded-lg bg-white">
+      <div className="p-5 border rounded-lg bg-white">
         <h2 className="text-xl font-bold mb-5">Order Summary</h2>
-        <div className="flex justify-between text-lg">
+        <div className="flex justify-between border-b border-gray-300 text-lg">
           <span>Subtotal</span>
           <span>₹{subtotal}</span>
         </div>
         <div className="flex justify-between text-lg">
-          <span className="flex items-center gap-1">
-            <Truck className="w-4 h-4" /> Delivery Fee
-          </span>
+          <span>Delivery Fee</span>
           <span>₹{deliveryFee}</span>
         </div>
-        <div className="flex justify-between text-lg">
-          <span className="flex items-center gap-1">
-            <Package className="w-4 h-4" /> Handling Fee
-          </span>
+        <div className="flex justify-between border-b border-gray-300 text-lg">
+          <span>Handling Fee</span>
           <span>₹{handlingFee}</span>
         </div>
-        <div className="flex justify-between text-lg mt-3 font-bold">
+        <div className="flex justify-between font-bold text-lg mt-5">
           <span>Total</span>
-          <span className="bg-primary text-white px-3 py-1 rounded-md">₹{totalAmount}</span>
+          <span>₹{totalAmount}</span>
         </div>
 
+        {/* Promo Code Section */}
         <div className="mt-5">
           <h2 className="font-semibold text-lg mb-2">Apply a Promo Code</h2>
           <div className="flex">
@@ -234,10 +270,7 @@ function Checkout() {
               onChange={(e) => setPromoCode(e.target.value)}
               className="flex-1"
             />
-            <Button
-              onClick={handlePromoCodeApply}
-              className="ml-2 bg-primary text-white"
-            >
+            <Button onClick={handlePromoCodeApply} className="ml-2 bg-primary text-white">
               APPLY
             </Button>
           </div>
@@ -255,23 +288,28 @@ function Checkout() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
+              <VisuallyHidden>
+                <DialogTitle>Choose Payment Method</DialogTitle>
+              </VisuallyHidden>
               <DialogDescription>
                 Proceed to checkout for secure online payment.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="gap-4">
-              <Button onClick={() => toast.success("Pay Online Coming Soon!")}>Pay Online</Button>
+              <Button onClick={() => toast.info("Online Payment Coming Soon!")}>
+                Pay Online
+              </Button>
               <Button
-  variant="outline"
-  onClick={() => onApprove({ paymentID: "Cash on Delivery" })}
->
-  {isCODLoading ? (
-    <Loader2 className="animate-spin w-5 h-5 text-green-500" />
-  ) : (
-    "Cash on Delivery"
-  )}
-</Button>
-
+                variant="outline"
+                onClick={() => onApprove({ paymentID: "Cash on Delivery" })}
+                disabled={isCODLoading}
+              >
+                {isCODLoading ? (
+                  <Loader2 className="animate-spin w-5 h-5 text-green-500" />
+                ) : (
+                  "Cash on Delivery"
+                )}
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
