@@ -47,8 +47,8 @@ function Footer() {
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-2 md:grid-cols-4 lg:col-span-2">
             <FooterColumn title="Helpful Links">
-              <FooterLink href="#">Terms</FooterLink>
-              <FooterLink href="#">About</FooterLink>
+              <FooterLink href="/terms">Terms</FooterLink>
+              <FooterLink href="/aboutus">About</FooterLink>
               <FooterLink href="#">Careers</FooterLink>
               <FooterLink href="#">Privacy</FooterLink>
               <FooterLink href="/vendor">Vendor</FooterLink>
