@@ -3,24 +3,20 @@
 import GlobalApi from "@/app/utils/GlobalApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowBigRight } from "lucide-react";
+import { ArrowBigRight, Package, Truck, Percent } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden"; // Import VisuallyHidden
-import { Loader2 } from "lucide-react"; // Import the spinner icon
-
 import React, { useEffect, useMemo, useState } from "react";
 import {
-Dialog,
-DialogTrigger,
-DialogContent,
-DialogHeader,
-DialogTitle,
-DialogDescription,
-DialogFooter,
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import axios from "axios";
-import { Loader } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 function Checkout() {
   const [user, setUser] = useState(null);
@@ -40,8 +36,8 @@ function Checkout() {
   const [validationMessage, setValidationMessage] = useState("");
   const [availablePincodes, setAvailablePincodes] = useState([]);
   const getPincodes = useMemo(() => GlobalApi.getPincodes, []);
-  const [isLoading, setIsLoading] = useState(true); // Loader state
-  const [isCODLoading, setIsCODLoading] = useState(false); // Add state for loading spinner on COD button
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCODLoading, setIsCODLoading] = useState(false);
 
   const router = useRouter();
 
@@ -50,7 +46,7 @@ function Checkout() {
       router.replace("/");
     }
   }, [isLoading, totalCartItems, router]);
-  
+
   useEffect(() => {
     getPincodes().then((pincodes) => setAvailablePincodes(pincodes));
   }, []);
@@ -99,8 +95,7 @@ function Checkout() {
       const cartItemList_ = await GlobalApi.getCartItems(user.id, jwt);
       setTotalCartItems(cartItemList_?.length);
       setCartItemList(cartItemList_);
-      setIsLoading(false); // Stop loader after cart items are fetched
-      
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
@@ -111,13 +106,19 @@ function Checkout() {
     setSubtotal(total.toFixed(2));
   }, [cartItemList]);
 
+  const deliveryFee = useMemo(() => {
+    if (subtotal < 300) return 25;
+    if (subtotal < 500) return 9.5;
+    return 0;
+  }, [subtotal]);
+
+  const handlingFee = useMemo(() => (subtotal < 1000 ? 9 : 19), [subtotal]);
+
   const totalAmount = useMemo(() => {
     const validSubtotal = parseFloat(subtotal) || 0;
     const tax = validSubtotal * 0.018;
-    const shipping = 19;
-    const otherFees = 5;
-    return (validSubtotal + tax + shipping + otherFees).toFixed(2);
-  }, [subtotal]);
+    return (validSubtotal + tax + deliveryFee + handlingFee).toFixed(2);
+  }, [subtotal, deliveryFee, handlingFee]);
 
   const handlePromoCodeApply = () => {
     if (isPromoApplied) {
@@ -134,103 +135,18 @@ function Checkout() {
       toast.error("Invalid promo code!");
     }
   };
-  const onApprove = (data) => {
-    const payload = {
-      data: {
-        paymentid: (data.paymentID || "Cash on Delivery").toString(),
-        totalOrderValue: totalAmount,
-        city: city,
-        phone: phone,
-        address: address,
-        pincode: pincode,
-        Orderitemlist: cartItemList,
-        firstname: firstname,
-        lastname: lastname,
-        userid: user.id,
-        status: "success",
-      },
-    };
-    
-    setIsCODLoading(true); // Start loading spinner
-    
-    GlobalApi.createOrder(payload, jwt)
-      .then((resp) => {
-        // console.log(resp);
-        toast.success("Order Placed Successfully!");
-        cartItemList.forEach((item) => {
-          GlobalApi.deleteCartItem(item.id, jwt);
-        });
-        router.replace("/orderPlaced");
-      })
-      .catch((err) => {
-        console.error("Order creation failed:", err);
-        toast.error("Failed to place order. Try again later.");
-      })
-      .finally(() => {
-        setIsCODLoading(false); // Stop loading spinner
-      });
-  };
-
-  const handlePayUCheckout = async () => {
-    try {
-      const txnid = `txn_${Date.now()}`;
-      const productinfo = "Cart Items";
-      const email = user?.email || "test@example.com"; // Placeholder for email
-  
-      const paymentData = {
-        txnid,
-        amount: totalAmount,
-        productinfo,
-        firstname,
-        email,
-      };
-  
-      // Get hash from the backend
-      const { data } = await axios.post("/api/generate-hash", paymentData);
-  
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = process.env.NEXT_PUBLIC_PAYU_BASE_URL;
-  
-      const formData = {
-        ...paymentData,
-        key: process.env.NEXT_PUBLIC_PAYU_MERCHANT_KEY,
-        hash: data.hash,
-        phone,
-        lastname,
-        address,
-        surl: "http://yourdomain.com/success",
-        furl: "http://yourdomain.com/failure",
-      };
-  
-      Object.entries(formData).forEach(([key, value]) => {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
-      });
-  
-      document.body.appendChild(form);
-      form.submit();
-    } catch (error) {
-      console.error("Error initiating payment:", error);
-      toast.error("Failed to initiate payment. Please try again.");
-    }
-  };
-    
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-green-50">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <Loader2 className="animate-spin w-16 h-16 text-primary" />
       </div>
     );
   }
 
   return (
     <div className="p-5 grid grid-cols-1 pt-10 md:grid-cols-3 gap-5">
-      <div className="md:col-span-2 p-5 border rounded-lg bg-white">
+      <div className="md:col-span-2 p-5 border shadow-md rounded-lg bg-white">
         <h2 className="text-xl font-bold mb-5">Shipping Address</h2>
         <div className="grid grid-cols-2 gap-5">
           <Input
@@ -277,36 +193,37 @@ function Checkout() {
           maxLength={10}
         />
         {validationMessage && (
-          <p className={`mt-2 ${isServicable ? "text-green-500" : "text-red-500"}`}>
+          <p
+            className={`mt-2 ${isServicable ? "text-green-500" : "text-red-500"}`}
+          >
             {validationMessage}
           </p>
         )}
       </div>
 
-      <div className="p-5 border rounded-lg bg-white">
+      <div className="p-5 border shadow-md rounded-lg bg-white">
         <h2 className="text-xl font-bold mb-5">Order Summary</h2>
-        <div className="flex justify-between border-b border-gray-300 text-lg">
+        <div className="flex justify-between text-lg">
           <span>Subtotal</span>
           <span>₹{subtotal}</span>
         </div>
-        {/* <div className="flex justify-between text-lg">
-          <span>Tax (18%)</span>
-          <span>₹{(subtotal * 0.18).toFixed(2)}</span>
-        </div> */}
         <div className="flex justify-between text-lg">
-          <span>Shipping</span>
-          <span>₹19.00</span>
+          <span className="flex items-center gap-1">
+            <Truck className="w-4 h-4" /> Delivery Fee
+          </span>
+          <span>₹{deliveryFee}</span>
         </div>
-        <div className="flex justify-between border-b border-gray-300 text-lg">
-          <span>Handling Fees</span>
-          <span>₹9.00</span>
+        <div className="flex justify-between text-lg">
+          <span className="flex items-center gap-1">
+            <Package className="w-4 h-4" /> Handling Fee
+          </span>
+          <span>₹{handlingFee}</span>
         </div>
-        <div className="flex justify-between font-bold text-lg mt-5">
+        <div className="flex justify-between text-lg mt-3 font-bold">
           <span>Total</span>
-          <span>₹{totalAmount}</span>
+          <span className="bg-primary text-white px-3 py-1 rounded-md">₹{totalAmount}</span>
         </div>
 
-        {/* Promo Code Section */}
         <div className="mt-5">
           <h2 className="font-semibold text-lg mb-2">Apply a Promo Code</h2>
           <div className="flex">
@@ -317,46 +234,46 @@ function Checkout() {
               onChange={(e) => setPromoCode(e.target.value)}
               className="flex-1"
             />
-            <Button onClick={handlePromoCodeApply} className="ml-2 bg-primary text-white">
+            <Button
+              onClick={handlePromoCodeApply}
+              className="ml-2 bg-primary text-white"
+            >
               APPLY
             </Button>
           </div>
         </div>
+
         <Dialog>
-  <DialogTrigger asChild>
-    <Button
-      className="mt-5 w-full bg-primary text-white flex justify-center items-center gap-2"
-      disabled={!firstname || !lastname || !address || !pincode || !phone || !city || !isServicable}
-    >
-      Proceed to Checkout
-      <ArrowBigRight className="w-5 h-5" />
-    </Button>
-  </DialogTrigger>
-  <DialogContent>
-    <DialogHeader>
-      {/* Use VisuallyHidden to hide the title visually but keep it accessible */}
-      <VisuallyHidden>
-        <DialogTitle>Choose Payment Method</DialogTitle>
-      </VisuallyHidden>
-      <DialogDescription>
-        Proceed to checkout for secure online payment.
-      </DialogDescription>
-    </DialogHeader>
-    <DialogFooter className="gap-4">
-      <Button onClick={handlePayUCheckout}>Pay Online</Button>
-      <Button
-        variant="outline"
-        onClick={() => onApprove({ paymentID: "Cash on Delivery" })}
-      >
-        {isCODLoading ? (
-                  <Loader2 className="animate-spin w-5 h-5 text-green-500" /> // Show spinner when loading
+          <DialogTrigger asChild>
+            <Button
+              className="mt-5 w-full bg-primary text-white flex justify-center items-center gap-2"
+              disabled={!firstname || !lastname || !address || !pincode || !phone || !city || !isServicable}
+            >
+              Proceed to Checkout
+              <ArrowBigRight className="w-5 h-5" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogDescription>
+                Proceed to checkout for secure online payment.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="gap-4">
+              <Button onClick={() => toast.success("Pay Online Coming Soon!")}>Pay Online</Button>
+              <Button
+                variant="outline"
+                onClick={() => console.log("COD Initiated")}
+              >
+                {isCODLoading ? (
+                  <Loader2 className="animate-spin w-5 h-5 text-primary" />
                 ) : (
                   "Cash on Delivery"
                 )}
-      </Button>
-    </DialogFooter>
-  </DialogContent>
-</Dialog>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
