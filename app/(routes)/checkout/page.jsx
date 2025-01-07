@@ -262,15 +262,16 @@ function Checkout() {
             <DialogFooter className="gap-4">
               <Button onClick={() => toast.success("Pay Online Coming Soon!")}>Pay Online</Button>
               <Button
-                variant="outline"
-                onClick={() => console.log("COD Initiated")}
-              >
-                {isCODLoading ? (
-                  <Loader2 className="animate-spin w-5 h-5 text-primary" />
-                ) : (
-                  "Cash on Delivery"
-                )}
-              </Button>
+  variant="outline"
+  onClick={() => onApprove({ paymentID: "Cash on Delivery" })}
+>
+  {isCODLoading ? (
+    <Loader2 className="animate-spin w-5 h-5 text-green-500" />
+  ) : (
+    "Cash on Delivery"
+  )}
+</Button>
+
             </DialogFooter>
           </DialogContent>
         </Dialog>
