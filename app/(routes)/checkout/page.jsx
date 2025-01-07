@@ -41,6 +41,8 @@ function Checkout() {
   const getPincodes = useMemo(() => GlobalApi.getPincodes, []);
   const [isLoading, setIsLoading] = useState(true); // Loader state
   const [isCODLoading, setIsCODLoading] = useState(false); // Add state for loading spinner on COD button
+  const [errors, setErrors] = useState({}); // Error state for each field
+
 
   const router = useRouter();
 
