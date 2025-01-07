@@ -1,9 +1,11 @@
+import Image from 'next/image';
 import React from 'react';
 
 const About = () => {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
       <div className="container mx-auto py-12 px-6 lg:px-16">
+                <Image src="/newblogo.png" width={100} height={100} alt="Terms and Conditions" className="mx-auto" />
         <h1 className="text-4xl font-bold text-center mb-6">About BuzzAt</h1>
         <p className="text-lg leading-relaxed mb-12">
           <strong>BuzzAt</strong> is revolutionizing on-demand delivery, bringing your everyday essentials straight to your doorstep with unmatched speed and convenience. In today’s fast-paced world, we understand the value of your time, and with BuzzAt, waiting for what you need is a thing of the past.

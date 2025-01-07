@@ -289,17 +289,17 @@ function Checkout() {
           <span>Subtotal</span>
           <span>₹{subtotal}</span>
         </div>
-        <div className="flex justify-between text-lg">
-          <span>Tax (9%)</span>
-          <span>₹{(subtotal * 0.09).toFixed(2)}</span>
-        </div>
+        {/* <div className="flex justify-between text-lg">
+          <span>Tax (18%)</span>
+          <span>₹{(subtotal * 0.18).toFixed(2)}</span>
+        </div> */}
         <div className="flex justify-between text-lg">
           <span>Shipping</span>
           <span>₹19.00</span>
         </div>
         <div className="flex justify-between border-b border-gray-300 text-lg">
           <span>Handling Fees</span>
-          <span>₹5.00</span>
+          <span>₹9.00</span>
         </div>
         <div className="flex justify-between font-bold text-lg mt-5">
           <span>Total</span>

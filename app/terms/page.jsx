@@ -1,9 +1,11 @@
+import Image from "next/image";
 import React from "react";
 
 const TermsAndConditions = () => {
   return (
     <div className="bg-gray-50 min-h-screen py-8 px-4 md:px-20">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6 md:p-10">
+        <Image src="/newblogo.png" width={100} height={100} alt="Terms and Conditions" className="mx-auto" />
         <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
           Terms and Conditions
         </h1>
