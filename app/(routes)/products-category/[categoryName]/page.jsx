@@ -24,8 +24,7 @@ async function ProductCategory({ params: rawParams }) {
     GlobalApi.getCategoryList(),
   ]);
 
-  // console.log("Product List for", decodedCategoryName, productList);
-  // console.log("Category List:", categoryList);
+
 
   // Check if the productList is empty for this category
   const isProductListEmpty = productList.length === 0;
