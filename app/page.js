@@ -8,6 +8,7 @@ import Footer from "./_components/Footer";
 const ProductListwc = dynamic(() => import('./_components/ProductListwc'), { ssr: false });
 import GlobalApi from "./utils/GlobalApi";
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
 export default function Home() {
   const [sliderList, setSliderList] = useState([]);
@@ -80,6 +81,10 @@ export default function Home() {
 
   return (
     <div className="md:p-4 p-5 md:px-16">
+       <Head>
+        <title>Buzzat</title>
+        <meta name="description" content="Sabse Tez Online Grocery App" />
+      </Head>
       <Slider sliderList={sliderList} />
       <CategoryList categoryList={categoryList} />
       <ProductList productList={productList} />

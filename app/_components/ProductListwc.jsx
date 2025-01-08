@@ -40,7 +40,7 @@ function ProductListwc({ productList }) {
 
   return (
     <div className="mt-2 p-2">
-      <h2 className="text-primary text-2xl text-center mb-4 flex">Products You Like</h2>
+      <h2 className="text-primary text-2xl text-center mb-4 flex">Best Buzzat Products</h2>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {productList.slice(0, visibleProducts).map((product, index) => {
           const isLastProduct = index === visibleProducts - 1; // Check if this is the last visible product

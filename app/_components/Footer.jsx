@@ -99,6 +99,26 @@ function Footer() {
               &copy; 2024 Buzzat India Pvt Ltd
             </p>
           </div>
+          <div className="mt-8 gap-8 flex justify-center sm:justify-start">
+            <Image
+              src="/salogo.png"
+              width={75}
+              height={75}
+              alt="Swatchata Abhiyan"
+            />
+            <Image
+              src="/minindia.png"
+              width={75}
+              height={75}
+              alt="Make in India"
+            />
+            <Image
+              src="/75year.png"
+              width={75}
+              height={75}
+              alt="75 Years of Independence"
+            />
+          </div>
         </div>
       </div>
     </footer>

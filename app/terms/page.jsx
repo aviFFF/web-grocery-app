@@ -10,7 +10,7 @@ const TermsAndConditions = () => {
           Terms and Conditions
         </h1>
         <p className="text-gray-600 mb-4 text-center">
-          Effective Date: <span className="font-medium">01-01-2025</span>
+          Effective Date: <span className="font-medium">26-01-2025</span>
         </p>
         <p className="text-gray-700 mb-6 text-justify">
           Welcome to <strong>BUZZAt</strong>! These terms and conditions govern your use of the BUZZAt platform, including our website, mobile application, and any services provided through the platform (collectively, the "Services"). By accessing or using the Services, you agree to comply with these Terms and Conditions. If you do not agree with these terms, please do not use the Services.

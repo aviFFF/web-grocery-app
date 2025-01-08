@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://buzzat.in
+
+# Sitemaps
+Sitemap: https://buzzat.in/sitemap.xml
