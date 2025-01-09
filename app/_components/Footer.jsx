@@ -49,30 +49,29 @@ function Footer() {
             <FooterColumn title="Helpful Links">
               <FooterLink href="/terms">Terms</FooterLink>
               <FooterLink href="/aboutus">About</FooterLink>
-              <FooterLink href="#">Careers</FooterLink>
-              <FooterLink href="#">Privacy</FooterLink>
+              <FooterLink href="/privacy">Privacy</FooterLink>
               <FooterLink href="/vendor">Vendor</FooterLink>
             </FooterColumn>
 
             <FooterColumn title="Contact">
               <FooterLink href="#">Partner</FooterLink>
-              <FooterLink href="#">Contact</FooterLink>
+              <FooterLink href="/contact">Contact</FooterLink>
               <FooterLink href="#">FAQ</FooterLink>
               <FooterLink href="#">Live Chat</FooterLink>
             </FooterColumn>
 
             <FooterColumn title="Categories">
-              <FooterLink href="#">Dairy & Breakfast</FooterLink>
-              <FooterLink href="#">Vegetables & Fruits</FooterLink>
-              <FooterLink href="#">Cold & Health Drinks</FooterLink>
-              <FooterLink href="#">Instant & Frozen Food</FooterLink>
+              <FooterLink href="/products-category/Dairy%20&%20Breakfast">Dairy & Breakfast</FooterLink>
+              <FooterLink href="/products-category/Fruits%20and%20Vegetables">Vegetables & Fruits</FooterLink>
+              <FooterLink href="/products-category/Drinks%20and%20Juice">Drinks & Juices</FooterLink>
+              <FooterLink href="/products-category/Dry%20Fruits%20and%20Instant%20Food">Instant & Frozen Food</FooterLink>
             </FooterColumn>
 
             <FooterColumn title="...">
-              <FooterLink href="#">Atta, Rice & Dal</FooterLink>
-              <FooterLink href="#">Dry Fruits, Masala & Oils</FooterLink>
-              <FooterLink href="#">Sauces & Spreads</FooterLink>
-              <FooterLink href="#">Toys & Games</FooterLink>
+              <FooterLink href="/products-category/Aataa%20Dal%20Rice">Atta, Rice & Dal</FooterLink>
+              <FooterLink href="/products-category/Masala%20and%20Oils">Masala & Oils</FooterLink>
+              <FooterLink href="/products-category/Tea%20&%20Coffee">Tea & Coffee</FooterLink>
+              <FooterLink href="/products-category/Beauty%20&%20Cosmetics">Beauty & Cosmetics</FooterLink>
             </FooterColumn>
           </div>
         </div>

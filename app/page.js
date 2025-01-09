@@ -1,105 +1,55 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-const Slider = dynamic(() => import('./_components/Slider'), { ssr: false });
-const CategoryList = dynamic(() => import('./_components/CategoryList'), { ssr: false });
-const ProductList = dynamic(() => import('./_components/ProductList'), { ssr: false });
-import Footer from "./_components/Footer";
-const ProductListwc = dynamic(() => import('./_components/ProductListwc'), { ssr: false });
-import GlobalApi from "./utils/GlobalApi";
 import dynamic from 'next/dynamic';
-import Head from 'next/head';
+import Footer from "./_components/Footer";
+import GlobalApi from "./utils/GlobalApi";
+import { Metadata } from 'next';
 
-export default function Home() {
-  const [sliderList, setSliderList] = useState([]);
-  const [categoryList, setCategoryList] = useState([]);
-  const [productList, setProductList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showInstallBanner, setShowInstallBanner] = useState(false);
+// Dynamic imports for client-side components
+const Slider = dynamic(() => import('./_components/Slider'), { ssr: true });
+const CategoryList = dynamic(() => import('./_components/CategoryList'), { ssr: true });
+const ProductList = dynamic(() => import('./_components/ProductList'), { ssr: true });
+const ProductListwc = dynamic(() => import('./_components/ProductListwc'), { ssr: true });
 
-  // Fetch Slider, Categories, and Products
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const sliders = await GlobalApi.getSliders();
-        const categories = await GlobalApi.getCategoryList();
-        const products = await GlobalApi.getAllProducts();
+// Generate metadata for SEO
+export const metadata = {
+  title: "Quick Delivery Grocery App | Buzzat",
+  description: "Shop for groceries online with Buzzat, the fastest online grocery app in India.",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
 
-        setSliderList(sliders || []);
-        setCategoryList(categories || []);
-        setProductList(products || []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchData();
-  }, []);
+async function fetchData() {
+  try {
+    const sliders = await GlobalApi.getSliders();
+    const categories = await GlobalApi.getCategoryList();
+    const products = await GlobalApi.getAllProducts();
 
-  // Handle PWA Install Banner
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-  
-    const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowInstallBanner(true);
+    return {
+      sliders: sliders || [],
+      categories: categories || [],
+      products: products || [],
     };
-  
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-  
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return {
+      sliders: [],
+      categories: [],
+      products: [],
     };
-  }, []);
-  
-
-  const installPWA = async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt(); // Show the install prompt
-      const choiceResult = await deferredPrompt.userChoice;
-      if (choiceResult.outcome === 'accepted') {
-       
-      } else {
-        
-      }
-      setDeferredPrompt(null); // Reset the prompt
-      setShowInstallBanner(false); // Hide the banner
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col justify-center items-center min-h-screen bg-green-50">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
-        <p className="text-green-600 mt-4 text-xl font-semibold">Welcome to buzzat</p>
-      </div>
-    );
   }
+}
+
+export default async function Home() {
+  const { sliders, categories, products } = await fetchData();
 
   return (
     <div className="md:p-4 p-5 md:px-16">
-       <Head>
-        <title>Buzzat</title>
-        <meta name="description" content="Sabse Tez Online Grocery App" />
-      </Head>
-      <Slider sliderList={sliderList} />
-      <CategoryList categoryList={categoryList} />
-      <ProductList productList={productList} />
-      <ProductListwc productList={productList} />
+      {/* Main Content */}
+      <Slider sliderList={sliders} />
+      <CategoryList categoryList={categories} />
+      <ProductList productList={products} />
+      <ProductListwc productList={products} />
       <Footer />
-
-      {/* Install PWA Banner */}
-      {showInstallBanner && (
-        <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 flex justify-between items-center">
-          <span>Install our app for the best experience!</span>
-          <Button onClick={installPWA} className="bg-primary text-white">
-            Install
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

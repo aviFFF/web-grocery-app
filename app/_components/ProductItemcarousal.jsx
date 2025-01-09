@@ -25,7 +25,7 @@ const ProductCarousel = ({ images, altText }) => {
           height={30}
           src={images[currentIndex]?.attributes?.url}
           alt={altText}
-          className="w-full h-[250px] md:h-full object-contain"
+          className="w-full h-[150px] md:h-full object-contain"
         />
       </div>
       {/* Navigation buttons */}
