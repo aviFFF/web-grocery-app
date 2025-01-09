@@ -23,7 +23,7 @@ async function ProductCategory({ params }) {
         {/* Main Layout */}
         <div className="flex flex-row">
           {/* Sidebar */}
-          <div className=" h-[calc(100vh-70px)] sticky top-[100px] overflow-y-auto bg-white shadow-md">
+          <div className=" h-[calc(100vh-80px)] sticky top-[100px] overflow-y-auto bg-white shadow-md">
             <TopCategoryList 
               categoryList={categoryList} 
               selectedCategory={params.categoryName}
