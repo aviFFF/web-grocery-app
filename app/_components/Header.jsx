@@ -75,6 +75,36 @@ function Header() {
       console.log("User is not logged in.");
     }
   };
+
+  const handleUpdateItem = async (itemId, newQuantity) => {
+    const jwt = sessionStorage.getItem("jwt");
+    const item = cartItemList.find((cart) => cart.id === itemId);
+    if (!item) return;
+
+    const updatedItem = {
+      ...item,
+      quantity: newQuantity,
+      amount: (newQuantity * item.selingPrice).toFixed(2),
+    };
+
+    try {
+      await GlobalApi.updateCartItem(itemId, {
+        data: {
+          quantity: updatedItem.quantity,
+          amount: updatedItem.amount,
+        },
+      }, jwt);
+      setCartItemList((prev) =>
+        prev.map((cart) =>
+          cart.id === itemId ? { ...cart, ...updatedItem } : cart
+        )
+      );
+      toast("Cart updated successfully");
+    } catch (error) {
+      console.error("Failed to update cart item:", error);
+      toast("Failed to update item");
+    }
+  };
   
   // Update cart when `updateCart` changes
   useEffect(() => {
@@ -140,10 +170,11 @@ function Header() {
   useEffect(() => {
     let total = 0;
     cartItemList.forEach((element) => {
-      total += element.amount;
+      total += parseFloat(element.amount) || 0; // Ensure it's treated as a number
     });
-    setSubtotal(total.toFixed(2));
+    setSubtotal(total.toFixed(2)); // Now it's safe to call toFixed()
   }, [cartItemList]); // Triggered on every change in `cartItemList`
+  
   
 
   return (
@@ -179,6 +210,7 @@ function Header() {
                 <CartItemList
                   cartItemList={cartItemList}
                   onDeleteItem={onDeleteItem}
+                  onUpdateItem={handleUpdateItem}
                 />
               </SheetDescription>
             </SheetHeader>

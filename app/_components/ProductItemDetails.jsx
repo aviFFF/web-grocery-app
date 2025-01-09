@@ -1,4 +1,3 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle, ShoppingBasket } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -8,63 +7,91 @@ import { toast } from "sonner";
 import { UpdateCartContext } from "../_context/UpdatecartContext";
 import ProductCarousel from "./ProductItemcarousal";
 
-
 function ProductItemDetails({ product }) {
   const images = product?.attributes?.image?.data || [];
   const altText = product?.attributes?.name || "Product Image";
-  const jwt = sessionStorage.getItem('jwt');
-  const user = JSON.parse(sessionStorage.getItem('user'));
-  const {updateCart, setUpdateCart} = useContext(UpdateCartContext)
+  const jwt = sessionStorage.getItem("jwt");
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  const { updateCart, setUpdateCart } = useContext(UpdateCartContext);
   const [productTotalPrice, setProductTotalPrice] = useState(
-    product.attributes.sellingPrice? 
-    product.attributes.sellingPrice
-      : product.attributes?.mrp
-  )
+    product.attributes.sellingPrice || product.attributes?.mrp
+  );
   const router = useRouter();
   const [productQuantity, setProductQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
 
-
-  const addToCart = () => {
-    setLoading(true);
+  const addToCart = async () => {
     if (!jwt) {
       router.push("/log-in");
-      setLoading(false);
       return;
     }
-      
-
-    const data = {
-      data: {
-        quantity: productQuantity,
-        amount: (productQuantity * productTotalPrice).toFixed(2),
-        products: product.id,
-        users_permissions_user: user.id,
-        userId: user.id,
-      }
+  
+    if (productQuantity > 4) {
+      toast("You can only add up to 4 items of this product.");
+      return;
     }
-    console.log(data);
-    GlobalApi.addToCart(data, jwt).then(resp => {
-      console.log(resp);
-      toast("Product Added To Cart");
-      setUpdateCart(!updateCart);
-      setLoading(false)
-    }, (e) => {
-      toast('Something went wrong');
-      setLoading(false)
-    });
+  
+    setLoading(true);
+  
+    try {
+      // Fetch the user's cart
+      const cartItems = await GlobalApi.getCartItems(user.id, jwt);
+  
+      // Check if the product already exists in the cart
+      const existingCartItem = cartItems.find(
+        (item) => item.product === product.id
+      );
+  
+      if (existingCartItem) {
+        // If product exists, update the quantity and amount
+        const updatedQuantity = Math.min(
+          existingCartItem.quantity + productQuantity,
+          4
+        );
+        const updatedData = {
+          data: {
+            quantity: updatedQuantity,
+            amount: (updatedQuantity * productTotalPrice).toFixed(2),
+          },
+        };
+  
+        await GlobalApi.updateCartItem(existingCartItem.id, updatedData, jwt);
+        toast("Cart updated successfully");
+      } else {
+        // If product doesn't exist, add it to the cart
+        const newData = {
+          data: {
+            quantity: productQuantity,
+            amount: (productQuantity * productTotalPrice).toFixed(2),
+            products: product.id,
+            users_permissions_user: user.id,
+            userId: user.id,
+          },
+        };
+  
+        await GlobalApi.addToCart(newData, jwt);
+        toast("Product added to cart");
+      }
+  
+      setUpdateCart(!updateCart); // Trigger cart re-render
+    } catch (error) {
+      console.error("Error updating cart:", error);
+      toast("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
+  
+
 
   return (
-    <div className=" bg-white grid grid-cols-1 w-full gap-4 md:grid-cols-2">
-          <ProductCarousel images={images} altText={altText} />
+    <div className="bg-white grid grid-cols-1 w-full gap-4 md:grid-cols-2">
+      <ProductCarousel images={images} altText={altText} />
       <div className="flex flex-col gap-3">
         <h2 className="text-xs">{product?.attributes?.description}</h2>
         <div className="flex items-center gap-2">
           {product?.attributes?.sellingPrice && (
-            <h2 className="text-2xl font-bold">
-              ₹{product?.attributes?.sellingPrice}
-            </h2>
+            <h2 className="text-2xl font-bold">₹{product?.attributes?.sellingPrice}</h2>
           )}
           <h2
             className={`text-2xl p-2 font-bold ${
@@ -87,7 +114,11 @@ function ProductItemDetails({ product }) {
                 -
               </button>
               <button>{productQuantity}</button>
-              <button onClick={() => setProductQuantity(productQuantity + 1)}> 
+              <button
+                onClick={() =>
+                  setProductQuantity((prev) => Math.min(prev + 1, 4))
+                }
+              >
                 +
               </button>
             </div>
@@ -96,20 +127,15 @@ function ProductItemDetails({ product }) {
             </h2>
           </div>
           <Button
-            className="flex gap-3 text-white  bg-primary"
+            className="flex gap-3 text-white bg-primary"
             onClick={addToCart}
             disabled={loading}
           >
             <ShoppingBasket />
-            {loading ? (
-              <LoaderCircle className="animate-spin" />
-            ) : (
-              "Add To Cart"
-            )}
+            {loading ? <LoaderCircle className="animate-spin" /> : "Add To Cart"}
           </Button>
         </div>
-        {/* <h2 className="text-lg line-clamp-3 ">{product?.attributes?.description}</h2> */}
-        <h3>Vendor:Shri Krishna General Store{product?.attributes?.brand}</h3>
+        <h3>Vendor: {product?.attributes?.brand}</h3>
       </div>
     </div>
   );

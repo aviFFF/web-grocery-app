@@ -72,10 +72,6 @@ const ResetPassword = (code, password, passwordConfirmation) =>
   });
 
 
-
-
-
-
 const deleteCartItem =(id,jwt)=>axiosClient.delete('/user-carts/'+id,{
     headers:{
         Authorization: `Bearer ${jwt}`,
@@ -89,28 +85,38 @@ const addToCart =(data,jwt)=>axiosClient.post('/user-carts',data,{
     },
 });
 
-const getCartItems=(userId,jwt)=>axiosClient.get('/user-carts?filters[userId][$eq]='+userId+'&[populate][products][populate][image][populate][0]=url',
-    {
-        headers:{
+const updateCartItem = (id, data, jwt) =>
+  axiosClient.put(`/user-carts/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+
+  const getCartItems = (userId, jwt) =>
+    axiosClient
+      .get(
+        `/user-carts?filters[userId][$eq]=${userId}&[populate][products][populate][image][populate][0]=url`,
+        {
+          headers: {
             Authorization: `Bearer ${jwt}`,
-        },
-    }
-).then(resp=>{
-    const data = resp.data.data
-    const cartItemList = data.map((item,index)=>({
-        name:item.attributes.products.data.attributes?.name,
-        quantity:item.attributes.quantity,
-        amount:item.attributes.amount,
-        image: item.attributes.products.data?.attributes?.image?.data?.[0]?.attributes?.url ?? 'default-image-url',
-        selingPrice:item.attributes.products.data.attributes.mrp, 
-        id:item.id,
-        product:item.attributes.products.data.id,
-
-
-    }))
-    return cartItemList
-})
-
+          },
+        }
+      )
+      .then((resp) => {
+        const data = resp.data.data;
+        return data.map((item) => ({
+          name: item.attributes.products.data.attributes?.name,
+          quantity: item.attributes.quantity,
+          amount: item.attributes.amount,
+          image:
+            item.attributes.products.data?.attributes?.image?.data?.[0]
+              ?.attributes?.url ?? "default-image-url",
+          selingPrice: item.attributes.products.data.attributes.mrp,
+          id: item.id,
+          product: item.attributes.products.data.id,
+        }));
+      });
+  
 export const getPincodes = async () => {
     const resp = await axiosClient.get('/pincodes?populate=*');
     return resp.data.data;
@@ -269,4 +275,5 @@ export default {
     sendNotification,
     ForgotPassword,
     ResetPassword,
+    updateCartItem,
 }
