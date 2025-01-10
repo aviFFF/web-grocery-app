@@ -27,7 +27,8 @@ export default function RootLayout({ children }) {
     "/vendor-signup",
     "/vendor",
     "/vendor-order",
-    "/orderPlaced"
+    "/orderPlaced",
+    "/checkout",
   ].includes(params);
 
   const showFooter = ![
@@ -37,7 +38,8 @@ export default function RootLayout({ children }) {
     "/vendor-signup",
     "/vendor",
     "/vendor-order",
-    "/"
+    "/checkout",
+    
   ].includes(params);
 
   return (

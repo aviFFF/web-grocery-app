@@ -135,7 +135,7 @@ function ProductItemDetails({ product }) {
             {loading ? <LoaderCircle className="animate-spin" /> : "Add To Cart"}
           </Button>
         </div>
-        <h3>Vendor: {product?.attributes?.brand}</h3>
+        <h3>Vendor:Shree Krishna General Store</h3>
       </div>
     </div>
   );

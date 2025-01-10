@@ -20,7 +20,7 @@ function Myorderitem({orderitem}) {
                 {orderitem.product.data.attributes.name}
             </h2>
             <p className="text-gray-600 text-sm sm:text-base">
-                Item Price: ${orderitem.product.data.attributes.mrp}
+                Item Price: ₹{orderitem.product.data.attributes.mrp}
             </p>
         </div>
 
@@ -28,7 +28,7 @@ function Myorderitem({orderitem}) {
         <div className="flex flex-col items-end text-sm sm:text-base">
             <h2 className="text-gray-700">Quantity: {orderitem.quantity}</h2>
             <h2 className="text-gray-700 font-bold">
-                Amount: ${orderitem.product.data.attributes.sellingPrice}
+                Amount: ₹{orderitem.product.data.attributes.sellingPrice}
             </h2>
         </div>
     </div>
