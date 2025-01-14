@@ -8,7 +8,7 @@ import Image from "next/image";
 import Head from "next/head";
 
 const VendorLogin = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({ phone: "", password: "" });
   const router = useRouter();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
@@ -55,10 +55,11 @@ const VendorLogin = () => {
     }
   }, []);
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await vendorLogin(formData.email, formData.password);
+      const response = await vendorLogin(formData.phone, formData.password);
       toast.success("Login successful!");
       router.replace("/vendor-order"); // Redirect to orders page
     } catch (error) {
@@ -98,14 +99,14 @@ const VendorLogin = () => {
           <div className="flex flex-col gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-600">
-                Email
+                Mobile Number
               </label>
               <input
-                type="email"
-                placeholder="Enter your email"
-                value={formData.email}
+                type="text"
+                placeholder="Enter your mobile number"
+                value={formData.phone}
                 onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
+                  setFormData({ ...formData, phone: e.target.value })
                 }
                 className="w-full px-4 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 required

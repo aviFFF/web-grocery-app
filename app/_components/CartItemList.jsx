@@ -5,17 +5,27 @@ import { toast } from "sonner";
 
 function CartItemList({ cartItemList, onDeleteItem, onUpdateItem }) {
   const handleQuantityChange = (cart, newQuantity) => {
+    const totalProducts = cartItemList.reduce((acc, item) => acc + item.quantity, 0);
+    
     if (newQuantity < 1) {
       toast("Minimum quantity is 1");
       return;
     }
+  
     if (newQuantity > 4) {
-      toast("Maximum quantity is 4");
+      toast("Maximum quantity per product is 4");
       return;
     }
+  
+    if (totalProducts + (newQuantity - cart.quantity) > 2) {
+      toast("You can only add up to 2 products in your cart.");
+      return;
+    }
+  
     // Call the parent-provided function
     onUpdateItem(cart.id, newQuantity);
   };
+  
 
   return (
     <div>
@@ -46,7 +56,7 @@ function CartItemList({ cartItemList, onDeleteItem, onUpdateItem }) {
                   <span>{cart.quantity}</span>
                   <button
                     onClick={() => handleQuantityChange(cart, cart.quantity + 1)}
-                    className="p-2 border rounded bg-gray-200"
+                    className="p-2 border rounded-xl bg-gray-200"
                   >
                     +
                   </button>
@@ -65,5 +75,6 @@ function CartItemList({ cartItemList, onDeleteItem, onUpdateItem }) {
     </div>
   );
 }
+
 
 export default CartItemList;

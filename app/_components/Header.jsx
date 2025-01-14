@@ -67,33 +67,36 @@ function Header() {
       try {
         const cartItemList_ = await GlobalApi.getCartItems(user.id, jwt);
         setCartItemList(cartItemList_);
-        setTotalCartItems(cartItemList_.length || 0);
+        setTotalCartItems(cartItemList_.reduce((acc, item) => acc + item.quantity, 0));
       } catch (error) {
         console.error("Error fetching cart items:", error);
       }
-    } else {
-      console.log("User is not logged in.");
     }
   };
+  
 
   const handleUpdateItem = async (itemId, newQuantity) => {
-    const jwt = sessionStorage.getItem("jwt");
     const item = cartItemList.find((cart) => cart.id === itemId);
     if (!item) return;
-
+  
     const updatedItem = {
       ...item,
       quantity: newQuantity,
-      amount: (newQuantity * item.selingPrice).toFixed(2),
+      amount: (newQuantity * item.sellingPrice).toFixed(2),
     };
-
+  
     try {
-      await GlobalApi.updateCartItem(itemId, {
-        data: {
-          quantity: updatedItem.quantity,
-          amount: updatedItem.amount,
+      await GlobalApi.updateCartItem(
+        itemId,
+        {
+          data: {
+            quantity: updatedItem.quantity,
+            amount: updatedItem.amount,
+          },
         },
-      }, jwt);
+        jwt
+      );
+  
       setCartItemList((prev) =>
         prev.map((cart) =>
           cart.id === itemId ? { ...cart, ...updatedItem } : cart
@@ -105,6 +108,8 @@ function Header() {
       toast("Failed to update item");
     }
   };
+  
+  
   
   // Update cart when `updateCart` changes
   useEffect(() => {

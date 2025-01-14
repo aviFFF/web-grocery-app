@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/collapsible";
 import moment from "moment";
 import Myorderitem from "./_compnents/Myorderitem";
+import InvoiceTemplate from "@/app/_components/InvoiceTemplate";
 
 function MyOrders() {
   const router = useRouter();
@@ -42,7 +43,7 @@ function MyOrders() {
   const fetchOrders = async () => {
     try {
       const orderList_ = await GlobalApi.getMyorders(user.id, jwt);
-      // console.log("Fetched Orders:", orderList_); // Log orders for debugging
+      console.log("Fetched Orders:", orderList_); // Log orders for debugging
       setOrderList(orderList_);
     } catch (error) {
       console.error("Error fetching orders:", error);

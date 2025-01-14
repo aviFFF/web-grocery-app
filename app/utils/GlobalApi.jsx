@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:'https://api.buzzat.in/api',
+    baseURL:'http://127.0.0.1:1337/api',
 });
 axiosClient.interceptors.request.use((config) => {
   const token = Cookies.get("token"); // Retrieve token from cookies
@@ -92,6 +92,7 @@ const updateCartItem = (id, data, jwt) =>
     },
   });
 
+
   const getCartItems = (userId, jwt) =>
     axiosClient
       .get(
@@ -111,11 +112,13 @@ const updateCartItem = (id, data, jwt) =>
           image:
             item.attributes.products.data?.attributes?.image?.data?.[0]
               ?.attributes?.url ?? "default-image-url",
-          selingPrice: item.attributes.products.data.attributes.mrp,
+          sellingPrice: item.attributes.products.data.attributes.mrp,
           id: item.id,
           product: item.attributes.products.data.id,
+          quantityType: item.attributes.products.data.attributes?.quantityType,
         }));
       });
+  
   
 export const getPincodes = async () => {
     const resp = await axiosClient.get('/pincodes?populate=*');
@@ -190,8 +193,8 @@ export const vendorSignup = (name, email, password, phone) =>
   axiosClient.post('/vendor/signup', { name, email, password, phone });
 
 // Vendor Login API
-export const vendorLogin = async (email, password) => {
-  const response = await axiosClient.post('/vendor/login', { email, password });
+export const vendorLogin = async (phone, password) => {
+  const response = await axiosClient.post('/vendor/login', { phone, password });
   
   // Store token in a secure cookie
   Cookies.set("token", response.data.jwt, {
@@ -219,6 +222,40 @@ export const fetchVendorOrders = async () => {
     },
   });
 };
+
+export const updateOrderStatus = async (orderId, newStatus) => {
+  const token = Cookies.get("token");
+  if (!token) {
+    console.error("No token available!");
+    throw new Error("Token is missing");
+  }
+
+  return axiosClient.put(
+    `/orders/${orderId}`,
+    { data: { Status: newStatus } },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+
+export const getProductById = async (productId, jwt) => {
+  const response = await fetch(`/products/${productId}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch product details");
+  }
+  return response.json().data;
+};
+
+
 
 const subscribeToPushNotifications = async () => {
   try {
