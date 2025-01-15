@@ -37,7 +37,7 @@ function Productitem({ product }) {
           <Image
             src={
               product?.attributes?.image?.data?.[0]?.attributes?.url ||
-              "/path/to/fallback-image.png"
+              "/fallback-image.png"
             }
             alt={product?.attributes?.name || "Default Alt Text"}
             width={200}

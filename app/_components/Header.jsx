@@ -183,7 +183,7 @@ function Header() {
   
 
   return (
-    <div className="px-3 flex justify-between  items-center gap-5 sticky z-50 bg-gradient-to-r from-[#FF9933]/20 via-[#FFFFFF]/20 to-[#128807]/20 top-0 shadow-lg">
+    <div className="px-3 flex justify-between bg-white items-center gap-5 sticky z-50 bg-gradient-to-r from-[#FF9933]/20 via-[#FFFFFF]/20 to-[#128807]/20 top-0 shadow-lg">
       {/* Logo */}
        <Link href="/">
         <Image

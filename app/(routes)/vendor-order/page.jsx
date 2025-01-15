@@ -13,6 +13,8 @@ const VendorOrderHistory = () => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [latestOrderId, setLatestOrderId] = useState(null);
   const [socket, setSocket] = useState(null); // WebSocket state
+  const [vendorPincode, setVendorPincode] = useState(null); // Vendor's pincode state
+
   const router = useRouter();
 
   const urlBase64ToUint8Array = (base64String) => {
@@ -89,43 +91,43 @@ const VendorOrderHistory = () => {
     router.push("/vendor");
   };
 
-  // // Connect to WebSocket and listen for new orders
-  // useEffect(() => {
-  //   const token = Cookies.get("token");
-  //   if (!token) {
-  //     router.push("/vendor");
-  //   }
+  // Connect to WebSocket and listen for new orders
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (!token) {
+      router.push("/vendor");
+    }
 
-  //   // Initialize WebSocket connection
-  //   const socketInstance = io(process.env.NEXT_PUBLIC_API_URL); // Replace with your Strapi server URL
-  //   setSocket(socketInstance);
+    // Initialize WebSocket connection
+    const socketInstance = io(process.env.NEXT_PUBLIC_API_URL); // Replace with your Strapi server URL
+    setSocket(socketInstance);
 
-  //   // Subscribe to vendor notifications using their ID
-  //   const vendorId = 1; // Replace this with the logged-in vendor's ID
-  //   socketInstance.emit("subscribe", vendorId);
+    // Subscribe to vendor notifications using their ID
+    const vendorId = 1; // Replace this with the logged-in vendor's ID
+    socketInstance.emit("subscribe", vendorId);
 
-  //   // Listen for 'new-order' event from the server
-  //   socketInstance.on("new-order", (data) => {
-  //     console.log("New order received:", data);
+    // Listen for 'new-order' event from the server
+    socketInstance.on("new-order", (data) => {
+      console.log("New order received:", data);
 
-  //     // Trigger the notification if permissions are granted
-  //     if (notificationsEnabled) {
-  //       playNotificationSound();
-  //       showNotification(
-  //         "New Order Received",
-  //         `Order ID: ${data.orderId} - ${data.message}`
-  //       );
-  //     }
+      // Trigger the notification if permissions are granted
+      if (notificationsEnabled) {
+        playNotificationSound();
+        showNotification(
+          "New Order Received",
+          `Order ID: ${data.orderId} - ${data.message}`
+        );
+      }
 
-  //     // Optionally fetch the latest orders if you want to refresh the list on new order
-  //     fetchOrders();
-  //   });
+      // Optionally fetch the latest orders if you want to refresh the list on new order
+      fetchOrders();
+    });
 
-  //   // Cleanup WebSocket on component unmount
-  //   return () => {
-  //     socketInstance.disconnect();
-  //   };
-  // }, [router, notificationsEnabled]);
+    // Cleanup WebSocket on component unmount
+    return () => {
+      socketInstance.disconnect();
+    };
+  }, [router, notificationsEnabled]);
 
   const fetchOrders = async () => {
     try {
@@ -303,7 +305,7 @@ const VendorOrderHistory = () => {
                     id: order.id,
                     invoiceNumber: `INV-${order.id}`,
                     invoiceDate: order.attributes.createdAt,
-                    customerName: `${order.attributes.firstname} ${order.attributes.lastname}`,
+                    customerName: `${order.attributes.firstname}`,
                     customerAddress: `${order.attributes.address}, ${order.attributes.pincode}`,
                     items: order.attributes.Orderitemlist.map((item) => ({
                       description:

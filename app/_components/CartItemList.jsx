@@ -49,7 +49,7 @@ function CartItemList({ cartItemList, onDeleteItem, onUpdateItem }) {
                   <button
                     onClick={() => handleQuantityChange(cart, cart.quantity - 1)}
                     disabled={cart.quantity === 1}
-                    className="p-2 border rounded bg-gray-200"
+                    className="p-2 border rounded-xl bg-gray-200"
                   >
                     -
                   </button>
