@@ -257,32 +257,32 @@ export const getProductById = async (productId, jwt) => {
 
 
 
-// const subscribeToPushNotifications = async () => {
-//   try {
-//     const registration = await navigator.serviceWorker.ready;
+const subscribeToPushNotifications = async () => {
+  try {
+    const registration = await navigator.serviceWorker.ready;
 
-//     const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY; // Replace this with the Base64 URL-safe public key
-//     const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+    const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY; // Replace this with the Base64 URL-safe public key
+    const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
 
-//     const subscription = await registration.pushManager.subscribe({
-//       userVisibleOnly: true,
-//       applicationServerKey: convertedVapidKey,
-//     });
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: convertedVapidKey,
+    });
 
-//     console.log("Push Subscription:", subscription);
+    console.log("Push Subscription:", subscription);
 
-//     // Send subscription to your backend
-//     await fetch(process.env.NEXT_PUBLIC_API_URL + "/save-subscription", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(subscription),
-//     });
-//   } catch (error) {
-//     console.error("Error subscribing to push notifications:", error);
-//   }
-// };
+    // Send subscription to your backend
+    await fetch(process.env.NEXT_PUBLIC_API_URL + "/save-subscription", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(subscription),
+    });
+  } catch (error) {
+    console.error("Error subscribing to push notifications:", error);
+  }
+};
 
   
   
