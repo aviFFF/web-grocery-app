@@ -17,10 +17,6 @@ const ContactUs = () => {
                 <p className="text-gray-400">buzzatstore@gmail.com</p>
               </div>
               <div>
-                <h2 className="font-semibold">Phone</h2>
-                <p className="text-gray-400">+91 9451481758</p>
-              </div>
-              <div>
                 <h2 className="font-semibold">Address</h2>
                 <p className="text-gray-400">IIM Road, Maharshi Nagar, Lucknow, Uttar Pradesh, India</p>
               </div>

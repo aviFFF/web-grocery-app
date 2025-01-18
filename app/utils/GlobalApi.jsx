@@ -257,11 +257,11 @@ export const getProductById = async (productId, jwt) => {
 
 
 
-const subscribeToPushNotifications = async () => {
+export const subscribeToPushNotifications = async () => {
   try {
     const registration = await navigator.serviceWorker.ready;
 
-    const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY; // Replace this with the Base64 URL-safe public key
+    const vapidPublicKey = process.env.VAPID_PUBLIC_KEY; // Replace this with the Base64 URL-safe public key
     const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
 
     const subscription = await registration.pushManager.subscribe({
@@ -272,7 +272,7 @@ const subscribeToPushNotifications = async () => {
     console.log("Push Subscription:", subscription);
 
     // Send subscription to your backend
-    await fetch(process.env.NEXT_PUBLIC_API_URL + "/save-subscription", {
+    await fetch(process.env.NEXT_PUBLIC_URL + "/save-subscription", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

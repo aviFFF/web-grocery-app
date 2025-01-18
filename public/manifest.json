@@ -4,7 +4,7 @@
     "description": "Make Your Buzzat Cart",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "green",
+    "background_color": "#ffffff",
     "theme_color": "#000000",
     "orientation": "portrait",
     "icons": [
@@ -14,7 +14,7 @@
         "type": "image/png"
       },
       {
-        "src": "/buzzat-logo.png",
+        "src": "/republicday.png",
         "sizes": "512x512",
         "type": "image/png"
       }
