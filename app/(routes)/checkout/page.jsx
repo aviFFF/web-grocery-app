@@ -337,7 +337,7 @@ function Checkout() {
                   />
                   <div>
                     <p className="font-semibold">{item.name}</p>
-                    <p className="text-gray-500">₹{item.selingPrice}</p>
+                    <p className="text-gray-500">₹{item.sellingPrice}</p>
                     <p className="text-gray-500">Quantity: {item.quantity}</p>
                   </div>
                 </div>
