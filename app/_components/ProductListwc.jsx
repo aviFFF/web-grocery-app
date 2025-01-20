@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Productitem from './Productitem';
 
 function ProductListwc({ productList }) {
-  const [visibleProducts, setVisibleProducts] = useState(10); // Start with 8 products
+  const [visibleProducts, setVisibleProducts] = useState(8); // Start with 8 products
   const [loading, setLoading] = useState(false);
   const observerRef = useRef(null); // Reference for observing the last product
 

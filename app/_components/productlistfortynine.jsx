@@ -14,7 +14,6 @@ function ProductListfortynine() {
   const fetchProducts = async () => {
     try {
       const products = await GlobalApi.getproductfortynine();
-      console.log("Fetched products under ₹49:", products); // Debug log
       setProductList(products);
     } catch (error) {
       console.error("Error fetching products under ₹49:", error);
