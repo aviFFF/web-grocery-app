@@ -23,7 +23,7 @@ function Productitem({ product }) {
           {/* Calculate the discount percentage */}
           {product?.attributes?.sellingPrice &&
             product?.attributes?.mrp &&
-            product.attributes.mrp > 0 && (
+            product.attributes.mrp > product.attributes.sellingPrice && (
               <div className="absolute top-2 left-2 bg-orange-500 text-white font-bold text-xs p-1 rounded">
                 {Math.round(
                   ((product.attributes.mrp - product.attributes.sellingPrice) /
@@ -51,20 +51,23 @@ function Productitem({ product }) {
           <h2 className="text-gray-500">
             {product?.attributes?.itemQuantityType}
           </h2>
-          <div className="flex items-center gap-2">
-            {product?.attributes?.sellingPrice && (
-              <h2>₹{product?.attributes?.sellingPrice}</h2>
+          <div className="flex items-center gap-1">
+            {product?.attributes?.sellingPrice !== product?.attributes?.mrp ? (
+              <>
+                {product?.attributes?.sellingPrice && (
+                  <h2 className="text-xl font-bold">
+                    ₹{product?.attributes?.sellingPrice}
+                  </h2>
+                )}
+                <h2 className="text-lg p-2 font-bold line-through text-red-400">
+                  ₹{product?.attributes?.mrp}
+                </h2>
+              </>
+            ) : (
+              <h2 className="text-lg font-bold">₹{product?.attributes?.mrp}</h2>
             )}
-            <h2
-              className={`font-bold ${
-                product?.attributes?.sellingPrice
-                  ? "line-through text-gray-400"
-                  : ""
-              }`}
-            >
-              {product?.attributes?.mrp}
-            </h2>
           </div>
+
           <Button
             className="text-primary hover:text-white px-2 md:px-4 rounded-xl hover:bg-primary"
             variant="outline"
@@ -77,7 +80,9 @@ function Productitem({ product }) {
       {/* Dialog content */}
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{product?.attributes?.name || "Product Details"}</DialogTitle>
+          <DialogTitle>
+            {product?.attributes?.name || "Product Details"}
+          </DialogTitle>
           <DialogDescription>
             <ProductItemDetails product={product} />
           </DialogDescription>
