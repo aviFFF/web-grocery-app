@@ -66,9 +66,14 @@ const PincodeSearchPopup = ({onValidation}) => {
       setPincodeNotEntered(true); // Set this to true if no pincode was entered
     }
   };
+  
 
   return (
     <>
+    <head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8540952826970534"
+     crossorigin="anonymous"></script>
+    </head>
       {showPopup && (
         <div className="fixed inset-0 px-8 rounded-lg bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg max-w-md w-full relative">

@@ -206,7 +206,7 @@ export const vendorLogin = async (phone, password) => {
   
   // Store token in a secure cookie
   Cookies.set("token", response.data.jwt, {
-    expires: 7, // Token valid for 7 days
+    expires: 30, // Token valid for 7 days
     secure: true, // Only sent over HTTPS
     sameSite: "Lax", // Protect against CSRF
   });

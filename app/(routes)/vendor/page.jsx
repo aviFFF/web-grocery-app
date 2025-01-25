@@ -73,6 +73,8 @@ const VendorLogin = () => {
       <Head>
         <link rel="manifest" href="vendor/manifest.json" />
         <meta name="theme-color" content="#000000" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8540952826970534"
+     crossorigin="anonymous"></script>
       </Head>
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-100 to-blue-50">
         <form
