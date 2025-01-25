@@ -7,7 +7,6 @@ import { ArrowBigRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Loader2 } from "lucide-react";
-
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
@@ -41,6 +40,8 @@ function Checkout() {
   const getPincodes = useMemo(() => GlobalApi.getPincodes, []);
   const [isLoading, setIsLoading] = useState(true);
   const [isCODLoading, setIsCODLoading] = useState(false);
+  const [locationUrl, setLocationUrl] = useState("");
+
 
   const router = useRouter();
 
@@ -57,24 +58,29 @@ function Checkout() {
   const handlePincodeChange = (e) => {
     const enteredPincode = e.target.value;
     setPincode(enteredPincode);
-
+  
     if (enteredPincode.length === 6) {
-      const foundPincode = availablePincodes.find(
-        (item) => item.attributes.pins === enteredPincode
-      );
-      if (foundPincode) {
-        const { message: pinMessage } = foundPincode.attributes;
-        setIsServicable(true);
-        setValidationMessage(pinMessage);
-      } else {
-        setIsServicable(false);
-        setValidationMessage("Oops! We will be coming soon in your area.");
-      }
+      validatePincode(enteredPincode);
     } else {
       setIsServicable(null);
       setValidationMessage("");
     }
   };
+
+  const validatePincode = (enteredPincode) => {
+    const foundPincode = availablePincodes.find(
+      (item) => item.attributes.pins === enteredPincode
+    );
+    if (foundPincode) {
+      const { message: pinMessage } = foundPincode.attributes;
+      setIsServicable(true);
+      setValidationMessage(pinMessage);
+    } else {
+      setIsServicable(false);
+      setValidationMessage("Oops! We will be coming soon in your area.");
+    }
+  };
+  
 
   useEffect(() => {
     const storedJwt = sessionStorage.getItem("jwt");
@@ -114,12 +120,12 @@ function Checkout() {
 
   const deliveryFee = useMemo(() => {
     if (subtotal < 300) return 25;
-    if (subtotal >= 300 && subtotal <= 500) return 9.5;
+    if (subtotal >= 300 && subtotal <= 399) return 9.5;
     return 0;
   }, [subtotal]);
 
   const handlingFee = useMemo(() => {
-    return subtotal < 1000 ? 9 : 19;
+    return subtotal < 1000 ? 9 : 15;
   }, [subtotal]);
 
   const totalAmount = useMemo(() => {
@@ -191,6 +197,7 @@ function Checkout() {
       </div>
     );
   }
+
   const fetchLocation = async () => {
     if (!navigator.geolocation) {
       toast.error("Geolocation is not supported by your browser");
@@ -204,15 +211,11 @@ function Checkout() {
         try {
           const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
           const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
-          console.log("Fetching location with URL:", apiUrl);
   
           const response = await axios.get(apiUrl);
-          console.log("Geocoding API Response:", response.data);
   
           if (response.data.status === "OK" && response.data.results.length > 0) {
             const addressComponents = response.data.results[0].address_components;
-  
-            // Extract city and pincode
             const cityComponent = addressComponents.find((comp) =>
               comp.types.includes("locality")
             );
@@ -220,9 +223,21 @@ function Checkout() {
               comp.types.includes("postal_code")
             );
   
-            setCity(cityComponent?.long_name || "Unknown");
-            setPincode(pincodeComponent?.long_name || "Unknown");
+            const fetchedCity = cityComponent?.long_name || "Unknown";
+            const fetchedPincode = pincodeComponent?.long_name || "Unknown";
+  
+            setCity(fetchedCity);
+            setPincode(fetchedPincode); // Update pincode state
             setAddress(response.data.results[0].formatted_address);
+  
+            // Trigger pincode validation
+            if (fetchedPincode.length === 6) {
+              validatePincode(fetchedPincode);
+            }
+  
+            // Generate Google Maps URL
+            const mapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+            setLocationUrl(mapsUrl); // Save the location URL
           } else {
             toast.error("Unable to fetch location details");
           }
@@ -237,6 +252,8 @@ function Checkout() {
       }
     );
   };
+  
+  
   
 
   return (
@@ -275,7 +292,7 @@ function Checkout() {
             Use Current Location
           </Button>
           <Input
-            type="text"
+            type=""
             placeholder="Complete Address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
@@ -320,7 +337,7 @@ function Checkout() {
                   />
                   <div>
                     <p className="font-semibold">{item.name}</p>
-                    <p className="text-gray-500">₹{item.selingPrice}</p>
+                    <p className="text-gray-500">₹{item.sellingPrice}</p>
                     <p className="text-gray-500">Quantity: {item.quantity}</p>
                   </div>
                 </div>
@@ -335,9 +352,9 @@ function Checkout() {
             <span>Subtotal</span>
             <span>₹{subtotal}</span>
           </div>
-          {subtotal < 500 && (
+          {subtotal < 399 && (
             <h2 className="text-red-500 text-center font-semibold mt-2">
-              Add items worth ₹{(500 - subtotal).toFixed(2)} to your cart to get
+              Add items worth ₹{(399 - subtotal).toFixed(2)} to your cart to get
               free delivery!
             </h2>
           )}
@@ -424,7 +441,7 @@ function Checkout() {
           </div>
           <div className="p-5 bg-green-400 text-white rounded-lg text-center">
             <h3 className="text-xl font-bold">Free Delivery</h3>
-            <p className="mt-2">On orders above ₹500.</p>
+            <p className="mt-2">On orders above ₹399.</p>
           </div>
           <div className="p-5 bg-yellow-400 text-black rounded-lg text-center">
             <h3 className="text-xl font-bold">24/7 Support</h3>

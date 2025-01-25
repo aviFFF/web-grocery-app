@@ -25,10 +25,10 @@ function Footer() {
             </p>
             <ul className="mt-8 flex justify-center gap-6 sm:justify-start md:gap-8">
               {[
-                { href: "#", label: "Facebook", icon: FacebookIcon },
-                { href: "#", label: "Instagram", icon: InstagramIcon },
-                { href: "#", label: "Twitter", icon: TwitterIcon },
-                { href: "#", label: "Youtube", icon: YouTubeIcon },
+                { href: "https://www.facebook.com/people/Buzzat/61571924386565/", label: "Facebook", icon: FacebookIcon },
+                { href: "https://www.instagram.com/buzzatstore/", label: "Instagram", icon: InstagramIcon },
+                { href: "https://twitter.com/buzzatstore", label: "Twitter", icon: TwitterIcon },
+                { href: "https://www.youtube.com/@buzzatstore", label: "Youtube", icon: YouTubeIcon },
               ].map(({ href, label, icon: Icon }, index) => (
                 <li key={index}>
                   <Link
@@ -54,14 +54,14 @@ function Footer() {
             </FooterColumn>
 
             <FooterColumn title="Contact">
-              <FooterLink href="#">Partner</FooterLink>
+              <FooterLink href="/partner">Partner</FooterLink>
               <FooterLink href="/contact">Contact</FooterLink>
               <FooterLink href="#">FAQ</FooterLink>
-              <FooterLink href="#">Live Chat</FooterLink>
+              <FooterLink target="_blank" href="https://api.whatsapp.com/send?phone=+919236532569&text=Hello!%20I%20am%20having%20issue%20with%20my%20order.">Live Chat</FooterLink>
             </FooterColumn>
 
             <FooterColumn title="Categories">
-              <FooterLink href="/products-category/Dairy%20&%20Breakfast">Dairy & Breakfast</FooterLink>
+              <FooterLink href="/products-category/Dairy%20and%20Breakfast">Dairy & Breakfast</FooterLink>
               <FooterLink href="/products-category/Fruits%20and%20Vegetables">Vegetables & Fruits</FooterLink>
               <FooterLink href="/products-category/Drinks%20and%20Juice">Drinks & Juices</FooterLink>
               <FooterLink href="/products-category/Dry%20Fruits%20and%20Instant%20Food">Instant & Frozen Food</FooterLink>
@@ -70,8 +70,8 @@ function Footer() {
             <FooterColumn title="...">
               <FooterLink href="/products-category/Aataa%20Dal%20Rice">Atta, Rice & Dal</FooterLink>
               <FooterLink href="/products-category/Masala%20and%20Oils">Masala & Oils</FooterLink>
-              <FooterLink href="/products-category/Tea%20&%20Coffee">Tea & Coffee</FooterLink>
-              <FooterLink href="/products-category/Beauty%20&%20Cosmetics">Beauty & Cosmetics</FooterLink>
+              <FooterLink href="/products-category/Tea%20and%20Coffee">Tea & Coffee</FooterLink>
+              <FooterLink href="/products-category/Beauty%20and%20Cosmetics">Beauty & Cosmetics</FooterLink>
             </FooterColumn>
           </div>
         </div>
@@ -81,21 +81,21 @@ function Footer() {
             <p className="text-sm text-gray-500">
               <span className="block sm:inline">All rights reserved.</span>
               <Link
-                href="#"
+                href="/terms"
                 className="text-black underline transition hover:text-primary"
               >
                 Terms & Conditions
               </Link>
               &nbsp;and&nbsp;
               <Link
-                href="#"
+                href="/privacy"
                 className="text-black underline transition hover:text-primary"
               >
                 Privacy Policy
               </Link>
             </p>
             <p className="mt-4 text-sm text-gray-500 sm:order-first sm:mt-0">
-              &copy; 2024 Buzzat India Pvt Ltd
+              &copy; 2024 Buzzat Pvt Ltd
             </p>
           </div>
           <div className="mt-8 gap-8 flex justify-center sm:justify-start">

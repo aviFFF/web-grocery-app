@@ -10,9 +10,9 @@ function TopCategoryList({categoryList, selectedCategory} ) {
       key={index} 
       href={'/products-category/' + category?.attributes?.name}
       className={`flex flex-col md:flex-row p-2
-        bg-green-50 text-center group  items-center justify-center cursor-pointer md:items-start md:justify-start overflow-hidden
+         text-center group  items-center justify-center cursor-pointer md:items-start md:justify-start overflow-hidden
         md:w-[190px] md:h-[50px] w-[70px] h-[50px] md:text-sm text-[10px] 
-        ${selectedCategory == category.attributes.name && 'bg-primary text-primary'}
+        ${selectedCategory == category.attributes.name && 'bg-primary text-white'}
       `}
     >
       {/* Image inside the circular category */}
@@ -25,8 +25,8 @@ function TopCategoryList({categoryList, selectedCategory} ) {
       />
       
       {/* Smaller text inside the circular category */}
-      <h2 className={`md:text-xs text-[8px] text-center contain mt-1 text-black group-hover:text-primary 
-        ${selectedCategory == category?.attributes?.name && 'text-primary bg-green-400 '}
+      <h2 className={`md:text-xs text-[8px] text-center contain mt-1 text-black  
+        ${selectedCategory == category?.attributes?.name && 'text-white '}
       `}>
         {category?.attributes?.name}
       </h2>

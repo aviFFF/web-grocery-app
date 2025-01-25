@@ -55,6 +55,14 @@ const registeruser =(username,email,password,name)=>axiosClient.post('/auth/loca
     name:name
 });
 
+const getproductunderninenine=()=>axiosClient.get('/products?populate=*&filters[$and][0][sellingPrice][$gte]=50&filters[$and][1][sellingPrice][$lte]=99').then(resp=>{
+    return resp.data.data
+})
+
+const getproductfortynine=()=>axiosClient.get('/products?populate=*&filters[$and][0][sellingPrice][$gte]=1&filters[$and][1][sellingPrice][$lte]=49').then(resp=>{
+    return resp.data.data
+})
+
 const LogIn =(email,password)=>axiosClient.post('/auth/local', { identifier: email, password: password })
 
 const ForgotPassword = (email) => {
@@ -208,34 +216,30 @@ export const vendorLogin = async (phone, password) => {
 
 // Example function to get vendor data after login
 export const fetchVendorOrders = async () => {
-  const token = Cookies.get("token"); // Get token from cookies
-  console.log("Token from cookies:", token); // Debugging line
-
-  if (!token) {
-    console.error("No token available!"); // Log the error
-    throw new Error("Token is missing");
+  try {
+    return axiosClient.get(
+      "/orders?populate[Orderitemlist][populate]=product.image"
+    );
+  } catch (error) {
+    console.error("Error fetching vendor orders:", error); // Log any errors
+    throw error;
   }
-
-  return axiosClient.get("/orders?populate[Orderitemlist][populate]=product.image", {
-    headers: {
-      Authorization: `Bearer ${token}`, // Pass token in Authorization header
-    },
-  });
 };
 
+
 export const updateOrderStatus = async (orderId, newStatus) => {
-  const token = Cookies.get("token");
-  if (!token) {
-    console.error("No token available!");
-    throw new Error("Token is missing");
-  }
+  // const token = Cookies.get("token");
+  // if (!token) {
+  //   console.error("No token available!");
+  //   throw new Error("Token is missing");
+  // }
 
   return axiosClient.put(
     `/orders/${orderId}`,
     { data: { Status: newStatus } },
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        
       },
     }
   );
@@ -257,11 +261,11 @@ export const getProductById = async (productId, jwt) => {
 
 
 
-const subscribeToPushNotifications = async () => {
+export const subscribeToPushNotifications = async () => {
   try {
     const registration = await navigator.serviceWorker.ready;
 
-    const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY; // Replace this with the Base64 URL-safe public key
+    const vapidPublicKey = process.env.VAPID_PUBLIC_KEY; // Replace this with the Base64 URL-safe public key
     const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
 
     const subscription = await registration.pushManager.subscribe({
@@ -272,7 +276,7 @@ const subscribeToPushNotifications = async () => {
     console.log("Push Subscription:", subscription);
 
     // Send subscription to your backend
-    await fetch(process.env.NEXT_PUBLIC_API_URL + "/save-subscription", {
+    await fetch(process.env.NEXT_PUBLIC_URL + "/save-subscription", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -313,4 +317,6 @@ export default {
     ForgotPassword,
     ResetPassword,
     updateCartItem,
+    getproductunderninenine,
+    getproductfortynine,
 }

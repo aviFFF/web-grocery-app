@@ -10,6 +10,13 @@ export default function InstallApp() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    // Check if the app is already installed (persisted state)
+    const appInstalled = localStorage.getItem("isAppInstalled");
+    if (appInstalled === "true") {
+      setIsAppInstalled(true);
+      return;
+    }
+
     // Capture the 'beforeinstallprompt' event
     const handleBeforeInstallPrompt = (e) => {
       console.log("beforeinstallprompt event fired");
@@ -21,6 +28,7 @@ export default function InstallApp() {
     const handleAppInstalled = () => {
       console.log("PWA installed successfully");
       setIsAppInstalled(true);
+      localStorage.setItem("isAppInstalled", "true"); // Save the state
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);

@@ -17,16 +17,12 @@ const ContactUs = () => {
                 <p className="text-gray-400">buzzatstore@gmail.com</p>
               </div>
               <div>
-                <h2 className="font-semibold">Phone</h2>
-                <p className="text-gray-400">+91 9451481758</p>
-              </div>
-              <div>
                 <h2 className="font-semibold">Address</h2>
                 <p className="text-gray-400">IIM Road, Maharshi Nagar, Lucknow, Uttar Pradesh, India</p>
               </div>
             </div>
           </div>
-
+    
           {/* Right Section - Image Tile */}
           <div className="relative">
             <img
@@ -44,51 +40,7 @@ const ContactUs = () => {
         </div>
 
         {/* Contact Form */}
-        <div className="p-8 md:p-12">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">Send Us a Message</h2>
-          <form className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-gray-600">Full Name</label>
-                <input
-                  type="text"
-                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your name"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-600">Email Address</label>
-                <input
-                  type="email"
-                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your email"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-gray-600">Subject</label>
-              <input
-                type="text"
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter your subject"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600">Message</label>
-              <textarea
-                rows="5"
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter your message"
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-primary text-white py-3 rounded-lg hover:bg-blue-700 transition"
-            >
-              Send Message
-            </button>
-          </form>
-        </div>
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfYribVXxkzDE-niK_KTkMzRJSnscWo-xv50a4W7l7P3YGWSg/viewform?embedded=true" width="700" height="2000" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
       </div>
     </div>
   );
