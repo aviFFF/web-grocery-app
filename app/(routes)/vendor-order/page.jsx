@@ -11,11 +11,14 @@ const VendorOrderHistory = () => {
 
   useEffect(() => {
     // Check for WebSocket connection and register service worker
+    // Check for WebSocket connection and register service worker
     if ("Notification" in window && "serviceWorker" in navigator) {
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
           console.log("Notification permission granted.");
+          console.log("Notification permission granted.");
         } else {
+          console.warn("Notifications permission denied.");
           console.warn("Notifications permission denied.");
         }
       });
@@ -36,7 +39,9 @@ const VendorOrderHistory = () => {
         if (permission === "granted") {
           setNotificationsEnabled(true);
           console.log("Notifications enabled.");
+          console.log("Notifications enabled.");
         } else {
+          console.warn("Notifications permission denied.");
           console.warn("Notifications permission denied.");
         }
       });
@@ -48,12 +53,14 @@ const VendorOrderHistory = () => {
   const playNotificationSound = () => {
     const audio = new Audio("/notific.mp3");
     audio.play().catch((err) => console.error("Audio play failed:", err));
+    audio.play().catch((err) => console.error("Audio play failed:", err));
   };
 
   const showNotification = (title, body) => {
     if (Notification.permission === "granted") {
       new Notification(title, {
         body,
+        icon: "/vendor/vendor-buzzat.png",
         icon: "/vendor/vendor-buzzat.png",
       });
     }
@@ -68,9 +75,11 @@ const VendorOrderHistory = () => {
       // Check for new order and show notification
       if (notificationsEnabled && sortedOrders[0]?.id !== latestOrderId) {
         setLatestOrderId(sortedOrders[0]?.id);
+        setLatestOrderId(sortedOrders[0]?.id);
         playNotificationSound();
         showNotification(
           "New Order Received",
+          `Order ID: ${sortedOrders[0]?.id} - ${sortedOrders[0]?.attributes.firstname} ₹${sortedOrders[0]?.attributes.totalOrderValue}.`
           `Order ID: ${sortedOrders[0]?.id} - ${sortedOrders[0]?.attributes.firstname} ₹${sortedOrders[0]?.attributes.totalOrderValue}.`
         );
       }
@@ -93,6 +102,7 @@ const VendorOrderHistory = () => {
     try {
       setLoading(true);
       await updateOrderStatus(orderId, newStatus);
+      fetchOrders();
       fetchOrders();
     } catch (error) {
       console.error("Error updating order status:", error);
@@ -145,6 +155,7 @@ const VendorOrderHistory = () => {
                   {order.attributes.address} - {order.attributes.pincode}
                 </a>
               </div>
+
 
               <div className="text-sm text-gray-600 mb-3">
                 <strong>Total Value:</strong> ₹
