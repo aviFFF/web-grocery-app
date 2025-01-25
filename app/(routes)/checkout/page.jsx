@@ -152,49 +152,43 @@ function Checkout() {
   const onApprove = async (data) => {
     try {
       setIsCODLoading(true);
-  
-      const orderPayload = {
-        paymentid: data.paymentID || "Cash on Delivery",
-        totalOrderValue: totalAmount,
-        city,
-        phone: user.username,
-        email: user.email,
-        firstname: user.name,
-        address,
-        pincode,
-        Orderitemlist: cartItemList,
-        userid: user.id,
-        status: "success",
+
+      const payload = {
+        data: {
+          paymentid: data.paymentID || "Cash on Delivery",
+          totalOrderValue: totalAmount,
+          city: city,
+          phone: user.username, // User's phone
+          email: user.email, // User's email
+          firstname: user.name, // User's name
+          address: address,
+          pincode: pincode,
+          Orderitemlist: cartItemList,
+          userid: user.id,
+          status: "success",
+        },
       };
-  
-      const response = await GlobalApi.createOrder(orderPayload, jwt);
-  
-      // Generate invoice PDF
-      const invoiceBlob = generatePDF(response.data);
-  
-      // Create FormData to send email with attachment
-      const emailPayload = new FormData();
-      emailPayload.append("to", user.email);
-      emailPayload.append("subject", "Order Confirmation & Invoice");
-      emailPayload.append("text", "Thank you for your order! Please find your invoice attached.");
-      emailPayload.append("files.invoice", invoiceBlob, `invoice-${response.data.id}.pdf`);
-  
-      await GlobalApi.sendEmail(emailPayload);
-  
-      // Clear cart
-      await Promise.all(cartItemList.map((item) => GlobalApi.deleteCartItem(item.id, jwt)));
-  
-      toast.success("Order placed successfully!");
-  
+
+      // Send payload to Strapi
+      const response = await GlobalApi.createOrder(payload, jwt);
+
+      // Success toast
+      toast.success("Order Placed Successfully!");
+
+      // Delete cart items after successful order placement
+      await Promise.all(
+        cartItemList.map((item) => GlobalApi.deleteCartItem(item.id, jwt))
+      );
+
+      // Redirect user to the order placed page
       router.replace("/orderPlaced");
     } catch (error) {
-      console.error("Error:", error);
-      toast.error("Failed to place order.");
+      console.error("Order creation failed:", error);
+      toast.error("Failed to place order. Please try again later.");
     } finally {
       setIsCODLoading(false);
     }
   };
-  
 
   if (isLoading) {
     return (
