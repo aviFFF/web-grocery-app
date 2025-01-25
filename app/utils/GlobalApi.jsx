@@ -216,30 +216,34 @@ export const vendorLogin = async (phone, password) => {
 
 // Example function to get vendor data after login
 export const fetchVendorOrders = async () => {
-  try {
-    return axiosClient.get(
-      "/orders?populate[Orderitemlist][populate]=product.image"
-    );
-  } catch (error) {
-    console.error("Error fetching vendor orders:", error); // Log any errors
-    throw error;
+  const token = Cookies.get("token"); // Get token from cookies
+  console.log("Token from cookies:", token); // Debugging line
+
+  if (!token) {
+    console.error("No token available!"); // Log the error
+    throw new Error("Token is missing");
   }
+
+  return axiosClient.get("/orders?populate[Orderitemlist][populate]=product.image", {
+    headers: {
+      Authorization: `Bearer ${token}`, // Pass token in Authorization header
+    },
+  });
 };
 
-
 export const updateOrderStatus = async (orderId, newStatus) => {
-  // const token = Cookies.get("token");
-  // if (!token) {
-  //   console.error("No token available!");
-  //   throw new Error("Token is missing");
-  // }
+  const token = Cookies.get("token");
+  if (!token) {
+    console.error("No token available!");
+    throw new Error("Token is missing");
+  }
 
   return axiosClient.put(
     `/orders/${orderId}`,
     { data: { Status: newStatus } },
     {
       headers: {
-        
+        Authorization: `Bearer ${token}`,
       },
     }
   );

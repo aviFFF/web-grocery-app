@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { fetchVendorOrders, updateOrderStatus } from "@/app/utils/GlobalApi";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import InvoiceTemplate from "../../_components/InvoiceTemplate";
 
 const VendorOrderHistory = () => {
@@ -8,17 +10,17 @@ const VendorOrderHistory = () => {
   const [loading, setLoading] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [latestOrderId, setLatestOrderId] = useState(null);
+  const [socket, setSocket] = useState(null);
+
+  const router = useRouter();
 
   useEffect(() => {
-    // Check for WebSocket connection and register service worker
     // Check for WebSocket connection and register service worker
     if ("Notification" in window && "serviceWorker" in navigator) {
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
           console.log("Notification permission granted.");
-          console.log("Notification permission granted.");
         } else {
-          console.warn("Notifications permission denied.");
           console.warn("Notifications permission denied.");
         }
       });
@@ -39,9 +41,7 @@ const VendorOrderHistory = () => {
         if (permission === "granted") {
           setNotificationsEnabled(true);
           console.log("Notifications enabled.");
-          console.log("Notifications enabled.");
         } else {
-          console.warn("Notifications permission denied.");
           console.warn("Notifications permission denied.");
         }
       });
@@ -53,7 +53,6 @@ const VendorOrderHistory = () => {
   const playNotificationSound = () => {
     const audio = new Audio("/notific.mp3");
     audio.play().catch((err) => console.error("Audio play failed:", err));
-    audio.play().catch((err) => console.error("Audio play failed:", err));
   };
 
   const showNotification = (title, body) => {
@@ -61,9 +60,13 @@ const VendorOrderHistory = () => {
       new Notification(title, {
         body,
         icon: "/vendor/vendor-buzzat.png",
-        icon: "/vendor/vendor-buzzat.png",
       });
     }
+  };
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+    router.push("/vendor");
   };
 
   const fetchOrders = async () => {
@@ -75,11 +78,9 @@ const VendorOrderHistory = () => {
       // Check for new order and show notification
       if (notificationsEnabled && sortedOrders[0]?.id !== latestOrderId) {
         setLatestOrderId(sortedOrders[0]?.id);
-        setLatestOrderId(sortedOrders[0]?.id);
         playNotificationSound();
         showNotification(
           "New Order Received",
-          `Order ID: ${sortedOrders[0]?.id} - ${sortedOrders[0]?.attributes.firstname} ₹${sortedOrders[0]?.attributes.totalOrderValue}.`
           `Order ID: ${sortedOrders[0]?.id} - ${sortedOrders[0]?.attributes.firstname} ₹${sortedOrders[0]?.attributes.totalOrderValue}.`
         );
       }
@@ -93,6 +94,13 @@ const VendorOrderHistory = () => {
   };
 
   useEffect(() => {
+    const token = Cookies.get("token");
+    if (!token) {
+      router.push("/vendor");
+    }
+  }, []);
+
+  useEffect(() => {
     fetchOrders();
     const interval = setInterval(fetchOrders, 5000);
     return () => clearInterval(interval);
@@ -102,7 +110,6 @@ const VendorOrderHistory = () => {
     try {
       setLoading(true);
       await updateOrderStatus(orderId, newStatus);
-      fetchOrders();
       fetchOrders();
     } catch (error) {
       console.error("Error updating order status:", error);
@@ -115,6 +122,16 @@ const VendorOrderHistory = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <header className="flex justify-between items-center bg-gray-800 text-white py-4 px-6 rounded-lg mb-8">
+        <div className="text-lg font-semibold">Vendor Dashboard</div>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
+        >
+          Logout
+        </button>
+      </header>
+
       <h1 className="text-3xl font-semibold text-gray-800 mb-8">
         Your Order History
       </h1>
@@ -154,8 +171,20 @@ const VendorOrderHistory = () => {
                 >
                   {order.attributes.address} - {order.attributes.pincode}
                 </a>
+                <button
+                  onClick={() =>
+                    window.open(
+                      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                        order.attributes.address
+                      )},${encodeURIComponent(order.attributes.pincode)}`,
+                      "_blank"
+                    )
+                  }
+                  className="ml-4 px-2 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Open in Google Maps
+                </button>
               </div>
-
 
               <div className="text-sm text-gray-600 mb-3">
                 <strong>Total Value:</strong> ₹
@@ -196,12 +225,12 @@ const VendorOrderHistory = () => {
                       description:
                         item.product?.data?.attributes?.name || "Unknown",
                       mrp: item.product?.data?.attributes?.sellingPrice || 0,
-                      discount: 0,
+                      discount: 0, // Add discount logic if available
                       quantity: item.quantity || 1,
                       taxableValue:
                         item.product?.data?.attributes?.sellingPrice || 0,
-                      cgst: 0,
-                      sgst: 0,
+                      cgst: 0, // Add tax logic if available
+                      sgst: 0, // Add tax logic if available
                       total: item.product?.data?.attributes?.sellingPrice || 0,
                     })),
                   }}
