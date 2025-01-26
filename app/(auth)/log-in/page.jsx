@@ -37,7 +37,7 @@ function LogIn() {
       sessionStorage.setItem("jwt", resp.data.jwt);
 
       toast("Login Successful!");
-      router.push("/");
+      router.replace("/");
     } catch (loginError) {
       console.error(
         "Login API Error:",
