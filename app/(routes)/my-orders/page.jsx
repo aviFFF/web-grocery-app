@@ -11,6 +11,7 @@ import {
 import moment from "moment";
 import Myorderitem from "./_compnents/Myorderitem";
 import dynamic from "next/dynamic";
+import Head from "next/head";
 
 function MyOrders() {
   const router = useRouter();
