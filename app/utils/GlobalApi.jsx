@@ -55,13 +55,21 @@ const registeruser =(username,email,password,name)=>axiosClient.post('/auth/loca
     name:name
 });
 
-const getproductunderninenine=()=>axiosClient.get('/products?populate=*&filters[$and][0][sellingPrice][$gte]=50&filters[$and][1][sellingPrice][$lte]=99').then(resp=>{
-    return resp.data.data
-})
+const getproductunderninenine = () =>
+  axiosClient
+    .get(
+      '/products?populate=*&filters[$and][0][sellingPrice][$gte]=50&filters[$and][1][sellingPrice][$lte]=99&pagination[pageSize]=1000'
+    )
+    .then((resp) => resp.data.data);
 
-const getproductfortynine=()=>axiosClient.get('/products?populate=*&filters[$and][0][sellingPrice][$gte]=1&filters[$and][1][sellingPrice][$lte]=49').then(resp=>{
-    return resp.data.data
-})
+
+const getproductfortynine = () =>
+  axiosClient
+    .get(
+      '/products?populate=*&filters[$and][0][sellingPrice][$gte]=1&filters[$and][1][sellingPrice][$lte]=49&pagination[pageSize]=1000'
+    )
+    .then((resp) => resp.data.data);
+
 
 const LogIn =(email,password)=>axiosClient.post('/auth/local', { identifier: email, password: password })
 

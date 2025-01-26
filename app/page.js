@@ -50,8 +50,8 @@ export default async function Home() {
     <div className="md:p-4 p-5 md:px-16">
       {/* Main Content */}
       <Slider sliderList={sliders} />
-      <ProductListfortynine productList={products} />
       <CategoryList categoryList={categories} />
+      <ProductListfortynine productList={products} />
       <ProductListninenine productList={products} />
       <ProductList productList={products} />
       <ProductListwc productList={products} />
