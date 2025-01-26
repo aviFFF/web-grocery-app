@@ -6,7 +6,7 @@ import Productitem from "./Productitem";
 
 function ProductListninenine() {
   const [productList, setProductList] = useState([]); // Store fetched products
-  const [visibleProducts, setVisibleProducts] = useState(); // Start with 8 products
+  const [visibleProducts, setVisibleProducts] = useState(8); // Start with 8 products
   const [loading, setLoading] = useState(false);
   const observerRef = useRef(null); // Reference for observing the last product
 
@@ -25,7 +25,7 @@ function ProductListninenine() {
     if (loading) return;
     setLoading(true);
     setTimeout(() => {
-      setVisibleProducts((prevVisible) => prevVisible + 80); // Load 8 more products
+      setVisibleProducts((prevVisible) => Math.min(prevVisible + 8, productList.length)); // Load 8 more products
       setLoading(false);
     }, 500); // Simulate API delay
   };
@@ -35,7 +35,6 @@ function ProductListninenine() {
   }, []);
 
   useEffect(() => {
-    // Create an IntersectionObserver instance
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -46,15 +45,19 @@ function ProductListninenine() {
     );
 
     if (observerRef.current) {
-      observer.observe(observerRef.current); // Start observing the reference
+      observer.observe(observerRef.current);
     }
 
     return () => {
       if (observerRef.current) {
-        observer.unobserve(observerRef.current); // Clean up observation
+        observer.unobserve(observerRef.current);
       }
     };
-  }, [observerRef.current]); // Re-run if the observer reference changes
+  }, [visibleProducts, productList]); // Re-run if the visibleProducts or productList changes
+
+  if (productList.length === 0) {
+    return <p className="text-center mt-4">Loading products...</p>;
+  }
 
   return (
     <div className="mt-2 p-2">
