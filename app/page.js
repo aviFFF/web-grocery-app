@@ -50,11 +50,11 @@ export default async function Home() {
     <div className="md:p-4 p-5 md:px-16">
       {/* Main Content */}
       <Slider sliderList={sliders} />
+      <ProductListfortynine productList={products} />
       <CategoryList categoryList={categories} />
+      <ProductListninenine productList={products} />
       <ProductList productList={products} />
       <ProductListwc productList={products} />
-      <ProductListninenine productList={products} />
-      <ProductListfortynine productList={products} />
 
       {/* Fixed Download App Section */}
       <div className="fixed bottom-0 left-0 right-0 ">
