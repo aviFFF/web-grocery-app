@@ -25,7 +25,7 @@ function ProductListninenine() {
     if (loading) return;
     setLoading(true);
     setTimeout(() => {
-      setVisibleProducts((prevVisible) => prevVisible + 8); // Load 8 more products
+      setVisibleProducts((prevVisible) => prevVisible + 80); // Load 8 more products
       setLoading(false);
     }, 500); // Simulate API delay
   };
