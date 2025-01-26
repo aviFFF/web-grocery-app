@@ -120,7 +120,7 @@ function Checkout() {
 
   const deliveryFee = useMemo(() => {
     if (subtotal < 300) return 25;
-    if (subtotal >= 300 && subtotal <= 399) return 9.5;
+    if (subtotal >= 300 && subtotal <= 249) return 9.5;
     return 0;
   }, [subtotal]);
 
@@ -352,9 +352,9 @@ function Checkout() {
             <span>Subtotal</span>
             <span>₹{subtotal}</span>
           </div>
-          {subtotal < 399 && (
+          {subtotal < 249 && (
             <h2 className="text-red-500 text-center font-semibold mt-2">
-              Add items worth ₹{(399 - subtotal).toFixed(2)} to your cart to get
+              Add items worth ₹{(249 - subtotal).toFixed(2)} to your cart to get
               free delivery!
             </h2>
           )}
@@ -441,7 +441,7 @@ function Checkout() {
           </div>
           <div className="p-5 bg-green-400 text-white rounded-lg text-center">
             <h3 className="text-xl font-bold">Free Delivery</h3>
-            <p className="mt-2">On orders above ₹399.</p>
+            <p className="mt-2">On orders above ₹249.</p>
           </div>
           <div className="p-5 bg-yellow-400 text-black rounded-lg text-center">
             <h3 className="text-xl font-bold">24/7 Support</h3>
