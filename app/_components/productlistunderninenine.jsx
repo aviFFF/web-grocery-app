@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import GlobalApi from "@/app/utils/GlobalApi"; 
+import GlobalApi from "@/app/utils/GlobalApi";
 import Productitem from "./Productitem";
 
 function ProductListninenine() {
@@ -10,11 +10,20 @@ function ProductListninenine() {
   const [loading, setLoading] = useState(false);
   const observerRef = useRef(null); // Reference for observing the last product
 
-  // Fetch products using GlobalApi
+  // Fetch products and sort by discount percentage
   const fetchProducts = async () => {
     try {
-      const products = await GlobalApi.getproductunderninenine();
-      setProductList(products);
+      const response = await GlobalApi.getproductunderninenine();
+      const products = response;
+
+      // Sort products by discount percentage
+      const sortedProducts = products.sort((a, b) => {
+        const discountA = ((a.attributes.mrp - a.attributes.sellingPrice) / a.attributes.mrp) * 100;
+        const discountB = ((b.attributes.mrp - b.attributes.sellingPrice) / b.attributes.mrp) * 100;
+        return discountB - discountA; // Higher discount first
+      });
+
+      setProductList(sortedProducts); // Set the sorted product list
     } catch (error) {
       console.error("Error fetching products under ₹99:", error);
     }
@@ -25,7 +34,7 @@ function ProductListninenine() {
     if (loading) return;
     setLoading(true);
     setTimeout(() => {
-      setVisibleProducts((prevVisible) => Math.min(prevVisible + 8, productList.length)); // Load 8 more products
+      setVisibleProducts((prevVisible) => prevVisible + 8); // Load 8 more products
       setLoading(false);
     }, 500); // Simulate API delay
   };
@@ -45,19 +54,15 @@ function ProductListninenine() {
     );
 
     if (observerRef.current) {
-      observer.observe(observerRef.current);
+      observer.observe(observerRef.current); // Start observing the reference
     }
 
     return () => {
       if (observerRef.current) {
-        observer.unobserve(observerRef.current);
+        observer.unobserve(observerRef.current); // Clean up observation
       }
     };
-  }, [visibleProducts, productList]); // Re-run if the visibleProducts or productList changes
-
-  if (productList.length === 0) {
-    return <p className="text-center mt-4">Loading products...</p>;
-  }
+  }, [observerRef.current]); // Re-run if the observer reference changes
 
   return (
     <div className="mt-2 p-2">

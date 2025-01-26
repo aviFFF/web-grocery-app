@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import GlobalApi from "@/app/utils/GlobalApi"; 
+import GlobalApi from "@/app/utils/GlobalApi";
 import Productitem from "./Productitem";
 
 function ProductListfortynine() {
@@ -10,11 +10,20 @@ function ProductListfortynine() {
   const [loading, setLoading] = useState(false);
   const observerRef = useRef(null); // Reference for observing the last product
 
-  // Fetch products using GlobalApi
+  // Fetch and sort products by maximum discount
   const fetchProducts = async () => {
     try {
       const products = await GlobalApi.getproductfortynine();
-      setProductList(products);
+
+      // Sort products by discount percentage
+      const sortedProducts = products.sort((a, b) => {
+        const discountA = ((a.attributes.mrp - a.attributes.sellingPrice) / a.attributes.mrp) * 100 || 0;
+        const discountB = ((b.attributes.mrp - b.attributes.sellingPrice) / b.attributes.mrp) * 100 || 0;
+
+        return discountB - discountA; // Higher discount first
+      });
+
+      setProductList(sortedProducts); // Set the sorted product list
     } catch (error) {
       console.error("Error fetching products under ₹49:", error);
     }
