@@ -34,12 +34,6 @@ function CreateAccount() {
     if (!username || !/^\d{10}$/.test(username)) {
       errors.username = "Please enter a valid 10-digit mobile number.";
     }
-    if (!email || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-      errors.email = "Please enter a valid email address.";
-    }
-    if (!password || password.length < 8) {
-      errors.password = "Password must be at least 8 characters long.";
-    }
     if (!captchaToken) {
       errors.captcha = "Please complete the CAPTCHA verification.";
     }
@@ -123,7 +117,6 @@ function CreateAccount() {
               value={email}
               required
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
           <div>
             <Input
@@ -133,7 +126,6 @@ function CreateAccount() {
               value={password}
               required
             />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
           <div>
             <ReCAPTCHA
