@@ -73,7 +73,7 @@ export default async function Home() {
           rel="noopener noreferrer"
         >
           <Image
-            src="/whatsapp-icon.webp"
+            src="/whatsapp-icon.png"
             alt="WhatsApp"
             width={50}
             height={50}

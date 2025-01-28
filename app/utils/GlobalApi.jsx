@@ -153,7 +153,7 @@ export const getPincodes = async () => {
   })
 
 
-const sendNotification = async (fcmToken, title, body) => {
+export const sendNotification = async (fcmToken, title, body) => {
   try {
     const response = await axios.post('/notifications/send', {
       fcmToken,
@@ -167,7 +167,7 @@ const sendNotification = async (fcmToken, title, body) => {
 };
 
  async function verifyCaptcha(token) {
-    const secretKey = '6LcfP5QqAAAAACAP3RHVeioVCirG6BEo5EHrpTlg'; // Replace with your reCAPTCHA secret key
+    const secretKey = process.env.NEXT_PUBLIC_RECAPTCHA_SECRET; // Replace with your reCAPTCHA secret key
     try {
         const response = await axios.post(
             `https://www.google.com/recaptcha/api/siteverify`,

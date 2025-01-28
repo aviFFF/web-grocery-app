@@ -15,7 +15,6 @@ const VendorOrderHistory = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // Check for WebSocket connection and register service worker
     if ("Notification" in window && "serviceWorker" in navigator) {
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
@@ -29,8 +28,12 @@ const VendorOrderHistory = () => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/vendor/service-worker.js")
-        .then((registration) => {
-          console.log("Service Worker registered:", registration);
+        Notification.requestPermission(function(result) {
+          if (result === "granted") {
+            navigator.serviceWorker.ready.then(function(registration) {
+              registration.showNotification('Notification with ServiceWorker');
+            });
+          }
         });
     }
   }, []);

@@ -12,7 +12,7 @@ self.addEventListener("install", (event) => {
   
   self.addEventListener("notificationclick", (event) => {
     event.notification.close();
-    const audio = new Audio('/vendor/noti-sound.wav'); // Use a vendor-specific sound
+    const audio = new Audio('/notific.mp3'); // Use a vendor-specific sound
     audio.play();
   });
   

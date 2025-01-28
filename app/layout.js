@@ -5,8 +5,10 @@ import "./globals.css";
 import { Outfit } from 'next/font/google';
 import { usePathname } from "next/navigation";
 import { UpdateCartContext } from "./_context/UpdatecartContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Footer from "./_components/Footer";
+import { requestPermission, onMessageListener } from "../app/utils/firebase";
+
 
 const outfit = Outfit({
   subsets: ['latin']
@@ -42,6 +44,17 @@ export default function RootLayout({ children }) {
     
   ].includes(params);
 
+  useEffect(() => {
+    requestPermission();
+
+    onMessageListener()
+      .then((payload) => {
+        console.log("Message received:", payload);
+        alert(`New notification: ${payload.notification.title}`);
+      })
+      .catch((err) => console.log("Failed to receive message:", err));
+  }, []);
+
   return (
     <html lang="en">
       <head>
@@ -58,4 +71,6 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
+
+
 }

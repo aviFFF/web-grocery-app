@@ -20,7 +20,7 @@ function MyOrders() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedJwt = sessionStorage.getItem("jwt");
@@ -158,27 +158,16 @@ function MyOrders() {
 
   return (
     <>
-      <Head>
+
+    <Head>
         <title>My Orders | buzzat</title>
         <meta
           name="description"
           content="View your order history and download invoices."
         />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8540952826970534"
-          crossorigin="anonymous"
-        ></script>
-      </Head>
-      <script
-        async
-        src="https://www.googletagmanager.com/gtag/js?id=G-21F084QKVP"
-      ></script>
-      <script>
-        window.dataLayer = window.dataLayer || []; function gtag()
-        {dataLayer.push(arguments)}
-        gtag('js', new Date()); gtag('config', 'G-21F084QKVP');
-      </script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8540952826970534"
+     crossorigin="anonymous"></script>
+    </Head>
       <h2 className="p-4 bg-primary mt-[3rem] sm:mt-0 text-xl sm:text-2xl text-white font-bold text-center">
         My Orders
       </h2>
