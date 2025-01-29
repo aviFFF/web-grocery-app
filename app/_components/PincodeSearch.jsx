@@ -97,7 +97,7 @@ const PincodeChecker = () => {
 
   return (
     <div className="flex items-center justify-center p-4">
-      <h1 className="text-sm md:text-base text-primary">{message} For {pincode}</h1>
+      <h1 className="text-sm md:text-base text-primary">{message}</h1>
     </div>
   );
 };
