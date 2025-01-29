@@ -4,14 +4,14 @@ import { fetchVendorOrders, updateOrderStatus } from "@/app/utils/GlobalApi";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import InvoiceTemplate from "../../_components/InvoiceTemplate";
+import { requestPermission } from "@/app/utils/firebase";
+
 
 const VendorOrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [latestOrderId, setLatestOrderId] = useState(null);
-  const [socket, setSocket] = useState(null);
-
   const router = useRouter();
 
   useEffect(() => {
@@ -27,14 +27,11 @@ const VendorOrderHistory = () => {
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register("/vendor/service-worker.js")
-        Notification.requestPermission(function(result) {
-          if (result === "granted") {
-            navigator.serviceWorker.ready.then(function(registration) {
-              registration.showNotification('Notification with ServiceWorker');
-            });
-          }
-        });
+        .register("/firebase-messaging-sw.js")
+        .then((registration) => {
+          console.log("Service Worker registered:", registration);
+        })
+        .catch((error) => console.error("Service Worker registration failed:", error));
     }
   }, []);
 
@@ -69,8 +66,9 @@ const VendorOrderHistory = () => {
 
   const handleLogout = () => {
     Cookies.remove("token");
-    router.push("/vendor");
+    router.push("/vendor"); // Redirect to login page
   };
+  
 
   const fetchOrders = async () => {
     try {

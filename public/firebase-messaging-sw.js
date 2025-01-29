@@ -24,7 +24,7 @@ messaging.onBackgroundMessage((payload) => {
     icon: "/buzzat-logo.png", // Add your notification icon here
   });
 
-  const audio = new Audio("/noti-sound.mp3"); // Use a vendor-specific sound
+  const audio = new Audio("/notific.mp3"); // Use a vendor-specific sound
   audio.play();
 
 });

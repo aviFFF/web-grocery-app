@@ -46,6 +46,16 @@ export const requestPermission = async () => {
   }
 };
 
+if (messaging) {
+  onMessage(messaging, (payload) => {
+    console.log("Foreground message received:", payload);
+    new Notification(payload.notification.title, {
+      body: payload.notification.body,
+      icon: "/vendor/vendor-buzzat.png",
+    });
+  });
+}
+
 // Function to listen for foreground messages
 export const onMessageListener = () =>
   new Promise((resolve) => {
