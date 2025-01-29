@@ -101,7 +101,7 @@ const PincodeChecker = () => {
     };
 
     const redirectToUnserviceablePage = () => {
-      router.push("/"); // Redirect to "Coming Soon" page
+      router.push("/coming-soon"); // Redirect to "Coming Soon" page
     };
 
     fetchPincodeFromLocation();
