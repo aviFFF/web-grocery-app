@@ -42,6 +42,8 @@ export default function RootLayout({ children }) {
     
   ].includes(params);
 
+  
+
   return (
     <html lang="en">
       <head>

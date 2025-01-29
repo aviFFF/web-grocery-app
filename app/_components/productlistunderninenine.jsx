@@ -30,7 +30,7 @@ function ProductListninenine() {
   };
 
   // Load more products when the last product is visible
-  const loadMoreProducts = () => {
+  const loadMoreProducts = () => {a
     if (loading) return;
     setLoading(true);
     setTimeout(() => {
