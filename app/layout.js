@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 import { UpdateCartContext } from "./_context/UpdatecartContext";
 import { useState, useEffect } from "react";
 import Footer from "./_components/Footer";
-import { requestPermission, onMessageListener } from "../app/utils/firebase";
 
 
 const outfit = Outfit({
