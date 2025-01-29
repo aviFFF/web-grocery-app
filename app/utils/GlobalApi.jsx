@@ -55,6 +55,15 @@ const registeruser =(username,email,password,name)=>axiosClient.post('/auth/loca
     name:name
 });
 
+const getProductBetween100to199 = () =>
+  axiosClient
+    .get(
+      "/products?populate=*&filters[$and][0][sellingPrice][$gte]=100&filters[$and][1][sellingPrice][$lte]=199&pagination[pageSize]=1000&sort[sellingPrice]=desc"
+    )
+    .then((resp) => resp.data.data);
+
+export { getProductBetween100to199 };
+
 
 const getproductunderninenine = () =>
   axiosClient
@@ -153,7 +162,7 @@ export const getPincodes = async () => {
   })
 
 
-const sendNotification = async (fcmToken, title, body) => {
+export const sendNotification = async (fcmToken, title, body) => {
   try {
     const response = await axios.post('/notifications/send', {
       fcmToken,
@@ -167,7 +176,7 @@ const sendNotification = async (fcmToken, title, body) => {
 };
 
  async function verifyCaptcha(token) {
-    const secretKey = '6LcfP5QqAAAAACAP3RHVeioVCirG6BEo5EHrpTlg'; // Replace with your reCAPTCHA secret key
+    const secretKey = process.env.NEXT_PUBLIC_RECAPTCHA_SECRET; // Replace with your reCAPTCHA secret key
     try {
         const response = await axios.post(
             `https://www.google.com/recaptcha/api/siteverify`,
@@ -332,4 +341,5 @@ export default {
     updateCartItem,
     getproductunderninenine,
     getproductfortynine,
+    getProductBetween100to199
 }

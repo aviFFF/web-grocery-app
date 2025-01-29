@@ -5,6 +5,7 @@ import Link from "next/link";
 import InstallApp from "./_components/downloadApp";
 import ProductListfortynine from "./_components/productlistfortynine";
 import Image from "next/image";
+import ProductListHundredToTwoK from "./_components/ProductListHundredToTwoK";
 
 // Dynamic imports for client-side components
 const Slider = dynamic(() => import("./_components/Slider"), { ssr: true });
@@ -64,7 +65,7 @@ export default async function Home() {
       <ProductListfortynine productList={products} />
       <ProductListninenine productList={products} />
       <ProductList productList={products} />
-      <ProductListwc productList={products} />
+      <ProductListHundredToTwoK productList={products} />
 
       <div className="fixed bottom-14 right-1 transform -translate-y-1/2 z-50">
         <Link
@@ -73,7 +74,7 @@ export default async function Home() {
           rel="noopener noreferrer"
         >
           <Image
-            src="/whatsapp-icon.webp"
+            src="/whatsapp.png"
             alt="WhatsApp"
             width={50}
             height={50}

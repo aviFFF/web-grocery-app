@@ -5,8 +5,9 @@ import "./globals.css";
 import { Outfit } from 'next/font/google';
 import { usePathname } from "next/navigation";
 import { UpdateCartContext } from "./_context/UpdatecartContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Footer from "./_components/Footer";
+
 
 const outfit = Outfit({
   subsets: ['latin']
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
     "/vendor-order",
     "/orderPlaced",
     "/checkout",
+    "/coming-soon",
   ].includes(params);
 
   const showFooter = ![
@@ -41,6 +43,8 @@ export default function RootLayout({ children }) {
     "/checkout",
     
   ].includes(params);
+
+  
 
   return (
     <html lang="en">
@@ -58,4 +62,6 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
+
+
 }

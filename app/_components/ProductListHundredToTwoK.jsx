@@ -4,19 +4,19 @@ import React, { useState, useEffect, useRef } from "react";
 import GlobalApi from "@/app/utils/GlobalApi";
 import Productitem from "./Productitem";
 
-function ProductListninenine() {
+function ProductListHundredToTwoK() {
   const [productList, setProductList] = useState([]); // Store fetched products
   const [visibleProducts, setVisibleProducts] = useState(8); // Start with 8 products
   const [loading, setLoading] = useState(false);
   const observerRef = useRef(null); // Reference for observing the last product
 
-  // Fetch products and sort by discount percentage
+  // Fetch products and sort by highest discount percentage
   const fetchProducts = async () => {
     try {
-      const response = await GlobalApi.getproductunderninenine();
+      const response = await GlobalApi.getProductBetween100to199();
       const products = response;
 
-      // Sort products by discount percentage
+      // Sort products by discount percentage (higher first)
       const sortedProducts = products.sort((a, b) => {
         const discountA = ((a.attributes.mrp - a.attributes.sellingPrice) / a.attributes.mrp) * 100;
         const discountB = ((b.attributes.mrp - b.attributes.sellingPrice) / b.attributes.mrp) * 100;
@@ -25,7 +25,7 @@ function ProductListninenine() {
 
       setProductList(sortedProducts); // Set the sorted product list
     } catch (error) {
-      console.error("Error fetching products under ₹99:", error);
+      console.error("Error fetching products between ₹100-₹199:", error);
     }
   };
 
@@ -34,7 +34,7 @@ function ProductListninenine() {
     if (loading) return;
     setLoading(true);
     setTimeout(() => {
-      setVisibleProducts((prevVisible) => prevVisible + 8,productList.length); // Load 8 more products
+      setVisibleProducts((prevVisible) => prevVisible + 8); // Load 8 more products
       setLoading(false);
     }, 500); // Simulate API delay
   };
@@ -66,16 +66,13 @@ function ProductListninenine() {
 
   return (
     <div className="mt-2 p-2">
-      <h2 className="text-primary text-2xl text-center mb-4 flex">Best Products Under ₹99</h2>
+      <h2 className="text-primary text-2xl mb-4 flex">Best Products Under ₹199</h2>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {productList.slice(0, visibleProducts).map((product, index) => {
           const isLastProduct = index === visibleProducts - 1; // Check if this is the last visible product
           return (
-            <div
-              key={index}
-              ref={isLastProduct ? observerRef : null} // Attach ref to the last product
-            >
-              <Productitem product={product} /> {/* Pass the full product object */}
+            <div key={product.id} ref={isLastProduct ? observerRef : null}>
+              <Productitem product={product} />
             </div>
           );
         })}
@@ -85,4 +82,4 @@ function ProductListninenine() {
   );
 }
 
-export default ProductListninenine;
+export default ProductListHundredToTwoK;

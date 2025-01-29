@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import axios from "axios";
-import Head from "next/head";
 
 function Checkout() {
   const [user, setUser] = useState(null);
@@ -43,6 +42,7 @@ function Checkout() {
   const [isCODLoading, setIsCODLoading] = useState(false);
   const [locationUrl, setLocationUrl] = useState("");
 
+
   const router = useRouter();
 
   useEffect(() => {
@@ -58,7 +58,7 @@ function Checkout() {
   const handlePincodeChange = (e) => {
     const enteredPincode = e.target.value;
     setPincode(enteredPincode);
-
+  
     if (enteredPincode.length === 6) {
       validatePincode(enteredPincode);
     } else {
@@ -80,6 +80,7 @@ function Checkout() {
       setValidationMessage("Oops! We will be coming soon in your area.");
     }
   };
+  
 
   useEffect(() => {
     const storedJwt = sessionStorage.getItem("jwt");
@@ -202,42 +203,38 @@ function Checkout() {
       toast.error("Geolocation is not supported by your browser");
       return;
     }
-
+  
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-
+  
         try {
           const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
           const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
-
+  
           const response = await axios.get(apiUrl);
-
-          if (
-            response.data.status === "OK" &&
-            response.data.results.length > 0
-          ) {
-            const addressComponents =
-              response.data.results[0].address_components;
+  
+          if (response.data.status === "OK" && response.data.results.length > 0) {
+            const addressComponents = response.data.results[0].address_components;
             const cityComponent = addressComponents.find((comp) =>
               comp.types.includes("locality")
             );
             const pincodeComponent = addressComponents.find((comp) =>
               comp.types.includes("postal_code")
             );
-
+  
             const fetchedCity = cityComponent?.long_name || "Unknown";
             const fetchedPincode = pincodeComponent?.long_name || "Unknown";
-
+  
             setCity(fetchedCity);
             setPincode(fetchedPincode); // Update pincode state
             setAddress(response.data.results[0].formatted_address);
-
+  
             // Trigger pincode validation
             if (fetchedPincode.length === 6) {
               validatePincode(fetchedPincode);
             }
-
+  
             // Generate Google Maps URL
             const mapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
             setLocationUrl(mapsUrl); // Save the location URL
@@ -255,11 +252,14 @@ function Checkout() {
       }
     );
   };
+  
+  
+  
 
   return (
     <div className="min-h-screen">
       {/* Header Section */}
-      <Head className="bg-primary text-white p-5">
+      <header className="bg-primary text-white p-5">
         <div className="flex justify-between items-center container mx-auto">
           <h1 className="text-2xl font-bold">Checkout</h1>
           <Button
@@ -269,16 +269,8 @@ function Checkout() {
             Back to Homepage
           </Button>
         </div>
-      </Head>
-      <script
-        async
-        src="https://www.googletagmanager.com/gtag/js?id=G-21F084QKVP"
-      ></script>
-      <script>
-        window.dataLayer = window.dataLayer || []; function gtag()
-        {dataLayer.push(arguments)}
-        gtag('js', new Date()); gtag('config', 'G-21F084QKVP');
-      </script>
+      </header>
+
       <div className="container mx-auto p-5 grid grid-cols-1 pt-10 md:grid-cols-3 gap-5">
         <div className="md:col-span-2 p-5 border rounded-lg bg-white">
           <h2 className="text-xl font-bold mb-5">Shipping Address</h2>
