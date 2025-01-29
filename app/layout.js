@@ -30,6 +30,7 @@ export default function RootLayout({ children }) {
     "/vendor-order",
     "/orderPlaced",
     "/checkout",
+    "/coming-soon",
   ].includes(params);
 
   const showFooter = ![

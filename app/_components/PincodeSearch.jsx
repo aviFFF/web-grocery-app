@@ -93,6 +93,7 @@ const PincodeChecker = () => {
 
   const showUnserviceableMessage = (pincode) => {
     setMessage(`Coming soon to your location (Pincode: ${pincode})`);
+    router.replace("/coming-soon");
   };
 
   return (
