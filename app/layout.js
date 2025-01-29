@@ -5,8 +5,10 @@ import "./globals.css";
 import { Outfit } from 'next/font/google';
 import { usePathname } from "next/navigation";
 import { UpdateCartContext } from "./_context/UpdatecartContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Footer from "./_components/Footer";
+import { requestPermission, onMessageListener } from "../app/utils/firebase";
+
 
 const outfit = Outfit({
   subsets: ['latin']
@@ -60,4 +62,6 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
+
+
 }
