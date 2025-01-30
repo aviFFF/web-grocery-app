@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
@@ -83,19 +84,54 @@ const getproductfortynine = () =>
 
 const LogIn =(email,password)=>axiosClient.post('/auth/local', { identifier: email, password: password })
 
-const ForgotPassword = (email) => {
-  return axiosClient.post('/auth/forgot-password', {
-    email: email,  // User's email
-  });
+const ForgotPassword = async (email) => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/ForgotPassword`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      toast("Password reset link sent to your email.");
+    } else {
+      toast(data.error.message);
+    }
+  } catch (error) {
+    console.error("Error sending reset password email:", error);
+  }
 };
 
 
-const ResetPassword = (code, password, passwordConfirmation) =>
-  axiosClient.post('/auth/reset-password', {
-    code, // Token from the reset link
-    password,
-    passwordConfirmation,
-  });
+
+const ResetPassword = async (code, newPassword, confirmPassword) => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/ResetPassword`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        code, // Token from the email link
+        password: newPassword,
+        passwordConfirmation: confirmPassword,
+      }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      alert("Password reset successful! Please log in.");
+    } else {
+      alert(data.error.message);
+    }
+  } catch (error) {
+    console.error("Error resetting password:", error);
+  }
+};
+
 
 
 const deleteCartItem =(id,jwt)=>axiosClient.delete('/user-carts/'+id,{

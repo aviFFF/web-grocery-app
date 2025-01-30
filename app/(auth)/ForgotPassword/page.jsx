@@ -5,6 +5,11 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import GlobalApi from "@/app/utils/GlobalApi";
 
+const meta = {
+  title: "Forgot Password",
+  description: "Forgot your password",
+};
+
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
