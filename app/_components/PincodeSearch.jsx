@@ -92,12 +92,12 @@ const PincodeChecker = () => {
   };
 
   const showUnserviceableMessage = (pincode) => {
-    setMessage(`Coming soon to your location  ${pincode}`);
+    setMessage(`Coming Soon to Your Location  ${pincode}`);
   };
 
   return (
-    <div className="flex items-center justify-center p-4">
-      <h1 className="text-base text-primary">{message}</h1>
+    <div className="flex items-center justify-center p-2">
+      <h1 className="text-sm text-primary">{message}</h1>
     </div>
   );
 };

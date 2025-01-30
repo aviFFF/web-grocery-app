@@ -37,8 +37,12 @@ function CreateAccount() {
     if (!captchaToken) {
       errors.captcha = "Please complete the CAPTCHA verification.";
     }
+    if (!password || password.length < 8) {
+      errors.password = "Password must be at least 8 characters long.";
+    }
     return errors;
   };
+
 
   const onCreateAccount = async () => {
     const validationErrors = validateInputs();
@@ -126,6 +130,7 @@ function CreateAccount() {
               value={password}
               required
             />
+            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
           <div>
             <ReCAPTCHA
