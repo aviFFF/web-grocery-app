@@ -5,11 +5,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import GlobalApi from "@/app/utils/GlobalApi";
 
-const meta = {
-  title: "Forgot Password",
-  description: "Forgot your password",
-};
-
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,7 +18,7 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      await GlobalApi.handleForgotPassword(email);
+      await GlobalApi.ForgotPassword(email);
       toast("Password reset email sent! Please check inbox.");
     } catch (error) {
       toast(error.response?.data?.message || "Failed to send reset email.");
