@@ -84,9 +84,9 @@ const getproductfortynine = () =>
 
 const LogIn =(email,password)=>axiosClient.post('/auth/local', { identifier: email, password: password })
 
-const ForgotPassword = async (email) => {
+const handleForgotPassword = async (email) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/forgot-password`, {
+    const res = await fetch("https://buzzat.in/api/auth/forgot-password", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -98,12 +98,13 @@ const ForgotPassword = async (email) => {
     if (res.ok) {
       toast("Password reset email sent!");
     } else {
-      toast(data.error.message || "Failed to send reset email.");
+      toast(data?.error?.message || "Failed to send reset email.");
     }
   } catch (error) {
     toast("Error sending reset email.");
   }
 };
+
 
 
 
@@ -375,7 +376,7 @@ export default {
     vendorLogin,
     subscribeToPushNotifications,
     sendNotification,
-    ForgotPassword,
+    handleForgotPassword,
     ResetPassword,
     updateCartItem,
     getproductunderninenine,

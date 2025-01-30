@@ -23,7 +23,7 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      await GlobalApi.ForgotPassword(email);
+      await GlobalApi.handleForgotPassword(email);
       toast("Password reset email sent! Please check inbox.");
     } catch (error) {
       toast(error.response?.data?.message || "Failed to send reset email.");

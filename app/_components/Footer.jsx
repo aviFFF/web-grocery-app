@@ -104,18 +104,21 @@ function Footer() {
               width={75}
               height={75}
               alt="Swatchata Abhiyan"
+              className="object-contain w-auto h-auto"
             />
             <Image
               src="/minindia.png"
               width={75}
               height={75}
               alt="Make in India"
+              className="object-contain w-auto h-auto"
             />
             <Image
               src="/75year.png"
               width={75}
               height={75}
               alt="75 Years of Independence"
+              className="object-contain w-auto h-auto"
             />
           </div>
         </div>
