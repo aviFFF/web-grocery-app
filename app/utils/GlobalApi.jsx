@@ -86,7 +86,7 @@ const LogIn =(email,password)=>axiosClient.post('/auth/local', { identifier: ema
 
 const ForgotPassword = async (email) => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/ForgotPassword`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/forgot-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -94,43 +94,46 @@ const ForgotPassword = async (email) => {
       body: JSON.stringify({ email }),
     });
 
-    const data = await response.json();
-    if (response.ok) {
-      toast("Password reset link sent to your email.");
+    const data = await res.json();
+    if (res.ok) {
+      toast("Password reset email sent!");
     } else {
-      toast(data.error.message);
+      toast(data.error.message || "Failed to send reset email.");
     }
   } catch (error) {
-    console.error("Error sending reset password email:", error);
+    toast("Error sending reset email.");
   }
 };
 
 
 
-const ResetPassword = async (code, newPassword, confirmPassword) => {
+
+const ResetPassword = async (code, password, confirmPassword) => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/ResetPassword`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/reset-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        code, // Token from the email link
-        password: newPassword,
+        code, // Token from URL
+        password,
         passwordConfirmation: confirmPassword,
       }),
     });
 
-    const data = await response.json();
-    if (response.ok) {
-      alert("Password reset successful! Please log in.");
+    const data = await res.json();
+    if (res.ok) {
+      toast("Password reset successful!");
+      router.push("/login");
     } else {
-      alert(data.error.message);
+      toast(data.error.message || "Failed to reset password.");
     }
   } catch (error) {
-    console.error("Error resetting password:", error);
+    toast("Error resetting password.");
   }
 };
+
 
 
 
