@@ -111,27 +111,23 @@ const ResetPassword = async (code, password, confirmPassword) => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/reset-password`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        code, // Token from URL
-        password,
-        passwordConfirmation: confirmPassword,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, password, passwordConfirmation: confirmPassword }), 
     });
 
     const data = await res.json();
-    if (res.ok) {
-      toast("Password reset successful!");
-      router.push("/login");
-    } else {
-      toast(data.error.message || "Failed to reset password.");
+
+    if (!res.ok) {
+      throw new Error(data?.error?.message || "Failed to reset password.");
     }
+
+    return data;
   } catch (error) {
-    toast("Error resetting password.");
+    throw new Error(error.message || "Error resetting password.");
   }
 };
+
+
 
 
 

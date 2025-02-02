@@ -42,7 +42,6 @@ function Checkout() {
   const [isCODLoading, setIsCODLoading] = useState(false);
   const [locationUrl, setLocationUrl] = useState("");
 
-
   const router = useRouter();
 
   useEffect(() => {
@@ -58,7 +57,7 @@ function Checkout() {
   const handlePincodeChange = (e) => {
     const enteredPincode = e.target.value;
     setPincode(enteredPincode);
-  
+
     if (enteredPincode.length === 6) {
       validatePincode(enteredPincode);
     } else {
@@ -80,7 +79,6 @@ function Checkout() {
       setValidationMessage("Oops! We will be coming soon in your area.");
     }
   };
-  
 
   useEffect(() => {
     const storedJwt = sessionStorage.getItem("jwt");
@@ -169,16 +167,25 @@ function Checkout() {
         },
       };
 
-      // Send payload to Strapi
+      // Send payload to Strapi to create the order
       const response = await GlobalApi.createOrder(payload, jwt);
 
-      // Success toast
-      toast.success("Order Placed Successfully!");
+      // Send the email notification
+      await axios.post(process.env.NEXT_PUBLIC_URL + "/api/send-order-email", {
+        email: user.email,
+        firstname: user.name,
+        orderId: response.data.id, // Assuming response contains the order ID
+        totalAmount: totalAmount,
+        address: address,
+      });
 
       // Delete cart items after successful order placement
       await Promise.all(
         cartItemList.map((item) => GlobalApi.deleteCartItem(item.id, jwt))
       );
+
+      // Success toast
+      toast.success("Order Placed Successfully!");
 
       // Redirect user to the order placed page
       router.replace("/orderPlaced");
@@ -203,38 +210,42 @@ function Checkout() {
       toast.error("Geolocation is not supported by your browser");
       return;
     }
-  
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-  
+
         try {
           const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
           const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
-  
+
           const response = await axios.get(apiUrl);
-  
-          if (response.data.status === "OK" && response.data.results.length > 0) {
-            const addressComponents = response.data.results[0].address_components;
+
+          if (
+            response.data.status === "OK" &&
+            response.data.results.length > 0
+          ) {
+            const addressComponents =
+              response.data.results[0].address_components;
             const cityComponent = addressComponents.find((comp) =>
               comp.types.includes("locality")
             );
             const pincodeComponent = addressComponents.find((comp) =>
               comp.types.includes("postal_code")
             );
-  
+
             const fetchedCity = cityComponent?.long_name || "Unknown";
             const fetchedPincode = pincodeComponent?.long_name || "Unknown";
-  
+
             setCity(fetchedCity);
             setPincode(fetchedPincode); // Update pincode state
             setAddress(response.data.results[0].formatted_address);
-  
+
             // Trigger pincode validation
             if (fetchedPincode.length === 6) {
               validatePincode(fetchedPincode);
             }
-  
+
             // Generate Google Maps URL
             const mapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
             setLocationUrl(mapsUrl); // Save the location URL
@@ -252,9 +263,6 @@ function Checkout() {
       }
     );
   };
-  
-  
-  
 
   return (
     <div className="min-h-screen">

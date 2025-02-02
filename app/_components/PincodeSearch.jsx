@@ -1,105 +1,182 @@
-"use client";
+"use client"
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { getPincodes } from "../utils/GlobalApi"; // Fetch pincodes from API
-import { requestPermission, onMessageListener } from "../utils/firebase"; // Firebase notifications
+import { getPincodes } from "../utils/GlobalApi"; // Adjust the path to your GlobalApi file
+import { Input } from "@/components/ui/input";
 
-const PincodeChecker = () => {
-  const [pincode, setPincode] = useState(""); // Store user's pincode
-  const [message, setMessage] = useState("Fetching your location..."); // Default message
-  const router = useRouter();
+const PincodeSearchPopup = ({ onValidation }) => {
+  const [pincode, setPincode] = useState(""); // To store the input value
+  const [availablePincodes, setAvailablePincodes] = useState([]); // To store the fetched pincodes
+  const [message, setMessage] = useState(""); // To store the message for the user
+  const [showPopup, setShowPopup] = useState(false); // To control popup visibility
+  const [servicedPincode, setServicedPincode] = useState(""); // To store the serviced pincode
+  const [serviceMessage, setServiceMessage] = useState(""); // To store the service message
+  const [pincodeNotEntered, setPincodeNotEntered] = useState(false); // To track if no pincode was entered
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    const savedPincode = localStorage.getItem("servicedPincode");
+    const savedMessage = localStorage.getItem("serviceMessage");
+    if (savedPincode && savedMessage) {
+      setServicedPincode(savedPincode);
+      setServiceMessage(savedMessage);
+    } else {
+      setShowPopup(true);
+    }
 
-    // Request permission for Firebase notifications
-    requestPermission();
-
-    // Listen for notifications
-    onMessageListener()
-      .then((payload) => {
-        console.log("Message received:", payload);
-        alert(`New notification: ${payload.notification.title}`);
-      })
-      .catch((err) => console.log("Failed to receive message:", err));
-
-    // Fetch available pincodes from API
+    // Fetch available pincodes from Strapi
     getPincodes().then((pincodes) => {
-      fetchPincodeFromLocation(pincodes);
+      setAvailablePincodes(pincodes);
     });
+
+    // Automatically fetch pincode if location access is granted
+    fetchPincodeFromLocation();
   }, []);
 
-  const fetchPincodeFromLocation = (availablePincodes) => {
+  const fetchPincodeFromLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; // Google API Key
-          const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; // Replace with your Google API key
+        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
-          try {
-            const response = await fetch(geocodeUrl);
-            const data = await response.json();
-            const address = data.results.find((result) =>
-              result.address_components.some((comp) =>
-                comp.types.includes("postal_code")
-              )
-            );
+        try {
+          const response = await fetch(geocodeUrl);
+          const data = await response.json();
+          const address = data.results.find((result) =>
+            result.address_components.some((comp) =>
+              comp.types.includes("postal_code")
+            )
+          );
 
-            if (address) {
-              const fetchedPincode = address.address_components.find((comp) =>
-                comp.types.includes("postal_code")
-              ).long_name;
+          if (address) {
+            const pincode = address.address_components.find((comp) =>
+              comp.types.includes("postal_code")
+            ).long_name;
+            console.log("Pincode:", pincode);
 
-              setPincode(fetchedPincode);
-              validatePincode(fetchedPincode, availablePincodes);
-            } else {
-              showUnserviceableMessage("Unknown");
-            }
-          } catch (error) {
-            console.error("Error fetching pincode:", error);
-            showUnserviceableMessage("Unknown");
+            setPincode(pincode); // Auto-populate the pincode input box
+          } else {
+            setMessage("Could not retrieve your pincode.");
           }
-        },
-        () => {
-          showUnserviceableMessage("Unknown");
+        } catch (error) {
+          console.error("Error fetching pincode:", error);
+          setMessage("Unable to fetch location details.");
         }
-      );
+      });
     } else {
-      showUnserviceableMessage("Unknown");
+      setMessage("Geolocation is not supported by your browser.");
     }
   };
 
-  const validatePincode = (fetchedPincode, availablePincodes) => {
+  const handleSearch = () => {
     const foundPincode = availablePincodes.find(
-      (item) => item.attributes.pins === fetchedPincode
+      (item) => item.attributes.pins === pincode
     );
 
     if (foundPincode) {
-      setMessage(foundPincode.attributes.message);
-      sendFirebaseNotification(fetchedPincode, foundPincode.attributes.message);
+      const { message: pinMessage } = foundPincode.attributes;
+      setMessage(pinMessage);
+      localStorage.setItem("servicedPincode", pincode);
+      localStorage.setItem("serviceMessage", pinMessage);
+      setServicedPincode(pincode);
+      setServiceMessage(pinMessage);
+      setShowPopup(false);
+      setPincodeNotEntered(false);
+
+      // Notify parent about validation success
+      if (onValidation) onValidation(true, pincode, pinMessage);
     } else {
-      showUnserviceableMessage(fetchedPincode);
+      setMessage("Oops! We will be coming soon in your area.");
+      // Notify parent about validation failure
+      if (onValidation) onValidation(false, pincode, "Not Serviced");
     }
   };
 
-  const sendFirebaseNotification = (pincode, message) => {
-    if ("Notification" in window && Notification.permission === "granted") {
-      new Notification("Service Availability", {
-        body: `Service available for Pincode: ${pincode} - ${message}`,
-      });
-    }
+  const handleChangePincode = (e) => {
+    e.stopPropagation();
+    setShowPopup(true);
+    setMessage("");
+    setPincode("");
+    setPincodeNotEntered(false); // Reset this state when changing the pincode
   };
 
-  const showUnserviceableMessage = (pincode) => {
-    setMessage(`Coming Soon to Your Location  ${pincode}`);
+  // Handle closing the popup
+  const handleClosePopup = () => {
+    setShowPopup(false);
+    if (!pincode) {
+      setPincodeNotEntered(true); // Set this to true if no pincode was entered
+    }
   };
 
   return (
-    <div className="flex items-center justify-center p-2">
-      <h1 className="text-sm text-primary">{message}</h1>
-    </div>
+    <>
+      {showPopup && (
+        <div className="fixed inset-0 px-8 rounded-lg bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg max-w-md w-full relative">
+            <h2 className="text-lg font-semibold mb-4">
+              Check Service Availability
+            </h2>
+
+            {/* Close button */}
+            <button
+              onClick={handleClosePopup}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            <Input
+              inputMode="numeric"
+              value={pincode}
+              onChange={(e) => setPincode(e.target.value)}
+              placeholder="Enter your pincode"
+              className="border p-2 rounded-lg w-full text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+              maxLength={6}
+            />
+            <button
+              onClick={handleSearch}
+              className="search-btn bg-primary text-white px-4 py-2 mt-4 w-full rounded"
+            >
+              Check
+            </button>
+            {message && <p className="mt-4 text-lg">{message}</p>}
+          </div>
+        </div>
+      )}
+
+      {(servicedPincode || pincodeNotEntered) && (
+        <div className="mt-0">
+          {pincodeNotEntered ? (
+            <p className="md:text-base text-xs text-nowrap text-red-500 font-semibold">
+              Please select the pincode.
+            </p>
+          ) : (
+            <p className="md:text-base text-xs text-nowrap text-primary font-semibold">
+              {serviceMessage} For {servicedPincode}
+            </p>
+          )}
+          <button
+            onClick={handleChangePincode}
+            className="text-blue-500 md:text-sm text-xs mt-2"
+          >
+            Change Pincode
+          </button>
+        </div>
+      )}
+    </>
   );
 };
 
-export default PincodeChecker;
+export default PincodeSearchPopup;

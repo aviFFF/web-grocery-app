@@ -33,22 +33,28 @@ const ResetPasswordForm = () => {
   }, [searchParams, router]);
 
   const handleResetPassword = async () => {
-    if (!password || password !== confirmPassword) {
-      toast.error("Passwords do not match!");
+    if (!password || !confirmPassword) {
+      toast.error("Please enter a new password.");
       return;
     }
-
+  
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+  
     setLoading(true);
     try {
-      await GlobalApi.ResetPassword({ code, password });
+      await GlobalApi.ResetPassword(code, password, confirmPassword);
       toast.success("Password reset successful! You can now log in.");
-      router.push("/login");
+      router.push("/log-in");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to reset password.");
+      toast.error(error.message || "Failed to reset password.");
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="flex flex-col items-center justify-center my-20">
