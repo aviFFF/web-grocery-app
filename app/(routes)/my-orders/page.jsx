@@ -185,7 +185,7 @@ function MyOrders() {
                   className="w-full mx-auto overflow-hidden"
                 >
                   <CollapsibleTrigger>
-                    <div className="border border-slate-200 w-full rounded-lg shadow-md p-4 flex flex-row sm:items-center justify-between gap-4 bg-white hover:shadow-lg transition">
+                    <div className="border border-slate-200 w-full rounded-lg shadow-md flex flex-row sm:items-center justify-between gap-4 bg-white hover:shadow-lg transition">
                       <h2>
                         <span className="font-bold text-gray-700">
                           Order Date:
