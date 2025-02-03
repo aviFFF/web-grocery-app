@@ -171,13 +171,13 @@ function Checkout() {
       const response = await GlobalApi.createOrder(payload, jwt);
 
       // Send the email notification
-      await axios.post(process.env.NEXT_PUBLIC_URL + "/api/send-order-email", {
-        email: user.email,
-        firstname: user.name,
-        orderId: response.data.id, // Assuming response contains the order ID
-        totalAmount: totalAmount,
-        address: address,
-      });
+      // await axios.post(process.env.NEXT_PUBLIC_URL + "/api/send-order-email", {
+      //   email: user.email,
+      //   firstname: user.name,
+      //   orderId: response.data.id, // Assuming response contains the order ID
+      //   totalAmount: totalAmount,
+      //   address: address,
+      // });
 
       // Delete cart items after successful order placement
       await Promise.all(
