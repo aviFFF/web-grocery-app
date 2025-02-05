@@ -51,6 +51,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="manifest" href={manifestPath} />
         <meta name="theme-color" content="#000000" />
+        <meta name="google-adsense-account" content="ca-pub-8540952826970534"></meta>
       </head>
       <body className={outfit.className}>
         <UpdateCartContext.Provider value={{ updateCart, setUpdateCart }}>

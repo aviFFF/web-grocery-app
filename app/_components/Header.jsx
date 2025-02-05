@@ -183,8 +183,8 @@ function Header() {
   
 
   return (
-<div className="px-3 flex justify-between bg-yellow-100 items-center gap-5 sticky z-50 top-0 shadow-lg">
-{/* Logo */}
+<div className="px-3 flex justify-between bg-pink-100 items-center gap-5 sticky z-50 top-0 shadow-lg">
+    {/* Logo */}
        <Link href="/">
         <Image
           src={"/newblogo.png"}

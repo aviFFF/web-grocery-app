@@ -4,7 +4,7 @@ import { fetchVendorOrders, updateOrderStatus } from "@/app/utils/GlobalApi";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import InvoiceTemplate from "../../_components/InvoiceTemplate";
-import { requestPermission } from "@/app/utils/firebase";
+import { messaging, getToken, onMessage } from "@/app/utils/vfirebase";
 
 
 const VendorOrderHistory = () => {
@@ -15,54 +15,50 @@ const VendorOrderHistory = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if ("Notification" in window && "serviceWorker" in navigator) {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          console.log("Notification permission granted.");
-        } else {
-          console.warn("Notifications permission denied.");
-        }
-      });
-    }
-
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
-        .then((registration) => {
-          console.log("Service Worker registered:", registration);
-        })
+        .then((registration) => console.log("Service Worker registered:", registration))
         .catch((error) => console.error("Service Worker registration failed:", error));
     }
   }, []);
 
-  const enableNotificationsAndSound = () => {
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          setNotificationsEnabled(true);
-          console.log("Notifications enabled.");
-        } else {
-          console.warn("Notifications permission denied.");
+  const requestNotificationPermission = async () => {
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        console.log("Notification permission granted.");
+
+        // Get Firebase Token
+        const token = await getToken(messaging, {
+          vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_PUBLIC_KEY,
+        });
+
+        if (token) {
+          console.log("FCM Token:", token);
+          Cookies.set("fcm_token", token, { expires: 365 });
         }
-      });
-    } else {
-      setNotificationsEnabled(true);
+      } else {
+        console.warn("Notification permission denied.");
+      }
+    } catch (error) {
+      console.error("Error requesting notification permission:", error);
     }
   };
 
-  const playNotificationSound = () => {
-    const audio = new Audio("/notific.mp3");
-    audio.play().catch((err) => console.error("Audio play failed:", err));
-  };
 
-  const showNotification = (title, body) => {
-    if (Notification.permission === "granted") {
-      new Notification(title, {
-        body,
-        icon: "/vendor/vendor-buzzat.png",
-      });
-    }
-  };
+
+  useEffect(() => {
+    onMessage(messaging, (payload) => {
+      console.log("Foreground Notification Received:", payload);
+      if (Notification.permission === "granted") {
+        new Notification(payload.notification.title, {
+          body: payload.notification.body,
+          icon: "/vendor/vendor-buzzat.png",
+        });
+      }
+    });
+  }, []);
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -137,7 +133,7 @@ const VendorOrderHistory = () => {
         Your Order History
       </h1>
       <button
-        onClick={enableNotificationsAndSound}
+        onClick={requestNotificationPermission}
         className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
       >
         Enable Notifications and Sound

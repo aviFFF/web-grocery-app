@@ -45,9 +45,9 @@ const VendorLogin = () => {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register("/vendor/service-worker.js")
+        .register("/vendor/firebase-messaging-sw.js")
         .then((registration) =>
-          console.log("[Vendor SW] Registered", registration)
+          console.log("[Vendor FB SW] Registered", registration)
         )
         .catch((error) =>
           console.error("[Vendor SW] Registration Failed", error)

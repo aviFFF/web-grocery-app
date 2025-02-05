@@ -20,7 +20,7 @@ function MyOrders() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedJwt = sessionStorage.getItem("jwt");
@@ -158,16 +158,18 @@ function MyOrders() {
 
   return (
     <>
-
-    <Head>
+      <Head>
         <title>My Orders | buzzat</title>
         <meta
           name="description"
           content="View your order history and download invoices."
         />
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8540952826970534"
-     crossorigin="anonymous"></script>
-    </Head>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8540952826970534"
+          crossorigin="anonymous"
+        ></script>
+      </Head>
       <h2 className="p-4 bg-primary mt-[3rem] sm:mt-0 text-xl sm:text-2xl text-white font-bold text-center">
         My Orders
       </h2>
@@ -185,7 +187,7 @@ function MyOrders() {
                   className="w-full mx-auto overflow-hidden"
                 >
                   <CollapsibleTrigger>
-                    <div className="border border-slate-200 w-full rounded-lg shadow-md p-4 flex flex-row sm:items-center justify-between gap-4 bg-white hover:shadow-lg transition">
+                    <div className="border border-slate-200 w-full md:p-6 rounded-lg shadow-md flex flex-row sm:items-center justify-between gap-4 bg-white hover:shadow-lg transition">
                       <h2>
                         <span className="font-bold text-gray-700">
                           Order Date:

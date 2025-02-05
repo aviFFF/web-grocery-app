@@ -58,7 +58,7 @@ const ResetPasswordForm = () => {
 
   return (
     <div className="flex flex-col items-center justify-center my-20">
-      <div className="flex flex-col items-center justify-center md:p-10 p-5 bg-slate-100 border border-gray-200">
+      <div className="flex flex-col items-center justify-center md:p-16 gap-5 p-8 bg-slate-100 border border-gray-200">
         <h1 className="text-3xl font-bold">Reset Password</h1>
         <Input
           type="password"

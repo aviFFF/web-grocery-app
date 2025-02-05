@@ -1,5 +1,4 @@
 "use client";
-
 import GlobalApi from "@/app/utils/GlobalApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -170,14 +169,7 @@ function Checkout() {
       // Send payload to Strapi to create the order
       const response = await GlobalApi.createOrder(payload, jwt);
 
-      // Send the email notification
-      // await axios.post(process.env.NEXT_PUBLIC_URL + "/api/send-order-email", {
-      //   email: user.email,
-      //   firstname: user.name,
-      //   orderId: response.data.id, // Assuming response contains the order ID
-      //   totalAmount: totalAmount,
-      //   address: address,
-      // });
+
 
       // Delete cart items after successful order placement
       await Promise.all(

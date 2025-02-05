@@ -1,3 +1,4 @@
 {
-    "extension.prophet.sitecontext.selectedSiteID": ""
+    "extension.prophet.sitecontext.selectedSiteID": "",
+    "postman.settings.dotenv-detection-notification-visibility": false
 }
