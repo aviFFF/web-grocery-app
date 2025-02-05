@@ -51,7 +51,6 @@ const PincodeSearchPopup = ({ onValidation }) => {
             const pincode = address.address_components.find((comp) =>
               comp.types.includes("postal_code")
             ).long_name;
-            console.log("Pincode:", pincode);
 
             setPincode(pincode); // Auto-populate the pincode input box
           } else {

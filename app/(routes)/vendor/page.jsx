@@ -43,15 +43,24 @@ const VendorLogin = () => {
   };
 
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/vendor/firebase-messaging-sw.js")
-        .then((registration) =>
-          console.log("[Vendor FB SW] Registered", registration)
-        )
-        .catch((error) =>
-          console.error("[Vendor SW] Registration Failed", error)
-        );
+    // Check if we are in the browser before using browser-specific APIs
+    if (typeof window !== "undefined" && "Notification" in window && "serviceWorker" in navigator) {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          console.log("Notification permission granted.");
+        } else {
+          console.warn("Notifications permission denied.");
+        }
+      });
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/vendor/firebase-messaging-sw.js")
+          .then((registration) => {
+            console.log("Service Worker registered:", registration);
+          })
+          .catch((error) => console.error("Service Worker registration failed:", error));
+      }
     }
   }, []);
 
