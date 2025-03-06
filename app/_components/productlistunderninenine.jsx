@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import GlobalApi from "@/app/utils/GlobalApi";
-import Productitem from "./Productitem";
+import Productitemforfilter from "./ProductItemforfilter";
 
 function ProductListninenine() {
   const [productList, setProductList] = useState([]); // Store fetched products
@@ -64,6 +64,10 @@ function ProductListninenine() {
     };
   }, [observerRef.current]); // Re-run if the observer reference changes
 
+  if (productList.length === 0) {
+    return <p className="text-center mt-4">Loading products...</p>;
+  }
+
   return (
     <div className="mt-2 p-2">
       <h2 className="text-primary text-2xl text-center mb-4 flex">Best Products Under ₹99</h2>
@@ -75,7 +79,7 @@ function ProductListninenine() {
               key={index}
               ref={isLastProduct ? observerRef : null} // Attach ref to the last product
             >
-              <Productitem product={product} /> {/* Pass the full product object */}
+              <Productitemforfilter product={product} /> {/* Pass the full product object */}
             </div>
           );
         })}

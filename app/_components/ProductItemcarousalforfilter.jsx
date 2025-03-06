@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import Image from "next/image";
 
-const ProductCarousel = ({ images, altText }) => {
+const ProductCarouselforfilter = ({ images, altText }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handlePrevious = () => {
@@ -23,7 +23,7 @@ const ProductCarousel = ({ images, altText }) => {
         <Image
           width={100}
           height={30}
-          src={images[currentIndex]}
+          src={images[currentIndex]?.attributes?.url}
           alt={altText}
           className="w-full h-[150px] md:h-full object-contain"
         />
@@ -57,4 +57,4 @@ const ProductCarousel = ({ images, altText }) => {
   );
 };
 
-export default ProductCarousel;
+export default ProductCarouselforfilter;

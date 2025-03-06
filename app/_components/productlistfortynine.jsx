@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import GlobalApi from "@/app/utils/GlobalApi";
-import Productitem from "./Productitem";
+import Productitemforfilter from "./ProductItemforfilter";
 
-function ProductListfortynine() {
+function ProductListfortynine() { // Component to display products under ₹49
   const [productList, setProductList] = useState([]); // Store fetched products
   const [visibleProducts, setVisibleProducts] = useState(8); // Start with 8 products
   const [loading, setLoading] = useState(false);
@@ -79,7 +79,7 @@ function ProductListfortynine() {
               key={index}
               ref={isLastProduct ? observerRef : null} // Attach ref to the last product
             >
-              <Productitem product={product} /> {/* Pass the full product object */}
+              <Productitemforfilter product={product} /> {/* Pass the full product object */}
             </div>
           );
         })}

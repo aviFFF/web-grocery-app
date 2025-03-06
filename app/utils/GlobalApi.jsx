@@ -3,7 +3,7 @@ import { toast } from "sonner";
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
-    baseURL:process.env.NEXT_PUBLIC_API_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 axiosClient.interceptors.request.use((config) => {
   const token = Cookies.get("token"); // Retrieve token from cookies
@@ -12,49 +12,60 @@ axiosClient.interceptors.request.use((config) => {
   }
   return config;
 });
-const getCategory =()=>axiosClient.get('/categories?populate=*');
+const getCategory = () => axiosClient.get("/categories?populate=*");
 
-const getSliders=()=>axiosClient.get('/sliders?populate=*').then(resp=>{
-    return resp.data.data
-})
-
-
-const getCategoryList =()=>axiosClient.get('/categories?populate=*').then(resp=>{
-    return resp.data.data
-})
-
-export const getAllProducts = async (query = '') => {
-    const searchParam = query
-      ? `&filters[$or][0][name][$containsi]=${query}&filters[$or][1][description][$containsi]=${query}&filters[$or][2][sellingPrice][$containsi]=${query}`
-      : '';
-    
-    const resp = await axiosClient.get(`/products?populate=*&${searchParam}`);
+const getSliders = () =>
+  axiosClient.get("/sliders?populate=*").then((resp) => {
     return resp.data.data;
-  };
-  
-  // Debounce function to limit API calls
-  export const debounce = (func, delay) => {
-    let timeoutId;
-    return (...args) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        func.apply(null, args);
-      }, delay);
-    };
-  };
-  
+  });
 
-const getProductsbyCategory =(category)=>axiosClient.get('/products?filters[categories][name][$in]='+category+"&populate=*").then(resp=>{
-    return resp.data.data
-})
+const getCategoryList = () =>
+  axiosClient.get("/categories?populate=*").then((resp) => {
+    return resp.data.data;
+  });
 
-const registeruser =(username,email,password,name)=>axiosClient.post('/auth/local/register',
-  {
-    username:username,
-    email:email,
-    password:password,
-    name:name
-});
+export const getAllProducts = async (query = "") => {
+  const searchParam = query
+    ? `&filters[$or][0][name][$containsi]=${query}&filters[$or][1][description][$containsi]=${query}&filters[$or][2][sellingPrice][$containsi]=${query}`
+    : "";
+
+  const resp = await axiosClient.get(`/products?populate=*&${searchParam}`);
+  return resp.data.data;
+};
+
+// Debounce function to limit API calls
+export const debounce = (func, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(null, args);
+    }, delay);
+  };
+};
+
+export const getProductsbyCategory = (category) =>
+  axiosClient
+    .get("/products?filters[categories][name][$in]=" + category + "&populate=*")
+    .then((resp) => {
+      return resp.data.data;
+    });
+
+const getProductsByCategory = async (categoryId) => {
+  return axiosClient
+    .get(`/products?filters[categories][id][$in]=${categoryId}&populate=*`)
+    .then((resp) => resp.data.data);
+};
+
+    
+
+const registeruser = (username, email, password, name) =>
+  axiosClient.post("/auth/local/register", {
+    username: username,
+    email: email,
+    password: password,
+    name: name,
+  });
 
 const getProductBetween100to199 = () =>
   axiosClient
@@ -65,34 +76,35 @@ const getProductBetween100to199 = () =>
 
 export { getProductBetween100to199 };
 
-
 const getproductunderninenine = () =>
   axiosClient
     .get(
-      '/products?populate=*&filters[$and][0][sellingPrice][$gte]=50&filters[$and][1][sellingPrice][$lte]=99&pagination[pageSize]=1000&sort[sellingPrice]=desc'
+      "/products?populate=*&filters[$and][0][sellingPrice][$gte]=50&filters[$and][1][sellingPrice][$lte]=99&pagination[pageSize]=1000&sort[sellingPrice]=desc"
     )
     .then((resp) => resp.data.data);
 
 const getproductfortynine = () =>
   axiosClient
     .get(
-      '/products?populate=*&filters[$and][0][sellingPrice][$gte]=1&filters[$and][1][sellingPrice][$lte]=49&pagination[pageSize]=1000&sort[sellingPrice]=desc'
+      "/products?populate=*&filters[$and][0][sellingPrice][$gte]=1&filters[$and][1][sellingPrice][$lte]=49&pagination[pageSize]=1000&sort[sellingPrice]=desc"
     )
     .then((resp) => resp.data.data);
 
-
-
-const LogIn =(email,password)=>axiosClient.post('/auth/local', { identifier: email, password: password })
+const LogIn = (email, password) =>
+  axiosClient.post("/auth/local", { identifier: email, password: password });
 
 const ForgotPassword = async (email) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/forgot-password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/auth/forgot-password`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      }
+    );
 
     const data = await res.json();
     if (res.ok) {
@@ -104,16 +116,20 @@ const ForgotPassword = async (email) => {
   }
 };
 
-
-
-
 const ResetPassword = async (code, password, confirmPassword) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/reset-password`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code, password, passwordConfirmation: confirmPassword }), 
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/auth/reset-password`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code,
+          password,
+          passwordConfirmation: confirmPassword,
+        }),
+      }
+    );
 
     const data = await res.json();
 
@@ -127,23 +143,19 @@ const ResetPassword = async (code, password, confirmPassword) => {
   }
 };
 
-
-
-
-
-
-const deleteCartItem =(id,jwt)=>axiosClient.delete('/user-carts/'+id,{
-    headers:{
-        Authorization: `Bearer ${jwt}`,
+const deleteCartItem = (id, jwt) =>
+  axiosClient.delete("/user-carts/" + id, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
     },
-});
+  });
 
-
-const addToCart =(data,jwt)=>axiosClient.post('/user-carts',data,{
-    headers:{
-         Authorization: `Bearer ${jwt}`,
+const addToCart = (data, jwt) =>
+  axiosClient.post("/user-carts", data, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
     },
-});
+  });
 
 const updateCartItem = (id, data, jwt) =>
   axiosClient.put(`/user-carts/${id}`, data, {
@@ -152,110 +164,110 @@ const updateCartItem = (id, data, jwt) =>
     },
   });
 
+const getCartItems = (userId, jwt) =>
+  axiosClient
+    .get(
+      `/user-carts?filters[userId][$eq]=${userId}&[populate][products][populate][image][populate][0]=url`,
+      {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      }
+    )
+    .then((resp) => {
+      const data = resp.data.data;
+      return data.map((item) => ({
+        name: item.attributes.products.data.attributes?.name,
+        quantity: item.attributes.quantity,
+        amount: item.attributes.amount,
+        image:
+          item.attributes.products.data?.attributes?.image?.data?.[0]
+            ?.attributes?.url ?? "default-image-url",
+        sellingPrice: item.attributes.products.data.attributes.mrp,
+        id: item.id,
+        product: item.attributes.products.data.id,
+        quantityType: item.attributes.products.data.attributes?.quantityType,
+      }));
+    });
 
-  const getCartItems = (userId, jwt) =>
-    axiosClient
-      .get(
-        `/user-carts?filters[userId][$eq]=${userId}&[populate][products][populate][image][populate][0]=url`,
-        {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        }
-      )
-      .then((resp) => {
-        const data = resp.data.data;
-        return data.map((item) => ({
-          name: item.attributes.products.data.attributes?.name,
-          quantity: item.attributes.quantity,
-          amount: item.attributes.amount,
-          image:
-            item.attributes.products.data?.attributes?.image?.data?.[0]
-              ?.attributes?.url ?? "default-image-url",
-          sellingPrice: item.attributes.products.data.attributes.mrp,
-          id: item.id,
-          product: item.attributes.products.data.id,
-          quantityType: item.attributes.products.data.attributes?.quantityType,
-        }));
-      });
-  
-  
-export const getPincodes = async () => {
-    const resp = await axiosClient.get('/pincodes?populate=*');
-    return resp.data.data;
-  };
 
-  const createOrder = (data,jwt)=>axiosClient.post('/Orders',data,{
-    headers:{
-         Authorization: `Bearer ${jwt}`,
+    
+
+const createOrder = (data, jwt) =>
+  axiosClient.post("/Orders", data, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
     },
   });
-
-  const getPromocodes =()=>axiosClient.get('/promocodes?populate=*').then(resp=>{
-    return resp.data.data
-  })
 
 
 export const sendNotification = async (fcmToken, title, body) => {
   try {
-    const response = await axios.post('/notifications/send', {
+    const response = await axios.post("/notifications/send", {
       fcmToken,
       title,
       body,
     });
-    console.log('Notification sent:', response.data);
+    console.log("Notification sent:", response.data);
   } catch (error) {
-    console.error('Error sending notification:', error);
+    console.error("Error sending notification:", error);
   }
 };
 
- async function verifyCaptcha(token) {
-    const secretKey = process.env.NEXT_PUBLIC_RECAPTCHA_SECRET; // Replace with your reCAPTCHA secret key
-    try {
-        const response = await axios.post(
-            `https://www.google.com/recaptcha/api/siteverify`,
-            null, {
-                params: {
-                    secret: secretKey,
-                    response: token
-                }
-            }
-        );
-        return response.data.success;
-    } catch (error) {
-        console.error('CAPTCHA verification error:', error);
-        return false;
-    }
+async function verifyCaptcha(token) {
+  const secretKey = process.env.NEXT_PUBLIC_RECAPTCHA_SECRET; // Replace with your reCAPTCHA secret key
+  try {
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      null,
+      {
+        params: {
+          secret: secretKey,
+          response: token,
+        },
+      }
+    );
+    return response.data.success;
+  } catch (error) {
+    console.error("CAPTCHA verification error:", error);
+    return false;
+  }
 }
 
-  const getMyorders = (userid,jwt)=>axiosClient.get('orders?filters[userid][$eq]='+userid+'&populate[Orderitemlist][populate][product][populate][image]=url').then(resp=>{
-      const response = resp.data.data
-      const orderList = response.map((item,index)=>({
-          id:item.id,
-          totalOrderValue:item.attributes.totalOrderValue,
-          paymentid:item.attributes.paymentid,
-          Orderitemlist:item.attributes.Orderitemlist,
-          firstname:item.attributes.firstname,
-          lastname:item.attributes.lastname,
-          email:item.attributes.email,
-          phone:item.attributes.phone,
-          address:item.attributes.address,
-          pincode:item.attributes.pincode,
-          createdAt:item.attributes.createdAt,
-          status:item.attributes.Status
+const getMyorders = (userid, jwt) =>
+  axiosClient
+    .get(
+      "orders?filters[userid][$eq]=" +
+        userid +
+        "&populate[Orderitemlist][populate][product][populate][image]=url"
+    )
+    .then((resp) => {
+      const response = resp.data.data;
+      const orderList = response.map((item, index) => ({
+        id: item.id,
+        totalOrderValue: item.attributes.totalOrderValue,
+        paymentid: item.attributes.paymentid,
+        Orderitemlist: item.attributes.Orderitemlist,
+        firstname: item.attributes.firstname,
+        lastname: item.attributes.lastname,
+        email: item.attributes.email,
+        phone: item.attributes.phone,
+        address: item.attributes.address,
+        pincode: item.attributes.pincode,
+        createdAt: item.attributes.createdAt,
+        status: item.attributes.Status,
       }));
-      return orderList
+      return orderList;
+    });
 
-  });
-
- // Vendor Signup API
+// Vendor Signup API
 export const vendorSignup = (name, email, password, phone) =>
-  axiosClient.post('/vendor/signup', { name, email, password, phone });
+  axiosClient.post("/vendor/signup", { name, email, password, phone });
 
 // Vendor Login API
 export const vendorLogin = async (phone, password) => {
-  const response = await axiosClient.post('/vendor/login', { phone, password });
-  
+  const response = await axiosClient.post("/vendor/login", { phone, password });
+
   // Store token in a secure cookie
   Cookies.set("token", response.data.jwt, {
     expires: 30, // Token valid for 7 days
@@ -276,11 +288,14 @@ export const fetchVendorOrders = async () => {
     throw new Error("Token is missing");
   }
 
-  return axiosClient.get("/orders?populate[Orderitemlist][populate]=product.image", {
-    headers: {
-      Authorization: `Bearer ${token}`, // Pass token in Authorization header
-    },
-  });
+  return axiosClient.get(
+    "/orders?populate[Orderitemlist][populate]=product.image",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`, // Pass token in Authorization header
+      },
+    }
+  );
 };
 
 export const updateOrderStatus = async (orderId, newStatus) => {
@@ -302,78 +317,83 @@ export const updateOrderStatus = async (orderId, newStatus) => {
 };
 
 
-export const getProductById = async (productId, jwt) => {
-  const response = await fetch(`/products/${productId}`, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt}`,
-    },
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch product details");
-  }
-  return response.json().data;
-};
-
-
-
-export const subscribeToPushNotifications = async () => {
+export const getAllPincodes = async () => {
   try {
-    const registration = await navigator.serviceWorker.ready;
-
-    const vapidPublicKey = process.env.VAPID_PUBLIC_KEY; // Replace this with the Base64 URL-safe public key
-    const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
-
-    const subscription = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: convertedVapidKey,
-    });
-
-    console.log("Push Subscription:", subscription);
-
-    // Send subscription to your backend
-    await fetch(process.env.NEXT_PUBLIC_URL + "/save-subscription", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(subscription),
-    });
+    const resp = await axiosClient.get("/vendors-all-pincodes"); // New API
+    return resp.data; // Adjust based on response
   } catch (error) {
-    console.error("Error subscribing to push notifications:", error);
+    console.error("Error fetching pincodes:", error);
+    return [];
   }
 };
 
-  
-  
-  
+
+export const getVendorsByPincode = async (pincode) => {
+  try {
+    const formattedPincode = String(pincode); // Ensure pincode is a string
+    const resp = await axiosClient.get(`/vendors-by-pincode?pincode=${formattedPincode}`);
+    return {
+      vendors: resp.data.vendors || [],
+      categories: resp.data.categories || [],
+      products: resp.data.products || [],
+    };
+  } catch (error) {
+    console.error("Error fetching vendors by pincode:", error);
+    return { vendors: [], categories: [], products: [] };
+  }
+};
+
+
+// utils/GlobalApi.js
+export const getProductsByPincode = async (pincode) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/products-by-pincode?pincode=${pincode}`
+    );
+
+    const data = await response.json();
+
+    // Extract products from the response
+    const products = data.products || [];
+
+    return products;
+  } catch (error) {
+    console.error("Error fetching products by pincode:", error);
+    return [];
+  }
+};
+
+
+
+
 
 
 export default {
-    getCategory,
-    getSliders,
-    getCategoryList,
-    getAllProducts,
-    getProductsbyCategory,
-    registeruser,
-    LogIn,
-    addToCart,
-    getCartItems,
-    deleteCartItem,
-    getPincodes,
-    createOrder,
-    getMyorders,
-    getPromocodes,
-    verifyCaptcha,
-    fetchVendorOrders,
-    vendorSignup,
-    vendorLogin,
-    subscribeToPushNotifications,
-    sendNotification,
-    ForgotPassword,
-    ResetPassword,
-    updateCartItem,
-    getproductunderninenine,
-    getproductfortynine,
-    getProductBetween100to199
-}
+  getCategory,
+  getSliders,
+  getCategoryList,
+  getAllProducts,
+  getProductsbyCategory,
+  registeruser,
+  LogIn,
+  addToCart,
+  getCartItems,
+  deleteCartItem,
+  getAllPincodes,
+  createOrder,
+  getMyorders,
+  verifyCaptcha,
+  fetchVendorOrders,
+  vendorSignup,
+  vendorLogin,
+  ForgotPassword,
+  ResetPassword,
+  updateCartItem,
+  getproductunderninenine,
+  getproductfortynine,
+  getProductBetween100to199,
+  getProductsByCategory,
+  updateOrderStatus,
+  getVendorsByPincode,
+  getProductsByPincode,
+};

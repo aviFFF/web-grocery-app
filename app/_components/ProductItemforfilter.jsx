@@ -9,53 +9,62 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import ProductItemDetails from "./ProductItemDetails";
+import ProductItemDetailsforfilter from "./ProductItemDetailforfilter";
 
-function Productitem({ product }) {
+function Productitemforfilter({ product }) {
   return (
     <Dialog>
       {/* Wrap the entire div with DialogTrigger */}
       <DialogTrigger asChild>
         <div
-          className="relative p-2 md:p-3 flex flex-col items-center justify-center gap-2 border
+          className="relative p-2 md:p-5 flex flex-col items-center justify-center gap-3 border
           rounded-xl hover:shadow-md hover:scale-105 cursor-pointer overflow-hidden transition-all ease-in-out"
         >
           {/* Calculate the discount percentage */}
-          {product?.sellingPrice &&
-            product?.mrp &&
-            product.mrp > product.sellingPrice && (
+          {product?.attributes?.sellingPrice &&
+            product?.attributes?.mrp &&
+            product.attributes.mrp > product.attributes.sellingPrice && (
               <div className="absolute top-2 left-2 bg-orange-500 text-white font-bold text-xs p-1 rounded">
                 {Math.round(
-                  ((product.mrp - product.sellingPrice) / product.mrp) * 100
+                  ((product.attributes.mrp - product.attributes.sellingPrice) /
+                    product.attributes.mrp) *
+                    100
                 )}
                 %
               </div>
             )}
 
           <Image
-            src={product.imageUrl || "/fallback-image.png"}
-            alt={product.name || "Product Image"}
+            src={
+              product?.attributes?.image?.data?.[0]?.attributes?.url ||
+              "/fallback-image.png"
+            }
+            alt={product?.attributes?.name || "Default Alt Text"}
             width={200}
             height={100}
-            className="w-32 h-32 md:w-40 md:h-40 object-contain"
+            className="w-40 h-40 md:w-52 md:h-52 object-contain"
           />
 
-          <h2 className="font-bold text-xs md:text-sm">{product?.name}</h2>
-          <h2 className="text-gray-500">{product?.itemQuantityType}</h2>
+          <h2 className="font-bold text-xs md:text-sm">
+            {product?.attributes?.name}
+          </h2>
+          <h2 className="text-gray-500">
+            {product?.attributes?.itemQuantityType}
+          </h2>
           <div className="flex items-center gap-1">
-            {product?.sellingPrice !== product?.mrp ? (
+            {product?.attributes?.sellingPrice !== product?.attributes?.mrp ? (
               <>
-                {product?.sellingPrice && (
+                {product?.attributes?.sellingPrice && (
                   <h2 className="text-xl font-bold">
-                    ₹{product?.sellingPrice}
+                    ₹{product?.attributes?.sellingPrice}
                   </h2>
                 )}
                 <h2 className="text-lg p-2 font-bold line-through text-red-400">
-                  ₹{product?.mrp}
+                  ₹{product?.attributes?.mrp}
                 </h2>
               </>
             ) : (
-              <h2 className="text-lg font-bold">₹{product?.mrp}</h2>
+              <h2 className="text-lg font-bold">₹{product?.attributes?.mrp}</h2>
             )}
           </div>
 
@@ -72,10 +81,10 @@ function Productitem({ product }) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {product?.name || "Product Details"}
+            {product?.attributes?.name || "Product Details"}
           </DialogTitle>
           <DialogDescription>
-            <ProductItemDetails product={product} />
+            <ProductItemDetailsforfilter   product={product} />
           </DialogDescription>
         </DialogHeader>
       </DialogContent>
@@ -83,4 +92,4 @@ function Productitem({ product }) {
   );
 }
 
-export default Productitem;
+export default  Productitemforfilter;

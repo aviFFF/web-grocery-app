@@ -5,18 +5,17 @@ import React, { useContext, useState } from "react";
 import GlobalApi from "../utils/GlobalApi";
 import { toast } from "sonner";
 import { UpdateCartContext } from "../_context/UpdatecartContext";
-import ProductCarousel from "./ProductItemcarousal";
+import ProductCarouselforfilter from "./ProductItemcarousalforfilter";
 
-function ProductItemDetails({ product }) {
-  const images = [product?.imageUrl]; 
-  const altText = product?.name || "Product Image";
+function ProductItemDetailsforfilter({ product }) {
+  const images = [product?.imageUrl]|| [];
+  const altText = product?.attributes?.name || "Product Image";
   const jwt = sessionStorage.getItem("jwt");
   const user = JSON.parse(sessionStorage.getItem("user"));
   const { updateCart, setUpdateCart } = useContext(UpdateCartContext);
   const [productTotalPrice, setProductTotalPrice] = useState(
-    product?.attributes?.sellingPrice || product?.attributes?.mrp || 0
+    product.attributes.sellingPrice || product.attributes?.mrp
   );
-  
   const router = useRouter();
   const [productQuantity, setProductQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -86,23 +85,23 @@ function ProductItemDetails({ product }) {
 
   return (
     <div className="bg-white grid grid-cols-1 w-full gap-4 md:grid-cols-2">
-      <ProductCarousel images={images} altText={altText} />
+      <ProductCarouselforfilter images={images} altText={altText} />
       <div className="flex flex-col gap-3">
-        <h2 className="text-xs">{product?.description}</h2>
+        <h2 className="text-xs">{product?.attributes?.description}</h2>
         <div className="flex items-center gap-2">
-          {product?.sellingPrice !== product?.mrp ? (
+          {product?.attributes?.sellingPrice !== product?.attributes?.mrp ? (
             <>
-              {product?.sellingPrice && (
+              {product?.attributes?.sellingPrice && (
                 <h2 className="text-2xl font-bold">
-                  ₹{product?.sellingPrice}
+                  ₹{product?.attributes?.sellingPrice}
                 </h2>
               )}
               <h2 className="text-2xl p-2 font-bold line-through text-red-400">
-                ₹{product?.mrp}
+                ₹{product?.attributes?.mrp}
               </h2>
             </>
           ) : (
-            <h2 className="text-2xl font-bold">₹{product?.mrp}</h2>
+            <h2 className="text-2xl font-bold">₹{product?.attributes?.mrp}</h2>
           )}
         </div>
 
@@ -136,9 +135,7 @@ function ProductItemDetails({ product }) {
               </button>
             </div>
             <h2 className="text-2xl font-bold">
-              =₹{(
-                product?.sellingPrice * productQuantity
-              ).toFixed(2)}
+              =₹{(productQuantity * productTotalPrice).toFixed(2)}
             </h2>
           </div>
           <Button
@@ -160,4 +157,4 @@ function ProductItemDetails({ product }) {
   );
 }
 
-export default ProductItemDetails;
+export default ProductItemDetailsforfilter;

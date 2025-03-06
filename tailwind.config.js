@@ -23,7 +23,7 @@ export const theme = {
 				foreground: 'hsl(var(--popover-foreground))'
 			},
 			primary: {
-				DEFAULT: '#FF5733',
+				DEFAULT: '#008080',
 				foreground: 'hsl(var(--primary-foreground))'
 			},
 			secondary: {

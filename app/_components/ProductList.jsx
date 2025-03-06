@@ -1,80 +1,118 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { usePincode } from "../_context/PincodeContext";
+import { getVendorsByPincode } from "../utils/GlobalApi";
 import Productitem from "./Productitem";
-import { useState } from "react";
-import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 
-function ProductList({ productList }) {
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const carouselRef = useRef(null);
+const ProductList = () => {
+  const { pincode } = usePincode();
+  const [products, setProducts] = useState([]);
+  const [visibleProducts, setVisibleProducts] = useState(8); // Start with 8 products
+  const [loading, setLoading] = useState(false);
+  const observerRef = useRef(null); // Observer reference for infinite scrolling
 
-  const itemWidth = 200; // Adjust width based on your product card width
-  const visibleItems = 1; // Number of visible items in a row (can adjust for mobile)
+  useEffect(() => {
+    if (!pincode) return;
 
-  // Get the total width of the product container
-  const totalWidth = itemWidth * productList.length;
+    console.log("Fetching products for pincode:", pincode);
+    setLoading(true);
 
-  // Scroll left handler
-  const scrollLeft = () => {
-    setScrollPosition((prevPosition) =>
-      Math.max(prevPosition - itemWidth * visibleItems, 0)
-    );
+    const fetchProducts = async () => {
+      try {
+        const { products } = await getVendorsByPincode(pincode);
+        console.log("API Response - Products:", products);
+
+        if (!products || products.length === 0) {
+          console.log("No products found for this pincode.");
+          setProducts([]);
+        } else {
+          setProducts(
+            products.map((prod) => ({
+              id: prod.id,
+              name: prod.name,
+              imageUrl:
+                prod.image?.[0]?.url || // Direct image URL
+                prod.image?.[0]?.thumbnail?.url || // Thumbnail URL
+                "/buzzat-logo.png", // Fallback image
+              mrp: prod.mrp,
+              sellingPrice: prod.sellingPrice,
+              description: prod.description,
+              stockStatus: prod.stockStatus,
+            }))
+          );
+          
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [pincode]);
+
+  // Function to load more products
+  const loadMoreProducts = () => {
+    if (loading) return;
+    setLoading(true);
+    setTimeout(() => {
+      setVisibleProducts((prevVisible) => prevVisible + 80); // Load 80 more products
+      setLoading(false);
+    }, 500);
   };
 
-  // Scroll right handler
-  const scrollRight = () => {
-    setScrollPosition((prevPosition) =>
-      Math.min(
-        prevPosition + itemWidth * visibleItems,
-        totalWidth - carouselRef.current.offsetWidth
-      )
+  // Infinite scroll observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMoreProducts();
+        }
+      },
+      { threshold: 1.0 }
     );
-  };
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observer.unobserve(observerRef.current);
+      }
+    };
+  }, [observerRef.current]);
 
   return (
-    <div className="relative mt-5">
-      <h2 className="text-primary text-2xl text-left mb-4">
-        Best Selling Products
+    <div className="mt-5">
+      <h2 className="text-primary text-2xl text-center mb-4 flex">
+        Best Buzzat Products
       </h2>
 
-      {/* Left Arrow */}
-      <button
-        onClick={scrollLeft}
-        className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md p-2 rounded-full"
-      >
-        <IoIosArrowBack />
-      </button>
-
-      {/* Product Items List */}
-      <div
-        className="overflow-x-auto scrollbar-hide touch-pan-x"
-        ref={carouselRef}
-      >
-        <div
-          className="flex transition-transform duration-300 ease-in-out"
-          style={{ transform: `translateX(-${scrollPosition}px)` }}
-        >
-          {productList.map((product, index) => (
-            <div
-              key={product.id}
-              className="min-w-[175px] p-4 flex-shrink-0"
-              style={{ width: `${itemWidth}px` }}
-            >
-              <Productitem key={index} product={product} />
-            </div>
-          ))}
+      {loading && products.length === 0 ? (
+        <p className="text-gray-500 text-center">Loading products...</p>
+      ) : products.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          {products.slice(0, visibleProducts).map((product, index) => {
+            const isLastProduct = index === visibleProducts - 1;
+            return (
+              <div key={index} ref={isLastProduct ? observerRef : null}>
+                <Productitem product={product} />
+              </div>
+            );
+          })}
         </div>
-      </div>
+      ) : (
+        <p className="text-gray-500 text-center">
+          No products available for this pincode.
+        </p>
+      )}
 
-      {/* Right Arrow */}
-      <button
-        onClick={scrollRight}
-        className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-md p-2 rounded-full"
-      >
-        <IoIosArrowForward />
-      </button>
+      {loading && <p className="text-center mt-4">Loading more products...</p>}
     </div>
   );
-}
+};
 
 export default ProductList;

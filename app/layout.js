@@ -7,6 +7,8 @@ import { usePathname } from "next/navigation";
 import { UpdateCartContext } from "./_context/UpdatecartContext";
 import { useState, useEffect } from "react";
 import Footer from "./_components/Footer";
+import { PincodeProvider } from "./_context/PincodeContext";
+
 
 
 const outfit = Outfit({
@@ -54,11 +56,13 @@ export default function RootLayout({ children }) {
         <meta name="google-adsense-account" content="ca-pub-8540952826970534"></meta>
       </head>
       <body className={outfit.className}>
+        <PincodeProvider>
         <UpdateCartContext.Provider value={{ updateCart, setUpdateCart }}>
           {showHeader && <Header />}
           {children}
           <Toaster />
         </UpdateCartContext.Provider>
+        </PincodeProvider>
         {showFooter && <Footer />}
       </body>
     </html>

@@ -36,7 +36,6 @@ function Checkout() {
   const [isServicable, setIsServicable] = useState(null);
   const [validationMessage, setValidationMessage] = useState("");
   const [availablePincodes, setAvailablePincodes] = useState([]);
-  const getPincodes = useMemo(() => GlobalApi.getPincodes, []);
   const [isLoading, setIsLoading] = useState(true);
   const [isCODLoading, setIsCODLoading] = useState(false);
   const [locationUrl, setLocationUrl] = useState("");
@@ -48,11 +47,7 @@ function Checkout() {
       router.replace("/");
     }
   }, [isLoading, totalCartItems, router]);
-
-  useEffect(() => {
-    getPincodes().then((pincodes) => setAvailablePincodes(pincodes));
-  }, []);
-
+  
   const handlePincodeChange = (e) => {
     const enteredPincode = e.target.value;
     setPincode(enteredPincode);
@@ -135,8 +130,8 @@ function Checkout() {
       toast.error("Promo code already applied!");
       return;
     }
-    if (promoCode === "BUZZAT26") {
-      const discount = subtotal * 0.1;
+    if (promoCode === "BUZZATRON") {
+      const discount = subtotal * 0.01;
       const newSubtotal = subtotal - discount;
       setSubtotal(newSubtotal.toFixed(2));
       setIsPromoApplied(true);
@@ -394,7 +389,7 @@ function Checkout() {
             <DialogTrigger asChild>
               <Button
                 className="mt-5 w-full bg-primary text-white flex justify-center items-center gap-2"
-                disabled={!address || !pincode || !city || !isServicable}
+                disabled={!address || !pincode || !city }
               >
                 Proceed to Checkout
                 <ArrowBigRight className="w-5 h-5" />
