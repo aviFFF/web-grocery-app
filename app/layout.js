@@ -69,4 +69,5 @@ export default function RootLayout({ children }) {
   );
 
   // check comment 
+  // new branch created 
 }
