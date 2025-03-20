@@ -39,7 +39,7 @@ function Sliders({ sliderList }) {
               width={900}
               height={500}
               alt="image"
-              className="w-full md:h-[300px] border border-gray-400 mt-10 sm:mt-2 h-[100px] rounded-xl"
+              className="w-full md:h-[299px] border border-gray-400 mt-10 sm:mt-2 h-[100px] rounded-xl"
             />
           </CarouselItem>
         ))}
